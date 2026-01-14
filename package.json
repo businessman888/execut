@@ -1,0 +1,27 @@
+{
+  "name": "execut",
+  "version": "1.0.0",
+  "private": true,
+  "description": "App de Gestão de Objetivos para Empreendedores Digitais",
+  "workspaces": [
+    "backend",
+    "mobile",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "backend:dev": "npm run dev --workspace=backend",
+    "mobile:dev": "npm run start --workspace=mobile"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "npm@10.2.0"
+}

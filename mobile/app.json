@@ -1,0 +1,41 @@
+{
+    "expo": {
+        "name": "Execut",
+        "slug": "execut",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/icon.png",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#131F54"
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "supportsTablet": true,
+            "bundleIdentifier": "com.execut.app"
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#131F54"
+            },
+            "package": "com.execut.app"
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            "expo-secure-store",
+            "expo-local-authentication"
+        ],
+        "extra": {
+            "eas": {
+                "projectId": "your-eas-project-id"
+            }
+        }
+    }
+}
