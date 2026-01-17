@@ -19,8 +19,8 @@ const ACCENT = {
     100: '#CCF3FF',
     200: '#99E7FF',
     300: '#66DBFF',
-    400: '#33CFFF',
-    500: '#00C3FF', // Electric Cyan
+    400: '#33CFFF', // Electric Cyan - Primary accent
+    500: '#00C3FF',
     600: '#009CCC',
     700: '#007599',
     800: '#004E66',
@@ -31,36 +31,41 @@ export const theme = extendTheme({
     colors: {
         brand: BRAND,
         accent: ACCENT,
+        // Dark theme backgrounds
         background: {
-            primary: '#FFFFFF',
-            secondary: '#FAFBFC',
-            tertiary: '#F4F5F7',
+            primary: '#0D0D0D',
+            secondary: '#1A1A1A',
+            tertiary: '#262626',
         },
+        // Card surfaces
         surface: {
-            primary: '#FFFFFF',
-            secondary: '#F9FAFB',
-            tertiary: '#F3F4F6',
+            primary: '#1A1A1A',
+            secondary: '#262626',
+            tertiary: '#333333',
         },
+        // Text colors for dark theme
         text: {
-            primary: '#1F2937',
-            secondary: '#6B7280',
-            tertiary: '#9CA3AF',
+            primary: '#FFFFFF',
+            secondary: '#9CA3AF',
+            tertiary: '#6B7280',
         },
+        // Border colors
         border: {
-            default: '#E5E7EB',
-            strong: '#D1D5DB',
+            default: '#404040',
+            strong: '#525252',
+            subtle: '#2A2A2A',
         },
         success: {
             primary: '#10B981',
-            light: '#D1FAE5',
+            light: '#064E3B',
         },
         warning: {
             primary: '#F59E0B',
-            light: '#FEF3C7',
+            light: '#78350F',
         },
         error: {
             primary: '#EF4444',
-            light: '#FEE2E2',
+            light: '#7F1D1D',
         },
         gamification: {
             xp: '#F59E0B',
@@ -74,10 +79,16 @@ export const theme = extendTheme({
             600: { normal: 'Inter-SemiBold' },
             700: { normal: 'Inter-Bold' },
         },
+        Poppins: {
+            400: { normal: 'Poppins-Regular' },
+            500: { normal: 'Poppins-Medium' },
+            600: { normal: 'Poppins-SemiBold' },
+            700: { normal: 'Poppins-Bold' },
+        },
     },
     fonts: {
-        heading: 'Inter',
-        body: 'Inter',
+        heading: 'Poppins',
+        body: 'Poppins',
         mono: 'JetBrainsMono',
     },
     components: {
@@ -86,7 +97,7 @@ export const theme = extendTheme({
                 rounded: 'lg',
             },
             defaultProps: {
-                colorScheme: 'brand',
+                colorScheme: 'accent',
             },
         },
         Input: {
@@ -96,7 +107,7 @@ export const theme = extendTheme({
         },
     },
     config: {
-        initialColorMode: 'light',
+        initialColorMode: 'dark',
     },
 });
 

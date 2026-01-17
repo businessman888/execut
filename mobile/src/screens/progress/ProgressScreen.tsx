@@ -1,148 +1,153 @@
 import React from 'react';
-import { Box, VStack, HStack, Heading, Text, ScrollView, Center, Icon } from 'native-base';
+import { Box, VStack, HStack, Text, ScrollView, Pressable } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import { ChevronBackIcon, BellIcon } from '../../components/icons/NavIcons';
+import {
+    ScoreCard,
+    ActivityChart,
+    StatsCards,
+    AIInsightsCard,
+    FocusDistribution,
+    RecentMilestones,
+} from '../../components/dashboard';
 
 export function ProgressScreen() {
-    const mockProgress = {
-        level: 1,
-        totalXp: 150,
-        tasksCompleted: 12,
-        streak: 5,
-        weeklyCompletion: [80, 65, 90, 45],
-        achievements: [
-            { id: '1', title: 'Primeiro Passo', icon: 'footsteps', unlocked: true },
-            { id: '2', title: 'Guerreiro Semanal', icon: 'shield', unlocked: true },
-            { id: '3', title: 'Mestre do Mês', icon: 'trophy', unlocked: false },
-        ],
+    const navigation = useNavigation();
+
+    // Mock data - will be replaced with API calls
+    const mockScore = {
+        score: 88,
+        percentageChange: 5,
     };
 
+    const mockActivity = {
+        data: [45, 60, 70, 55, 80, 75, 90],
+        labels: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
+        status: 'Ótimo',
+    };
+
+    const mockStats = {
+        totalXP: 12450,
+        xpChange: '+1.2k essa semana',
+        streakDays: 15,
+        recordDays: 22,
+    };
+
+    const mockInsight = {
+        message: "Sua produtividade em 'Estudos' aumentou 12% esta semana. Considere focar em 'vendas' amanhã entre 09:00 e 11:00 para otimizar seus resultados.",
+    };
+
+    const mockFocusItems = [
+        { label: 'Produtos', percentage: 50, color: '#33CFFF' },
+        { label: 'Vendas', percentage: 28, color: '#6366F1' },
+        { label: 'Estudos', percentage: 22, color: '#2DD4BF' },
+    ];
+
+    const mockMilestones = [
+        {
+            id: '1',
+            title: 'Meta de vendas batida',
+            completedAt: 'Finalizado há 2 horas',
+            xpReward: 500,
+        },
+        {
+            id: '2',
+            title: 'Curso de UI concluído',
+            completedAt: 'Finalizado ontem',
+            xpReward: 1200,
+        },
+        {
+            id: '3',
+            title: 'Review Semanal finalizada',
+            completedAt: 'Finalizado há 2 dias',
+            xpReward: 300,
+        },
+    ];
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFBFC' }}>
-            <ScrollView flex={1} bg="background.secondary">
-                <Box px={5} pt={4} pb={6}>
-                    <Heading size="xl" color="text.primary">
-                        Seu Progresso
-                    </Heading>
-                    <Text color="text.secondary" mt={1}>
-                        Acompanhe sua evolução
-                    </Text>
-                </Box>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
+            <StatusBar style="light" />
 
-                {/* Stats Cards */}
-                <HStack space={3} px={5}>
-                    <Box flex={1} bg="brand.500" p={4} borderRadius="xl">
-                        <Center>
-                            <Icon as={Ionicons} name="star" color="yellow.400" size="lg" />
-                            <Text color="white" fontWeight="bold" fontSize="3xl" mt={2}>
-                                {mockProgress.level}
-                            </Text>
-                            <Text color="brand.100" fontSize="xs">
-                                Nível
-                            </Text>
-                        </Center>
-                    </Box>
+            {/* Header */}
+            <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                px={4}
+                py={3}
+                w="100%"
+            >
+                {/* Back Button */}
+                <Pressable
+                    onPress={() => navigation.goBack()}
+                    p={2}
+                    borderRadius="full"
+                    _pressed={{ opacity: 0.7 }}
+                >
+                    <ChevronBackIcon size={24} color="#F9FAFB" />
+                </Pressable>
 
-                    <Box flex={1} bg="amber.500" p={4} borderRadius="xl">
-                        <Center>
-                            <Icon as={Ionicons} name="flash" color="white" size="lg" />
-                            <Text color="white" fontWeight="bold" fontSize="3xl" mt={2}>
-                                {mockProgress.totalXp}
-                            </Text>
-                            <Text color="amber.100" fontSize="xs">
-                                XP Total
-                            </Text>
-                        </Center>
-                    </Box>
+                {/* Title */}
+                <Text color="text.secondary" fontSize="lg" fontWeight="normal">
+                    Dashboard
+                </Text>
 
-                    <Box flex={1} bg="green.500" p={4} borderRadius="xl">
-                        <Center>
-                            <Icon as={Ionicons} name="checkmark-circle" color="white" size="lg" />
-                            <Text color="white" fontWeight="bold" fontSize="3xl" mt={2}>
-                                {mockProgress.tasksCompleted}
-                            </Text>
-                            <Text color="green.100" fontSize="xs">
-                                Tarefas
-                            </Text>
-                        </Center>
-                    </Box>
-                </HStack>
+                {/* Bell Button */}
+                <Pressable
+                    onPress={() => console.log('Notifications pressed')}
+                    p={2}
+                    borderRadius="full"
+                    _pressed={{ opacity: 0.7 }}
+                >
+                    <BellIcon size={24} color="#33CFFF" />
+                </Pressable>
+            </HStack>
 
-                {/* Weekly Performance */}
-                <Box px={5} mt={6}>
-                    <Heading size="md" color="text.primary" mb={4}>
-                        Últimas 4 Semanas
-                    </Heading>
+            <ScrollView
+                flex={1}
+                bg="background.primary"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+            >
+                <VStack px={4} space={4}>
+                    {/* Score Card */}
+                    <ScoreCard
+                        score={mockScore.score}
+                        percentageChange={mockScore.percentageChange}
+                        isPositive={true}
+                    />
 
-                    <HStack space={3} justifyContent="space-between">
-                        {mockProgress.weeklyCompletion.map((value, index) => (
-                            <VStack key={index} flex={1} alignItems="center">
-                                <Box
-                                    bg="gray.200"
-                                    w="100%"
-                                    h={120}
-                                    borderRadius="lg"
-                                    justifyContent="flex-end"
-                                    overflow="hidden"
-                                >
-                                    <Box
-                                        bg={value >= 80 ? 'success.primary' : value >= 50 ? 'warning.primary' : 'error.primary'}
-                                        h={`${value}%`}
-                                        borderRadius="lg"
-                                    />
-                                </Box>
-                                <Text color="text.secondary" fontSize="xs" mt={2}>
-                                    Sem {index + 1}
-                                </Text>
-                                <Text color="text.primary" fontWeight="bold" fontSize="sm">
-                                    {value}%
-                                </Text>
-                            </VStack>
-                        ))}
-                    </HStack>
-                </Box>
+                    {/* Activity Chart */}
+                    <ActivityChart
+                        data={mockActivity.data}
+                        labels={mockActivity.labels}
+                        status={mockActivity.status}
+                    />
 
-                {/* Achievements */}
-                <Box px={5} mt={6} mb={8}>
-                    <HStack justifyContent="space-between" alignItems="center" mb={4}>
-                        <Heading size="md" color="text.primary">
-                            Conquistas
-                        </Heading>
-                        <Text color="brand.500" fontWeight="medium">
-                            Ver todas
-                        </Text>
-                    </HStack>
+                    {/* Stats Cards */}
+                    <StatsCards
+                        totalXP={mockStats.totalXP}
+                        xpChange={mockStats.xpChange}
+                        streakDays={mockStats.streakDays}
+                        recordDays={mockStats.recordDays}
+                    />
 
-                    <HStack space={4}>
-                        {mockProgress.achievements.map((achievement) => (
-                            <VStack key={achievement.id} alignItems="center" flex={1}>
-                                <Box
-                                    w={16}
-                                    h={16}
-                                    borderRadius="full"
-                                    bg={achievement.unlocked ? 'brand.500' : 'gray.200'}
-                                    justifyContent="center"
-                                    alignItems="center"
-                                >
-                                    <Icon
-                                        as={Ionicons}
-                                        name={achievement.icon as any}
-                                        color={achievement.unlocked ? 'white' : 'gray.400'}
-                                        size="lg"
-                                    />
-                                </Box>
-                                <Text
-                                    color={achievement.unlocked ? 'text.primary' : 'text.tertiary'}
-                                    fontSize="xs"
-                                    textAlign="center"
-                                    mt={2}
-                                >
-                                    {achievement.title}
-                                </Text>
-                            </VStack>
-                        ))}
-                    </HStack>
-                </Box>
+                    {/* AI Insights */}
+                    <AIInsightsCard
+                        message={mockInsight.message}
+                        onViewMore={() => console.log('View more insights pressed')}
+                    />
+
+                    {/* Focus Distribution */}
+                    <FocusDistribution items={mockFocusItems} />
+
+                    {/* Recent Milestones */}
+                    <RecentMilestones
+                        milestones={mockMilestones}
+                        onMilestonePress={(id) => console.log(`Milestone ${id} pressed`)}
+                    />
+                </VStack>
             </ScrollView>
         </SafeAreaView>
     );

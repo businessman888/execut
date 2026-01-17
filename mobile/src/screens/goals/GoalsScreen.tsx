@@ -1,110 +1,138 @@
 import React from 'react';
-import { Box, VStack, Heading, Text, ScrollView, Pressable, Icon, HStack } from 'native-base';
+import { Box, VStack, ScrollView } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { PlanningHeader, VisionCard, MilestoneCard } from '../../components/planning';
+import { GoalsStackParamList } from '../../navigation/MainNavigator';
+
+type GoalsScreenNavigationProp = NativeStackNavigationProp<GoalsStackParamList, 'GoalsMain'>;
 
 export function GoalsScreen() {
-    const mockYearlyGoals = [
-        { year: 1, title: 'Fundação e Validação', target: 'R$ 5.000/mês', progress: 25, current: true },
-        { year: 2, title: 'Crescimento Inicial', target: 'R$ 15.000/mês', progress: 0 },
-        { year: 3, title: 'Escala', target: 'R$ 30.000/mês', progress: 0 },
-        { year: 4, title: 'Consolidação', target: 'R$ 40.000/mês', progress: 0 },
-        { year: 5, title: 'Liderança', target: 'R$ 50.000/mês', progress: 0 },
+    const navigation = useNavigation<GoalsScreenNavigationProp>();
+
+    // Mock data - will be replaced with API calls
+    const mockVision = {
+        title: 'Minha visão de futuro',
+        description: 'Conquistar independência financeira com a construção de saas, construindo um império de aplicativos, com aplicativos na área de wellness, tanto lifestyle, quanto gestão da saúde.',
+        tags: ['freedom', 'SaaS', 'Growth'],
+    };
+
+    const mockMilestones = [
+        {
+            yearNumber: 1,
+            phase: 'IMPLANTAÇÃO',
+            title: 'Consolidação Digital',
+            revenue: '10.000',
+            isActive: true,
+            showQuarters: true,
+            quarters: [
+                { label: 'Q1', title: 'Setup & MVP' },
+                { label: 'Q2', title: 'Lançamento' },
+                { label: 'Q3', title: 'Escalabilidade' },
+                { label: 'Q4', title: 'Otimização' },
+            ],
+            progress: 72.4,
+            icon: 'money' as const,
+        },
+        {
+            yearNumber: 2,
+            phase: 'EXPANSÃO',
+            title: 'Networking e Ecossistema',
+            revenue: '25.000',
+            isActive: false,
+            icon: null,
+        },
+        {
+            yearNumber: 3,
+            phase: 'MATURIDADE',
+            title: 'Estratégia e Equity',
+            revenue: '45.000',
+            isActive: false,
+            icon: null,
+        },
+        {
+            yearNumber: 4,
+            phase: 'GLOBALIZAÇÃO',
+            title: 'Internacionalização da marca',
+            revenue: '145.000',
+            isActive: false,
+            icon: null,
+        },
+        {
+            yearNumber: 5,
+            phase: 'O GRANDE OBJETIVO',
+            title: 'Alcance do objetivo Final',
+            revenue: '545.000',
+            isActive: false,
+            icon: 'celebration' as const,
+        },
     ];
 
+    const handleMilestonePress = (milestone: typeof mockMilestones[0]) => {
+        navigation.navigate('YearDetail', {
+            yearNumber: milestone.yearNumber,
+            phase: milestone.phase,
+            title: milestone.title,
+            revenue: milestone.revenue,
+        });
+    };
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFBFC' }}>
-            <ScrollView flex={1} bg="background.secondary">
-                <Box px={5} pt={4} pb={6}>
-                    <Heading size="xl" color="text.primary">
-                        Seu Plano de 5 Anos
-                    </Heading>
-                    <Text color="text.secondary" mt={1}>
-                        Acompanhe sua evolução rumo ao sucesso
-                    </Text>
-                </Box>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
+            <StatusBar style="light" />
 
-                <VStack space={4} px={5} mb={8}>
-                    {mockYearlyGoals.map((goal) => (
-                        <Pressable key={goal.year}>
-                            <Box
-                                bg={goal.current ? 'brand.500' : 'white'}
-                                p={5}
-                                borderRadius="2xl"
-                                borderWidth={goal.current ? 0 : 1}
-                                borderColor="border.default"
-                            >
-                                <HStack justifyContent="space-between" alignItems="center">
-                                    <VStack flex={1}>
-                                        <HStack space={2} alignItems="center">
-                                            <Box
-                                                bg={goal.current ? 'white' : 'brand.100'}
-                                                px={3}
-                                                py={1}
-                                                borderRadius="full"
-                                            >
-                                                <Text
-                                                    color={goal.current ? 'brand.500' : 'brand.600'}
-                                                    fontWeight="bold"
-                                                    fontSize="xs"
-                                                >
-                                                    ANO {goal.year}
-                                                </Text>
-                                            </Box>
-                                            {goal.current && (
-                                                <Text color="white" fontSize="xs" opacity={0.8}>
-                                                    • Você está aqui
-                                                </Text>
-                                            )}
-                                        </HStack>
+            {/* Header */}
+            <PlanningHeader
+                title="Planejamento"
+                onBackPress={() => navigation.goBack()}
+                onNotificationPress={() => console.log('Notifications pressed')}
+            />
 
-                                        <Heading
-                                            size="md"
-                                            color={goal.current ? 'white' : 'text.primary'}
-                                            mt={2}
-                                        >
-                                            {goal.title}
-                                        </Heading>
-                                        <Text
-                                            color={goal.current ? 'brand.100' : 'text.secondary'}
-                                            fontSize="sm"
-                                            mt={1}
-                                        >
-                                            Meta: {goal.target}
-                                        </Text>
-                                    </VStack>
+            <ScrollView
+                flex={1}
+                bg="background.primary"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+            >
+                <VStack px={4} space={6}>
+                    {/* Vision Card */}
+                    <VisionCard
+                        title={mockVision.title}
+                        description={mockVision.description}
+                        tags={mockVision.tags}
+                        onEditPress={() => console.log('Edit vision pressed')}
+                    />
 
-                                    <Icon
-                                        as={Ionicons}
-                                        name="chevron-forward"
-                                        color={goal.current ? 'white' : 'gray.400'}
-                                        size="md"
-                                    />
-                                </HStack>
+                    {/* Timeline connector */}
+                    <Box
+                        position="absolute"
+                        left={6}
+                        top={200}
+                        bottom={0}
+                        w={0.5}
+                        bg="border.default"
+                    />
 
-                                {goal.current && goal.progress > 0 && (
-                                    <Box mt={4}>
-                                        <HStack justifyContent="space-between" mb={1}>
-                                            <Text color="white" fontSize="xs" opacity={0.8}>
-                                                Progresso
-                                            </Text>
-                                            <Text color="white" fontSize="xs" fontWeight="bold">
-                                                {goal.progress}%
-                                            </Text>
-                                        </HStack>
-                                        <Box bg="brand.400" h={2} borderRadius="full">
-                                            <Box
-                                                bg="white"
-                                                h={2}
-                                                borderRadius="full"
-                                                w={`${goal.progress}%`}
-                                            />
-                                        </Box>
-                                    </Box>
-                                )}
-                            </Box>
-                        </Pressable>
-                    ))}
+                    {/* Milestones */}
+                    <VStack space={6}>
+                        {mockMilestones.map((milestone) => (
+                            <MilestoneCard
+                                key={milestone.yearNumber}
+                                yearNumber={milestone.yearNumber}
+                                phase={milestone.phase}
+                                title={milestone.title}
+                                revenue={milestone.revenue}
+                                isActive={milestone.isActive}
+                                showQuarters={milestone.showQuarters}
+                                quarters={milestone.quarters}
+                                progress={milestone.progress}
+                                icon={milestone.icon}
+                                onPress={() => handleMilestonePress(milestone)}
+                            />
+                        ))}
+                    </VStack>
                 </VStack>
             </ScrollView>
         </SafeAreaView>

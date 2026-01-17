@@ -1,174 +1,148 @@
 import React from 'react';
-import { Box, VStack, HStack, Heading, Text, ScrollView, Pressable, Progress, Icon } from 'native-base';
+import { Box, VStack, HStack, Text, ScrollView, Pressable } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuthStore } from '../../store/authStore';
+import { UserHeader, EnergyCore, PriorityMission, TaskCard, AIInsight } from '../../components/home';
+import {
+    ReviewSocialAdsIcon,
+    FollowUp5LeadsIcon,
+    SprintPlanningIcon,
+} from '../../components/icons/TaskIcons';
+import { HomeStackParamList } from '../../navigation/MainNavigator';
+
+type HomeScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList, 'HomeMain'>;
 
 export function HomeScreen() {
     const { user } = useAuthStore();
+    const navigation = useNavigation<HomeScreenNavigationProp>();
 
     // Mock data - will be replaced with API calls
-    const mockStats = {
-        level: 1,
-        xp: 150,
-        xpToNext: 250,
-        streak: 5,
-        tasksToday: 3,
-        tasksCompleted: 1,
+    const mockUserData = {
+        name: user?.fullName?.split(' ')[0] || 'Patrick',
+        status: 'Premium status',
+        level: 24,
+        streak: 12,
+        avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
+    };
+
+    const mockEnergyData = {
+        currentXP: 750,
+        maxXP: 1000,
+        efficiency: 75,
+    };
+
+    const mockMissionData = {
+        badge: 'Foco da semana',
+        title: 'Lançar MVP do projeto X',
+        subtitle: 'Finalizar testes de integração e deploy',
+        progress: 80,
+        timeRemaining: '02:15:00',
     };
 
     const mockTasks = [
-        { id: '1', title: 'Pesquisar 10 nichos de interesse', completed: true, xp: 10 },
-        { id: '2', title: 'Analisar 3 concorrentes principais', completed: false, xp: 15 },
-        { id: '3', title: 'Definir proposta de valor única', completed: false, xp: 20 },
+        {
+            id: '1',
+            title: 'Revisar Social Ads',
+            category: 'Marketing',
+            icon: <ReviewSocialAdsIcon size={24} color="#9CA3AF" />,
+            completed: false,
+        },
+        {
+            id: '2',
+            title: 'Follow-up 5 Leads',
+            category: 'Vendas',
+            icon: <FollowUp5LeadsIcon size={24} color="#9CA3AF" />,
+            completed: false,
+        },
+        {
+            id: '3',
+            title: 'Sprint Planning',
+            category: 'Vendas',
+            icon: <SprintPlanningIcon size={22} color="#9CA3AF" />,
+            completed: true,
+        },
     ];
 
-    const getGreeting = () => {
-        const hour = new Date().getHours();
-        if (hour < 12) return 'Bom dia';
-        if (hour < 18) return 'Boa tarde';
-        return 'Boa noite';
+    const mockInsight = {
+        message: 'Você está 15% mais produtivo que na semana passada. Focar em tarefas de alto impacto pela manhã está funcionando!',
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFBFC' }}>
-            <ScrollView flex={1} bg="background.secondary">
-                {/* Header */}
-                <Box px={5} pt={4} pb={6} bg="white">
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <VStack>
-                            <Text color="text.secondary" fontSize="sm">
-                                {getGreeting()},
-                            </Text>
-                            <Heading size="lg" color="text.primary">
-                                {user?.fullName?.split(' ')[0] || 'Empreendedor'}!
-                            </Heading>
-                        </VStack>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
+            <StatusBar style="light" />
+            <ScrollView
+                flex={1}
+                bg="background.primary"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 100 }}
+            >
+                <VStack px={4} pt={4} space={5}>
+                    {/* User Header */}
+                    <UserHeader
+                        userName={mockUserData.name}
+                        userStatus={mockUserData.status}
+                        level={mockUserData.level}
+                        streak={mockUserData.streak}
+                        avatarUrl={mockUserData.avatarUrl}
+                        onAvatarPress={() => navigation.navigate('UserProfile')}
+                    />
 
-                        {/* Level Badge */}
-                        <Box
-                            bg="brand.500"
-                            px={4}
-                            py={2}
-                            borderRadius="full"
-                        >
-                            <HStack space={2} alignItems="center">
-                                <Icon as={Ionicons} name="star" color="yellow.400" size="sm" />
-                                <Text color="white" fontWeight="bold">
-                                    Nível {mockStats.level}
-                                </Text>
-                            </HStack>
-                        </Box>
-                    </HStack>
+                    {/* Energy Core */}
+                    <EnergyCore
+                        currentXP={mockEnergyData.currentXP}
+                        maxXP={mockEnergyData.maxXP}
+                        efficiency={mockEnergyData.efficiency}
+                    />
 
-                    {/* XP Progress */}
-                    <Box mt={4}>
-                        <HStack justifyContent="space-between" mb={1}>
-                            <Text fontSize="xs" color="text.secondary">
-                                {mockStats.xp} / {mockStats.xpToNext} XP
-                            </Text>
-                            <HStack space={1} alignItems="center">
-                                <Icon as={Ionicons} name="flame" color="orange.500" size="xs" />
-                                <Text fontSize="xs" color="orange.500" fontWeight="bold">
-                                    {mockStats.streak} dias
-                                </Text>
-                            </HStack>
-                        </HStack>
-                        <Progress
-                            value={(mockStats.xp / mockStats.xpToNext) * 100}
-                            colorScheme="amber"
-                            bg="gray.200"
-                        />
-                    </Box>
-                </Box>
-
-                {/* Tasks Section */}
-                <Box px={5} mt={4}>
-                    <HStack justifyContent="space-between" alignItems="center" mb={3}>
-                        <Heading size="md" color="text.primary">
-                            Tarefas de Hoje
-                        </Heading>
-                        <Text color="brand.500" fontWeight="medium">
-                            {mockStats.tasksCompleted}/{mockStats.tasksToday}
-                        </Text>
-                    </HStack>
-
+                    {/* Priority Mission Section */}
                     <VStack space={3}>
-                        {mockTasks.map((task) => (
-                            <Pressable key={task.id}>
-                                <Box
-                                    bg="white"
-                                    p={4}
-                                    borderRadius="xl"
-                                    borderWidth={task.completed ? 2 : 1}
-                                    borderColor={task.completed ? 'success.primary' : 'border.default'}
-                                >
-                                    <HStack space={3} alignItems="center">
-                                        <Box
-                                            w={6}
-                                            h={6}
-                                            borderRadius="md"
-                                            borderWidth={2}
-                                            borderColor={task.completed ? 'success.primary' : 'gray.300'}
-                                            bg={task.completed ? 'success.primary' : 'transparent'}
-                                            justifyContent="center"
-                                            alignItems="center"
-                                        >
-                                            {task.completed && (
-                                                <Icon as={Ionicons} name="checkmark" color="white" size="xs" />
-                                            )}
-                                        </Box>
-
-                                        <VStack flex={1}>
-                                            <Text
-                                                color={task.completed ? 'text.tertiary' : 'text.primary'}
-                                                strikeThrough={task.completed}
-                                                fontWeight="medium"
-                                            >
-                                                {task.title}
-                                            </Text>
-                                        </VStack>
-
-                                        <Box bg="amber.100" px={2} py={1} borderRadius="md">
-                                            <Text fontSize="xs" color="amber.700" fontWeight="bold">
-                                                +{task.xp} XP
-                                            </Text>
-                                        </Box>
-                                    </HStack>
-                                </Box>
-                            </Pressable>
-                        ))}
+                        <Text color="text.primary" fontSize="lg" fontWeight="semibold">
+                            Missão Prioritária
+                        </Text>
+                        <PriorityMission
+                            badge={mockMissionData.badge}
+                            title={mockMissionData.title}
+                            subtitle={mockMissionData.subtitle}
+                            progress={mockMissionData.progress}
+                            timeRemaining={mockMissionData.timeRemaining}
+                            onPress={() => console.log('Mission pressed')}
+                            onMenuPress={() => console.log('Menu pressed')}
+                        />
                     </VStack>
-                </Box>
 
-                {/* Quick Stats */}
-                <Box px={5} mt={6} mb={8}>
-                    <Heading size="md" color="text.primary" mb={3}>
-                        Seu Progresso
-                    </Heading>
+                    {/* Tasks Section */}
+                    <VStack space={3}>
+                        <HStack justifyContent="space-between" alignItems="center">
+                            <Text color="text.primary" fontSize="lg" fontWeight="semibold">
+                                Suas Tarefas
+                            </Text>
+                            <Pressable>
+                                <Text color="accent.400" fontSize="sm" fontWeight="medium">
+                                    Expandir
+                                </Text>
+                            </Pressable>
+                        </HStack>
 
-                    <HStack space={3}>
-                        <Box flex={1} bg="brand.50" p={4} borderRadius="xl" borderWidth={1} borderColor="brand.100">
-                            <Icon as={Ionicons} name="checkmark-circle" color="brand.500" size="md" />
-                            <Text color="brand.600" fontWeight="bold" fontSize="2xl" mt={2}>
-                                {mockStats.tasksCompleted}
-                            </Text>
-                            <Text color="brand.500" fontSize="xs">
-                                Tarefas hoje
-                            </Text>
-                        </Box>
+                        <VStack space={2}>
+                            {mockTasks.map((task) => (
+                                <TaskCard
+                                    key={task.id}
+                                    icon={task.icon}
+                                    title={task.title}
+                                    category={task.category}
+                                    isCompleted={task.completed}
+                                    onPress={() => console.log(`Task ${task.id} pressed`)}
+                                />
+                            ))}
+                        </VStack>
+                    </VStack>
 
-                        <Box flex={1} bg="orange.50" p={4} borderRadius="xl" borderWidth={1} borderColor="orange.100">
-                            <Icon as={Ionicons} name="flame" color="orange.500" size="md" />
-                            <Text color="orange.600" fontWeight="bold" fontSize="2xl" mt={2}>
-                                {mockStats.streak}
-                            </Text>
-                            <Text color="orange.500" fontSize="xs">
-                                Dias de streak
-                            </Text>
-                        </Box>
-                    </HStack>
-                </Box>
+                    {/* AI Insight */}
+                    <AIInsight message={mockInsight.message} />
+                </VStack>
             </ScrollView>
         </SafeAreaView>
     );

@@ -1,121 +1,191 @@
-import React from 'react';
-import { Box, VStack, HStack, Heading, Text, ScrollView, Pressable, Avatar, Icon, Fab } from 'native-base';
+import React, { useState } from 'react';
+import { Box, VStack, HStack, Text, ScrollView, Pressable } from 'native-base';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
+import { BellIcon } from '../../components/icons/NavIcons';
+import { TopPodium, LeaderboardRow, CurrentUserCard } from '../../components/hall-of-fame';
+import Svg, { Path } from 'react-native-svg';
+
+// Trophy icon
+const TrophyIcon = ({ color = '#33CFFF', size = 24 }: { color?: string; size?: number }) => (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M8 21H16M12 17V21M6 4H18M6 4C6 4 4 4 4 6C4 8 4 10 6 10M6 4V10M18 4C18 4 20 4 20 6C20 8 20 10 18 10M18 4V10M6 10C6 10 6 14 12 17M6 10H18M18 10C18 10 18 14 12 17"
+            stroke={color}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill={color}
+        />
+    </Svg>
+);
+
+// Arrow down icon
+const ArrowDownIcon = ({ color = '#33CFFF', size = 16 }: { color?: string; size?: number }) => (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <Path
+            d="M6 9L12 15L18 9"
+            stroke={color}
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
 
 export function HallOfFameScreen() {
-    const mockPosts = [
+    const [showMore, setShowMore] = useState(false);
+
+    // Mock data - will be replaced with API calls
+    const mockTopUsers = [
         {
             id: '1',
-            user: { name: 'João Silva', level: 3, avatar: null },
-            type: 'milestone',
-            content: 'Consegui meus primeiros 10 clientes! 🎉 Muito feliz com o progresso dessa semana.',
-            likes: 24,
-            createdAt: '2h atrás',
+            name: 'Matheus',
+            avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+            level: 50,
+            rank: 1 as const,
+            title: 'ELITE LVL 50',
         },
         {
             id: '2',
-            user: { name: 'Maria Santos', level: 5, avatar: null },
-            type: 'reflection',
-            content: 'Aprendizado da semana: consistência é mais importante que perfeição. Comecei a acordar 5h todos os dias e minha produtividade triplicou.',
-            likes: 45,
-            createdAt: '5h atrás',
+            name: 'Lucas M.',
+            avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
+            level: 42,
+            rank: 2 as const,
         },
         {
             id: '3',
-            user: { name: 'Pedro Costa', level: 2, avatar: null },
-            type: 'achievement',
-            content: 'Desbloqueei o achievement "Guerreiro Semanal"! 7 dias de streak 🔥',
-            likes: 18,
-            createdAt: '1d atrás',
+            name: 'Márcio P.',
+            avatar: 'https://randomuser.me/api/portraits/men/67.jpg',
+            level: 38,
+            rank: 3 as const,
         },
     ];
 
-    const getTypeIcon = (type: string) => {
-        switch (type) {
-            case 'milestone': return 'flag';
-            case 'reflection': return 'bulb';
-            case 'achievement': return 'trophy';
-            default: return 'chatbubble';
-        }
-    };
+    const mockLeaderboard = [
+        {
+            id: '4',
+            rank: 4,
+            name: 'Ricardo Silva',
+            avatar: 'https://randomuser.me/api/portraits/men/22.jpg',
+            streakDays: 12,
+            xp: 12450,
+        },
+        {
+            id: '5',
+            rank: 5,
+            name: 'Ana Clara',
+            avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+            streakDays: 8,
+            xp: 12450,
+        },
+        {
+            id: '6',
+            rank: 6,
+            name: 'Pedro Henrique',
+            avatar: 'https://randomuser.me/api/portraits/men/55.jpg',
+            streakDays: 0,
+            xp: 12450,
+        },
+        {
+            id: '7',
+            rank: 7,
+            name: 'Juliana G.',
+            avatar: 'https://randomuser.me/api/portraits/women/33.jpg',
+            streakDays: 24,
+            xp: 12450,
+        },
+    ];
 
-    const getTypeColor = (type: string) => {
-        switch (type) {
-            case 'milestone': return 'brand.500';
-            case 'reflection': return 'purple.500';
-            case 'achievement': return 'amber.500';
-            default: return 'gray.500';
-        }
+    const mockCurrentUser = {
+        rank: 7,
+        name: 'Você',
+        avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
+        streakDays: 24,
+        xp: 12450,
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFBFC' }}>
-            <Box flex={1} bg="background.secondary">
-                <Box px={5} pt={4} pb={4}>
-                    <Heading size="xl" color="text.primary">
-                        Hall da Fama
-                    </Heading>
-                    <Text color="text.secondary" mt={1}>
-                        Inspire-se com outros empreendedores
-                    </Text>
+        <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
+            <StatusBar style="light" />
+
+            {/* Header */}
+            <HStack
+                alignItems="center"
+                justifyContent="space-between"
+                px={4}
+                py={3}
+                w="100%"
+            >
+                {/* Trophy Icon */}
+                <Box p={2}>
+                    <TrophyIcon size={24} color="#33CFFF" />
                 </Box>
 
-                <ScrollView flex={1} px={5}>
-                    <VStack space={4} mb={20}>
-                        {mockPosts.map((post) => (
-                            <Box
-                                key={post.id}
-                                bg="white"
-                                p={5}
-                                borderRadius="2xl"
-                                borderLeftWidth={4}
-                                borderLeftColor={getTypeColor(post.type)}
-                            >
-                                <HStack space={3} alignItems="center" mb={3}>
-                                    <Avatar bg="brand.500" size="sm">
-                                        {post.user.name[0]}
-                                    </Avatar>
-                                    <VStack flex={1}>
-                                        <Text color="text.primary" fontWeight="bold">
-                                            {post.user.name}
-                                        </Text>
-                                        <HStack space={1} alignItems="center">
-                                            <Icon as={Ionicons} name="star" color="amber.500" size="xs" />
-                                            <Text color="text.secondary" fontSize="xs">
-                                                Nível {post.user.level} • {post.createdAt}
-                                            </Text>
-                                        </HStack>
-                                    </VStack>
-                                    <Icon as={Ionicons} name={getTypeIcon(post.type)} color={getTypeColor(post.type)} size="sm" />
-                                </HStack>
+                {/* Title */}
+                <Text color="text.primary" fontSize="lg" fontWeight="semibold">
+                    Hall da Fama
+                </Text>
 
-                                <Text color="text.primary" lineHeight="lg">
-                                    {post.content}
-                                </Text>
+                {/* Bell Button */}
+                <Pressable
+                    onPress={() => console.log('Notifications pressed')}
+                    p={2}
+                    borderRadius="full"
+                    _pressed={{ opacity: 0.7 }}
+                >
+                    <BellIcon size={24} color="#33CFFF" />
+                </Pressable>
+            </HStack>
 
-                                <HStack mt={4} alignItems="center">
-                                    <Pressable>
-                                        <HStack space={2} alignItems="center">
-                                            <Icon as={Ionicons} name="heart-outline" color="gray.400" size="sm" />
-                                            <Text color="text.secondary" fontSize="sm">
-                                                {post.likes}
-                                            </Text>
-                                        </HStack>
-                                    </Pressable>
-                                </HStack>
-                            </Box>
+            <ScrollView
+                flex={1}
+                bg="background.primary"
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ paddingBottom: 140 }}
+            >
+                <VStack px={4} space={5}>
+                    {/* Top 3 Podium */}
+                    <Box mt={4}>
+                        <TopPodium users={mockTopUsers} />
+                    </Box>
+
+                    {/* Leaderboard */}
+                    <VStack space={3}>
+                        {mockLeaderboard.map((user) => (
+                            <LeaderboardRow
+                                key={user.id}
+                                user={user}
+                                onPress={() => console.log(`User ${user.id} pressed`)}
+                            />
                         ))}
                     </VStack>
-                </ScrollView>
 
-                <Fab
-                    renderInPortal={false}
-                    shadow={4}
-                    size="lg"
-                    bg="brand.500"
-                    icon={<Icon as={Ionicons} name="add" color="white" size="lg" />}
-                    onPress={() => console.log('Create post')}
+                    {/* Ver mais button */}
+                    <Pressable onPress={() => setShowMore(!showMore)}>
+                        <HStack justifyContent="center" alignItems="center" space={1} py={2}>
+                            <Text color="accent.400" fontSize="sm" fontWeight="medium">
+                                Ver mais
+                            </Text>
+                            <ArrowDownIcon size={16} color="#33CFFF" />
+                        </HStack>
+                    </Pressable>
+                </VStack>
+            </ScrollView>
+
+            {/* Current User Card - Sticky Bottom */}
+            <Box
+                position="absolute"
+                bottom={80}
+                left={0}
+                right={0}
+            >
+                <CurrentUserCard
+                    rank={mockCurrentUser.rank}
+                    name={mockCurrentUser.name}
+                    avatar={mockCurrentUser.avatar}
+                    streakDays={mockCurrentUser.streakDays}
+                    xp={mockCurrentUser.xp}
                 />
             </Box>
         </SafeAreaView>
