@@ -4,11 +4,8 @@
         "slug": "execut",
         "version": "1.0.0",
         "orientation": "portrait",
-        "icon": "./assets/icon.png",
         "userInterfaceStyle": "automatic",
         "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "contain",
             "backgroundColor": "#131F54"
         },
         "assetBundlePatterns": [
@@ -19,15 +16,12 @@
             "bundleIdentifier": "com.execut.app"
         },
         "android": {
+            "package": "com.execut.app",
             "adaptiveIcon": {
-                "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#131F54"
-            },
-            "package": "com.execut.app"
+            }
         },
-        "web": {
-            "favicon": "./assets/favicon.png"
-        },
+        "web": {},
         "plugins": [
             "expo-secure-store",
             "expo-local-authentication"

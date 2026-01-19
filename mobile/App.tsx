@@ -1,11 +1,10 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NativeBaseProvider } from 'native-base';
+import { NativeBaseProvider, theme } from './src/components/ui';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { RootNavigator } from './navigation/RootNavigator';
-import { theme } from './theme';
+import { RootNavigator } from './src/navigation/RootNavigator';
 
 const queryClient = new QueryClient({
     defaultOptions: {

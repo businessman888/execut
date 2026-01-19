@@ -19,6 +19,8 @@ module.exports = function (api) {
                         '@types': './src/types',
                         '@utils': './src/utils',
                         '@constants': './src/constants',
+                        // Redirect native-base to our custom UI components
+                        'native-base': './src/components/ui/index',
                     },
                 },
             ],
