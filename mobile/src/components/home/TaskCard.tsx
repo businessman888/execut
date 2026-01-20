@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import { ChevronRightIcon, CheckmarkIcon } from '../icons/TaskIcons';
 
 interface TaskCardProps {

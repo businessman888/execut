@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Image } from 'native-base';
+import { Box, HStack, VStack, Text, Image } from '../ui';
 import Svg, { Path } from 'react-native-svg';
 
 interface CurrentUserCardProps {

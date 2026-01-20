@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable, Image } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable, Image } from '../ui';
 import Svg, { Path, Rect } from 'react-native-svg';
 
 type MentalCardStatus = 'active' | 'available' | 'locked';

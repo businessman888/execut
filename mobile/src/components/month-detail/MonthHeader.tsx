@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import Svg, { Path } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 

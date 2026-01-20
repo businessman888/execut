@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text } from 'native-base';
+import { Box, HStack, VStack, Text } from '../ui';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 interface ScoreCardProps {
@@ -44,10 +44,10 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
         >
             <HStack justifyContent="space-between" alignItems="center">
                 <VStack>
-                    <Text color="text.secondary" fontSize="sm" mb="5px">
+                    <Text color="text.secondary" fontSize="sm" mb={1}>
                         Score de execução
                     </Text>
-                    <Text color="text.primary" fontSize="4xl" fontWeight="bold" mb="5px">
+                    <Text color="text.primary" fontSize="4xl" fontWeight="bold" mb={1}>
                         {score}%
                     </Text>
                     <Text color="#00B050" fontSize="sm" fontWeight="semibold">

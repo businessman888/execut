@@ -15,6 +15,7 @@ import {
     TextStyle,
     ImageStyle,
     TouchableOpacity,
+    DimensionValue,
 } from 'react-native';
 
 // Theme context
@@ -141,18 +142,43 @@ interface BoxProps {
     h?: number | string;
     width?: number | string;
     height?: number | string;
+    minW?: number | string;
+    minH?: number | string;
+    maxW?: number | string;
+    maxH?: number | string;
+    minWidth?: number | string;
+    minHeight?: number | string;
+    maxWidth?: number | string;
+    maxHeight?: number | string;
     flex?: number;
+    flexWrap?: ViewStyle['flexWrap'];
+    flexGrow?: number;
+    flexShrink?: number;
     borderRadius?: number | string;
     rounded?: string | number;
+    borderTopLeftRadius?: number;
+    borderTopRightRadius?: number;
+    borderBottomLeftRadius?: number;
+    borderBottomRightRadius?: number;
     borderWidth?: number;
     borderColor?: string;
+    borderLeftWidth?: number;
+    borderRightWidth?: number;
+    borderTopWidth?: number;
+    borderBottomWidth?: number;
+    borderLeftColor?: string;
+    borderRightColor?: string;
+    borderTopColor?: string;
+    borderBottomColor?: string;
     alignItems?: ViewStyle['alignItems'];
     justifyContent?: ViewStyle['justifyContent'];
+    alignSelf?: ViewStyle['alignSelf'];
     position?: ViewStyle['position'];
     top?: number;
     bottom?: number;
     left?: number;
     right?: number;
+    zIndex?: number;
     overflow?: ViewStyle['overflow'];
     opacity?: number;
     shadow?: number;
@@ -223,19 +249,40 @@ const buildBoxStyle = (props: BoxProps): ViewStyle => ({
     marginBottom: resolveSpacing(props.mb),
     marginLeft: resolveSpacing(props.ml),
     marginRight: resolveSpacing(props.mr),
-    width: props.w || props.width,
-    height: props.h || props.height,
+    width: (props.w || props.width) as DimensionValue | undefined,
+    height: (props.h || props.height) as DimensionValue | undefined,
+    minWidth: (props.minW || props.minWidth) as DimensionValue | undefined,
+    minHeight: (props.minH || props.minHeight) as DimensionValue | undefined,
+    maxWidth: (props.maxW || props.maxWidth) as DimensionValue | undefined,
+    maxHeight: (props.maxH || props.maxHeight) as DimensionValue | undefined,
     flex: props.flex,
+    flexWrap: props.flexWrap,
+    flexGrow: props.flexGrow,
+    flexShrink: props.flexShrink,
     borderRadius: resolveRounded(props.rounded) ?? resolveRounded(props.borderRadius),
+    borderTopLeftRadius: props.borderTopLeftRadius,
+    borderTopRightRadius: props.borderTopRightRadius,
+    borderBottomLeftRadius: props.borderBottomLeftRadius,
+    borderBottomRightRadius: props.borderBottomRightRadius,
     borderWidth: props.borderWidth,
     borderColor: resolveColor(props.borderColor),
+    borderLeftWidth: props.borderLeftWidth,
+    borderRightWidth: props.borderRightWidth,
+    borderTopWidth: props.borderTopWidth,
+    borderBottomWidth: props.borderBottomWidth,
+    borderLeftColor: resolveColor(props.borderLeftColor),
+    borderRightColor: resolveColor(props.borderRightColor),
+    borderTopColor: resolveColor(props.borderTopColor),
+    borderBottomColor: resolveColor(props.borderBottomColor),
     alignItems: props.alignItems,
     justifyContent: props.justifyContent,
+    alignSelf: props.alignSelf,
     position: props.position,
     top: props.top,
     bottom: props.bottom,
     left: props.left,
     right: props.right,
+    zIndex: props.zIndex,
     overflow: props.overflow,
     opacity: props.opacity,
 });
@@ -316,6 +363,7 @@ interface TextProps {
     numberOfLines?: number;
     lineHeight?: number;
     letterSpacing?: number;
+    opacity?: number;
     mt?: number;
     mb?: number;
     ml?: number;
@@ -354,6 +402,7 @@ export const Text: React.FC<TextProps> = ({
     numberOfLines,
     lineHeight,
     letterSpacing,
+    opacity,
     mt,
     mb,
     ml,
@@ -373,6 +422,7 @@ export const Text: React.FC<TextProps> = ({
                 textAlign,
                 lineHeight,
                 letterSpacing,
+                opacity,
                 marginTop: resolveSpacing(mt),
                 marginBottom: resolveSpacing(mb),
                 marginLeft: resolveSpacing(ml) || resolveSpacing(mx),
@@ -565,8 +615,16 @@ interface InputProps {
     variant?: 'outline' | 'filled' | 'underlined';
     size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
     w?: number | string;
+    flex?: number;
     mt?: number;
     mb?: number;
+    bg?: string;
+    borderWidth?: number;
+    borderRadius?: number | string;
+    color?: string;
+    px?: number;
+    py?: number;
+    // Note: _focus is not supported in pure React Native
 }
 
 export const Input: React.FC<InputProps> = ({
@@ -585,19 +643,27 @@ export const Input: React.FC<InputProps> = ({
     variant = 'outline',
     size = 'md',
     w,
+    flex,
     mt,
     mb,
+    bg,
+    borderWidth: customBorderWidth,
+    borderRadius: customBorderRadius,
+    color,
+    px,
+    py,
 }) => (
     <View
         style={{
             flexDirection: 'row',
             alignItems: 'center',
-            borderWidth: variant === 'outline' ? 1 : 0,
+            flex: flex,
+            borderWidth: customBorderWidth !== undefined ? customBorderWidth : (variant === 'outline' ? 1 : 0),
             borderColor: isInvalid ? theme.colors.error.primary : theme.colors.border.default,
-            borderRadius: 8,
-            backgroundColor: variant === 'filled' ? theme.colors.surface.secondary : 'transparent',
+            borderRadius: resolveRounded(customBorderRadius) || 8,
+            backgroundColor: resolveColor(bg) || (variant === 'filled' ? theme.colors.surface.secondary : 'transparent'),
             borderBottomWidth: variant === 'underlined' ? 1 : undefined,
-            width: w,
+            width: w as DimensionValue | undefined,
             marginTop: resolveSpacing(mt),
             marginBottom: resolveSpacing(mb),
         }}
@@ -607,7 +673,7 @@ export const Input: React.FC<InputProps> = ({
             value={value}
             onChangeText={onChangeText}
             placeholder={placeholder}
-            placeholderTextColor={placeholderTextColor || theme.colors.text.tertiary}
+            placeholderTextColor={resolveColor(placeholderTextColor) || theme.colors.text.tertiary}
             secureTextEntry={secureTextEntry}
             keyboardType={keyboardType}
             autoCapitalize={autoCapitalize}
@@ -615,9 +681,9 @@ export const Input: React.FC<InputProps> = ({
             style={[
                 {
                     flex: 1,
-                    color: theme.colors.text.primary,
-                    paddingHorizontal: 12,
-                    paddingVertical: size === 'lg' ? 16 : size === 'sm' ? 8 : 12,
+                    color: resolveColor(color) || theme.colors.text.primary,
+                    paddingHorizontal: resolveSpacing(px) || 12,
+                    paddingVertical: resolveSpacing(py) || (size === 'lg' ? 16 : size === 'sm' ? 8 : 12),
                     fontSize: size === 'lg' ? 18 : size === 'sm' ? 14 : 16,
                 },
                 style,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import { Image as RNImage } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -79,8 +79,7 @@ export const HabitItem: React.FC<HabitItemProps> = ({
                     flex={1}
                     alignItems="center"
                     justifyContent="space-between"
-                    pl="20px"
-                    pr="17px"
+                    px={5}
                     zIndex={1}
                 >
                     <Text
@@ -88,8 +87,7 @@ export const HabitItem: React.FC<HabitItemProps> = ({
                         fontSize="md"
                         fontWeight="semibold"
                         numberOfLines={1}
-                        flex={1}
-                        mr={2}
+                        style={{ flex: 1, marginRight: 16 }}
                     >
                         {title}
                     </Text>

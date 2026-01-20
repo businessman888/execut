@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 import { TimerIcon, ThreeDotsIcon, LightningBoltIcon } from '../icons/TaskIcons';

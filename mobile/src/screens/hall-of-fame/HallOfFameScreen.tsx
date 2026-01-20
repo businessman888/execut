@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, VStack, HStack, Text, ScrollView, Pressable } from 'native-base';
+import { Box, VStack, HStack, Text, ScrollView, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { BellIcon } from '../../components/icons/NavIcons';

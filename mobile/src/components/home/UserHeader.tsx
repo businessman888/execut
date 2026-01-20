@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Image, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Image, Pressable } from '../ui';
 import { FireIcon } from '../icons/TaskIcons';
 
 interface UserHeaderProps {

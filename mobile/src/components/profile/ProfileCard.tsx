@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Image } from 'native-base';
+import { Box, HStack, VStack, Text } from '../ui';
+import { Image as RNImage, View } from 'react-native';
 import Svg, { Path, Circle } from 'react-native-svg';
 
 interface ProfileCardProps {
@@ -11,18 +12,26 @@ interface ProfileCardProps {
     topPercent?: number;
 }
 
-// Verified badge icon
-const VerifiedIcon = ({ size = 20 }: { size?: number }) => (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-        <Circle cx={12} cy={12} r={10} fill="#33CFFF" />
-        <Path
-            d="M8 12L11 15L16 9"
-            stroke="#0D0D0D"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </Svg>
+// Verified badge icon (checkmark in circle)
+const VerifiedBadge = ({ size = 24 }: { size?: number }) => (
+    <View style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        backgroundColor: '#33CFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    }}>
+        <Svg width={size * 0.6} height={size * 0.6} viewBox="0 0 24 24" fill="none">
+            <Path
+                d="M5 12L10 17L19 8"
+                stroke="#0D0D0D"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+        </Svg>
+    </View>
 );
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
@@ -33,53 +42,66 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
     isTopPercent = false,
     topPercent = 1,
 }) => {
+    const avatarSize = 70;
+
     return (
         <HStack space={4} alignItems="center">
             {/* Avatar with verified badge */}
             <Box position="relative">
-                <Image
-                    source={{ uri: avatar }}
-                    alt={name}
-                    size={20}
-                    borderRadius="full"
+                <Box
+                    w={avatarSize}
+                    h={avatarSize}
+                    borderRadius={avatarSize / 2}
                     borderWidth={2}
-                    borderColor="accent.400"
-                    bg="gray.600"
-                />
-                <Box position="absolute" bottom={0} right={0}>
-                    <VerifiedIcon size={24} />
+                    borderColor="#33CFFF"
+                    overflow="hidden"
+                    bg="#1A1A1A"
+                >
+                    {avatar && (
+                        <RNImage
+                            source={{ uri: avatar }}
+                            style={{
+                                width: avatarSize - 4,
+                                height: avatarSize - 4,
+                                borderRadius: (avatarSize - 4) / 2,
+                            }}
+                            resizeMode="cover"
+                        />
+                    )}
+                </Box>
+                {/* Verified badge positioned at bottom-right */}
+                <Box position="absolute" bottom={-2} right={-2}>
+                    <VerifiedBadge size={24} />
                 </Box>
             </Box>
 
             {/* Info */}
             <VStack>
-                <Text color="text.primary" fontSize="xl" fontWeight="bold">
+                <Text color="#FFFFFF" fontSize={20} fontWeight="bold">
                     {name}
                 </Text>
-                <Text color="text.tertiary" fontSize="sm">
+                <Text color="#9CA3AF" fontSize={14} mb={2}>
                     {role}
                 </Text>
-                <HStack space={2} mt={1}>
+                <HStack space={2}>
                     <Box
-                        borderWidth={1}
-                        borderColor="accent.400"
-                        borderRadius="full"
+                        bg="#33CFFF"
+                        borderRadius={20}
                         px={3}
-                        py={0.5}
+                        py={1}
                     >
-                        <Text color="accent.400" fontSize="xs" fontWeight="medium">
+                        <Text color="#0D0D0D" fontSize={12} fontWeight="bold">
                             LVL {level}
                         </Text>
                     </Box>
                     {isTopPercent && (
                         <Box
-                            borderWidth={1}
-                            borderColor="accent.400"
-                            borderRadius="full"
+                            bg="#33CFFF"
+                            borderRadius={20}
                             px={3}
-                            py={0.5}
+                            py={1}
                         >
-                            <Text color="accent.400" fontSize="xs" fontWeight="medium">
+                            <Text color="#0D0D0D" fontSize={12} fontWeight="bold">
                                 TOP {topPercent}%
                             </Text>
                         </Box>

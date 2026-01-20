@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text } from 'native-base';
+import { Box, HStack, VStack, Text } from '../ui';
 import Svg, { Circle, G } from 'react-native-svg';
 
 interface FocusItem {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import Svg, { Path, Circle, Rect, G, Mask } from 'react-native-svg';
 
 interface Milestone {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Image, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Image, Pressable } from '../ui';
 import Svg, { Path } from 'react-native-svg';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -50,10 +50,14 @@ export const MindsetHeader: React.FC<MindsetHeaderProps> = ({
                 {/* Avatar */}
                 <Pressable onPress={onAvatarPress} _pressed={{ opacity: 0.7 }}>
                     <Box
-                        borderRadius="full"
+                        w={50}
+                        h={50}
+                        borderRadius={25}
                         borderWidth={2}
                         borderColor="accent.400"
-                        p={0.5}
+                        overflow="hidden"
+                        alignItems="center"
+                        justifyContent="center"
                     >
                         {avatar ? (
                             <Image
@@ -61,13 +65,14 @@ export const MindsetHeader: React.FC<MindsetHeaderProps> = ({
                                 alt="Avatar"
                                 w={46}
                                 h={46}
-                                borderRadius="full"
+                                borderRadius={23}
+                                style={{ borderRadius: 23 }}
                             />
                         ) : (
                             <Box
                                 w={46}
                                 h={46}
-                                borderRadius="full"
+                                borderRadius={23}
                                 bg="surface.secondary"
                                 alignItems="center"
                                 justifyContent="center"

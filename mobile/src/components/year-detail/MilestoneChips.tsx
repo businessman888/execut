@@ -1,4 +1,4 @@
-import { Box, HStack, Text, Pressable, ScrollView } from 'native-base';
+import { Box, HStack, Text, Pressable, ScrollView } from '../ui';
 import Svg, { Circle } from 'react-native-svg';
 import { CheckBlueIcon } from '../icons/NavIcons';
 

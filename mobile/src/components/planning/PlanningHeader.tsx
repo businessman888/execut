@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, Text, Pressable } from 'native-base';
+import { Box, HStack, Text, Pressable } from '../ui';
 import { ChevronBackIcon, BellIcon } from '../icons/NavIcons';
 
 interface PlanningHeaderProps {

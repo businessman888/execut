@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text } from 'native-base';
+import { Box, HStack, VStack, Text } from '../ui';
 import Svg, { Path } from 'react-native-svg';
 
 interface StatsCardsProps {

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, HStack, VStack, Text } from 'native-base';
-import { Dimensions } from 'react-native';
+import { Box, HStack, VStack, Text } from '../ui';
+import { View } from 'react-native';
 
 interface ActivityChartProps {
     data: number[];
@@ -8,7 +8,7 @@ interface ActivityChartProps {
     status: string;
 }
 
-const BAR_MAX_HEIGHT = 150;
+const BAR_MAX_HEIGHT = 120;
 
 export const ActivityChart: React.FC<ActivityChartProps> = ({
     data,
@@ -20,48 +20,46 @@ export const ActivityChart: React.FC<ActivityChartProps> = ({
     return (
         <Box
             bg="surface.primary"
-            borderRadius="2xl"
+            borderRadius={16}
             borderWidth={1}
             borderColor="#33CFFF"
             p={5}
-            width="355px"
-            height="243px"
-            justifyContent="space-between"
+            w={355}
+            h={243}
         >
-            <VStack>
-                {/* Header */}
-                <VStack mb="11px">
-                    <Text color="#A0A0A0" fontSize="sm">
-                        Atividade 7 dias
-                    </Text>
-                </VStack>
-                <Text color="#FFFFFF" fontSize="18px" fontWeight="semibold">
-                    Status: <Text color="#33CFFF">{status}</Text>
-                </Text>
+            {/* Header */}
+            <Text color="#A0A0A0" fontSize={14} mb={1}>
+                Atividade 7 dias
+            </Text>
+            <Text color="#FFFFFF" fontSize={18} fontWeight="semibold" mb={4}>
+                Status: <Text color="#33CFFF" fontSize={18} fontWeight="bold">{status}</Text>
+            </Text>
 
-                {/* Chart */}
-                <HStack justifyContent="space-between" alignItems="flex-end" h={BAR_MAX_HEIGHT + 20} mt={4}>
-                    {data.map((value, index) => {
-                        const barHeight = (value / maxValue) * BAR_MAX_HEIGHT;
+            {/* Chart Bars */}
+            <HStack justifyContent="space-between" alignItems="flex-end" h={BAR_MAX_HEIGHT + 30}>
+                {data.map((value, index) => {
+                    const barHeight = Math.max((value / maxValue) * BAR_MAX_HEIGHT, 10);
 
-                        return (
-                            <VStack key={index} alignItems="center" justifyContent="flex-end" h="100%">
-                                <Box
-                                    w="25px"
-                                    h={`${barHeight}px`}
-                                    minH="10px"
-                                    bg="#33CFFF"
-                                    borderRadius={4}
-                                    mb={2}
-                                />
-                                <Text color="#A0A0A0" fontSize="2xs">
-                                    {labels[index]}
-                                </Text>
-                            </VStack>
-                        );
-                    })}
-                </HStack>
-            </VStack>
+                    return (
+                        <VStack key={index} alignItems="center" justifyContent="flex-end" flex={1}>
+                            {/* Bar */}
+                            <View
+                                style={{
+                                    width: 28,
+                                    height: barHeight,
+                                    backgroundColor: '#33CFFF',
+                                    borderRadius: 6,
+                                    marginBottom: 8,
+                                }}
+                            />
+                            {/* Label */}
+                            <Text color="#6B7280" fontSize={12}>
+                                {labels[index]}
+                            </Text>
+                        </VStack>
+                    );
+                })}
+            </HStack>
         </Box>
     );
 };

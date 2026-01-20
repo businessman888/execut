@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import { Box, HStack, VStack, Text, Pressable } from '../ui';
 import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
 import { MoneyBagIcon, CelebrationIcon } from '../icons/NavIcons';
 import { QuarterGrid } from './QuarterGrid';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, HStack, Pressable } from 'native-base';
+import { Box, HStack, Pressable } from '../ui';
 import Svg, { Path, Rect } from 'react-native-svg';
 
 interface ViewToggleProps {

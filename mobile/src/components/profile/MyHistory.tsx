@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, VStack, HStack, Text, Input, Pressable, Image } from 'native-base';
-import Svg, { Path, Circle } from 'react-native-svg';
+import { Box, VStack, HStack, Text, Input, Pressable } from '../ui';
+import Svg, { Path } from 'react-native-svg';
 
 type StoryStatus = 'executado' | 'planejado' | 'reflexão';
 
@@ -12,13 +12,12 @@ interface StoryEntry {
 }
 
 interface MyHistoryProps {
-    avatar?: string;
     entries: StoryEntry[];
     onPost?: (text: string) => void;
 }
 
 // Edit/Pen icon
-const PenIcon = ({ size = 20, color = '#33CFFF' }: { size?: number; color?: string }) => (
+const PenIcon = ({ size = 24, color = '#6B7280' }: { size?: number; color?: string }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
         <Path
             d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13"
@@ -39,23 +38,21 @@ const PenIcon = ({ size = 20, color = '#33CFFF' }: { size?: number; color?: stri
 
 const StatusBadge: React.FC<{ status: StoryStatus }> = ({ status }) => {
     const config = {
-        executado: { label: 'Executado', bg: 'transparent', border: 'accent.400', text: 'accent.400' },
-        planejado: { label: 'Planejado', bg: 'accent.400', border: 'accent.400', text: 'background.primary' },
-        reflexão: { label: 'Reflexão', bg: 'transparent', border: 'accent.400', text: 'accent.400' },
+        executado: { label: 'Executado', bg: '#33CFFF', text: '#0D0D0D' },
+        planejado: { label: 'Planejado', bg: '#33CFFF', text: '#0D0D0D' },
+        reflexão: { label: 'Reflexão', bg: '#33CFFF', text: '#0D0D0D' },
     };
 
-    const { label, bg, border, text } = config[status];
+    const { label, bg, text } = config[status];
 
     return (
         <Box
             bg={bg}
-            borderWidth={1}
-            borderColor={border}
-            borderRadius="full"
+            borderRadius={20}
             px={3}
             py={1}
         >
-            <Text color={text} fontSize="xs" fontWeight="medium">
+            <Text color={text} fontSize={11} fontWeight="bold">
                 {label}
             </Text>
         </Box>
@@ -63,7 +60,6 @@ const StatusBadge: React.FC<{ status: StoryStatus }> = ({ status }) => {
 };
 
 export const MyHistory: React.FC<MyHistoryProps> = ({
-    avatar,
     entries,
     onPost,
 }) => {
@@ -71,35 +67,34 @@ export const MyHistory: React.FC<MyHistoryProps> = ({
 
     return (
         <VStack space={4}>
-            <Text color="text.primary" fontSize="md" fontWeight="semibold">
+            <Text color="#FFFFFF" fontSize={16} fontWeight="semibold">
                 Minha história
             </Text>
 
-            {/* Input Row */}
+            {/* Input Row - Pen icon + Input + Post button */}
             <HStack space={3} alignItems="center">
-                <Image
-                    source={{ uri: avatar }}
-                    alt="Avatar"
-                    size={10}
-                    borderRadius="full"
-                    bg="gray.600"
-                />
+                <Box
+                    w={44}
+                    h={44}
+                    borderRadius={22}
+                    bg="#1F1F1F"
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    <PenIcon size={22} color="#6B7280" />
+                </Box>
                 <Input
                     flex={1}
                     placeholder="progresso de hoje..."
-                    placeholderTextColor="text.tertiary"
+                    placeholderTextColor="#6B7280"
                     value={inputText}
                     onChangeText={setInputText}
-                    bg="surface.primary"
+                    bg="#1F1F1F"
                     borderWidth={0}
-                    borderRadius="full"
+                    borderRadius={22}
                     px={4}
                     py={3}
-                    color="text.primary"
-                    _focus={{
-                        bg: 'surface.primary',
-                        borderWidth: 0,
-                    }}
+                    color="#FFFFFF"
                 />
                 <Pressable
                     onPress={() => {
@@ -108,12 +103,12 @@ export const MyHistory: React.FC<MyHistoryProps> = ({
                             setInputText('');
                         }
                     }}
-                    bg="accent.400"
-                    borderRadius="xl"
-                    px={4}
+                    bg="#33CFFF"
+                    borderRadius={12}
+                    px={5}
                     py={3}
                 >
-                    <Text color="background.primary" fontWeight="bold">
+                    <Text color="#0D0D0D" fontSize={14} fontWeight="bold">
                         Post
                     </Text>
                 </Pressable>
@@ -121,30 +116,35 @@ export const MyHistory: React.FC<MyHistoryProps> = ({
 
             {/* Entries */}
             <VStack space={3}>
-                {entries.map((entry) => (
-                    <Box
-                        key={entry.id}
-                        bg="surface.primary"
-                        borderRadius="2xl"
-                        borderWidth={1}
-                        borderColor="border.default"
-                        borderLeftWidth={3}
-                        borderLeftColor="accent.400"
-                        p={4}
-                    >
-                        <VStack space={2}>
-                            <HStack justifyContent="space-between" alignItems="center">
-                                <Text color="text.primary" fontSize="sm" fontWeight="semibold">
-                                    {entry.time}
+                {entries.map((entry) => {
+                    // Border color based on status: cyan for executado, gray for others
+                    const borderColor = entry.status === 'executado'
+                        ? '#33CFFF'
+                        : 'rgba(75, 85, 99, 0.5)'; // gray-600 with opacity
+
+                    return (
+                        <Box
+                            key={entry.id}
+                            bg="#1A1A1A"
+                            borderRadius={16}
+                            borderWidth={1}
+                            borderColor={borderColor}
+                            p={4}
+                        >
+                            <VStack space={2}>
+                                <HStack justifyContent="space-between" alignItems="center">
+                                    <Text color="#FFFFFF" fontSize={14} fontWeight="bold">
+                                        {entry.time}
+                                    </Text>
+                                    <StatusBadge status={entry.status} />
+                                </HStack>
+                                <Text color="#9CA3AF" fontSize={13} lineHeight={20}>
+                                    {entry.content}
                                 </Text>
-                                <StatusBadge status={entry.status} />
-                            </HStack>
-                            <Text color="text.tertiary" fontSize="sm" lineHeight={18}>
-                                {entry.content}
-                            </Text>
-                        </VStack>
-                    </Box>
-                ))}
+                            </VStack>
+                        </Box>
+                    );
+                })}
             </VStack>
         </VStack>
     );
