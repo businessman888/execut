@@ -66,6 +66,19 @@ const getStatusColor = (status: DayStatus): string => {
     }
 };
 
+// Simple Check mark stroke icon
+const CheckStrokeIcon = ({ size = 14, color = '#E5E7EB' }: { size?: number; color?: string }) => (
+    <Svg width={size} height={size} viewBox="0 0 14 10" fill="none">
+        <Path
+            d="M1 5L4.5 9L13 1"
+            stroke={color}
+            strokeWidth={1.5}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        />
+    </Svg>
+);
+
 export const DayRow: React.FC<DayRowProps> = ({
     dayName,
     dayNumber,
@@ -75,10 +88,56 @@ export const DayRow: React.FC<DayRowProps> = ({
     isCurrent = false,
     onPress,
 }) => {
+    const isCompleted = status === 'completed';
+    const isScheduled = status === 'scheduled' || status === 'empty';
+
+    // Determine Circle Styles based on status
+    const getCircleStyles = () => {
+        if (isCurrent) {
+            return {
+                bg: '#33CFFF',
+                borderColor: '#33CFFF',
+                textColor: '#111111',
+                borderWidth: 0
+            };
+        } else if (isCompleted) {
+            return {
+                bg: 'transparent', // Or #111111
+                borderColor: '#404040',
+                textColor: '#E5E7EB',
+                borderWidth: 1
+            };
+        } else {
+            // Scheduled / Empty
+            return {
+                bg: 'transparent',
+                borderColor: '#404040',
+                textColor: '#9CA3AF',
+                borderWidth: 1
+            };
+        }
+    };
+
+    const styles = getCircleStyles();
+    const isClickable = status === 'current' || status === 'completed' || status === 'scheduled';
+
+    const renderDayContent = () => {
+        if (isCompleted) {
+            return <CheckStrokeIcon color="#E5E7EB" />;
+        }
+        return (
+            <Text
+                color={styles.textColor}
+                fontSize="md"
+                fontWeight="bold"
+            >
+                {dayNumber}
+            </Text>
+        );
+    };
+
     const renderIcon = () => {
-        if (status === 'completed') {
-            return <CheckmarkIcon size={28} />;
-        } else if (status === 'current') {
+        if (status === 'current') {
             return <ArrowRightIcon size={28} color="#33CFFF" />;
         } else if (status === 'scheduled') {
             return <CalendarIcon size={24} color="#6B7280" />;
@@ -86,41 +145,49 @@ export const DayRow: React.FC<DayRowProps> = ({
         return null;
     };
 
-    const isClickable = status === 'current' || status === 'completed' || status === 'scheduled';
-
     return (
-        <HStack alignItems="center" space={3}>
-            {/* Day indicator */}
-            <VStack alignItems="center" w={10}>
+        <HStack alignItems="center" space={4} w="100%" position="relative">
+            {/* Timeline Column */}
+            <VStack alignItems="center" width="46px" position="relative">
+                {/* Day Name */}
                 <Text
-                    color={isCurrent ? 'accent.400' : 'text.secondary'}
+                    color={isCurrent ? '#33CFFF' : '#9CA3AF'}
                     fontSize="xs"
-                    fontWeight={isCurrent ? 'bold' : 'normal'}
+                    fontWeight="medium"
+                    mb={1} // Space between text and circle
+                    zIndex={2}
+                    bg="#0D0D0D"
                 >
                     {dayName}
                 </Text>
-                {isCurrent ? (
-                    <Box
-                        bg="accent.400"
-                        borderRadius="full"
-                        w={6}
-                        h={6}
-                        alignItems="center"
-                        justifyContent="center"
-                    >
-                        <Text color="background.primary" fontSize="xs" fontWeight="bold">
-                            {dayNumber}
-                        </Text>
-                    </Box>
-                ) : (
-                    <Text color="text.secondary" fontSize="sm">
-                        {dayNumber}
-                    </Text>
-                )}
-            </VStack>
 
-            {/* Timeline line */}
-            <Box w={0.5} h="100%" bg="border.default" position="absolute" left={10} />
+                {/* Connecting Line */}
+                <Box
+                    position="absolute"
+                    top={6}
+                    bottom={-30}
+                    w="1px"
+                    bg="#404040"
+                    zIndex={0}
+                    left="50%"
+                    style={{ transform: [{ translateX: -0.5 }] }}
+                />
+
+                {/* Day Circle Node */}
+                <Box
+                    w="46px"
+                    h="46px"
+                    borderRadius="full"
+                    borderWidth={styles.borderWidth}
+                    borderColor={styles.borderColor}
+                    bg={isCurrent ? styles.bg : '#0D0D0D'}
+                    alignItems="center"
+                    justifyContent="center"
+                    zIndex={1}
+                >
+                    {renderDayContent()}
+                </Box>
+            </VStack>
 
             {/* Task Card */}
             <Pressable
@@ -129,14 +196,18 @@ export const DayRow: React.FC<DayRowProps> = ({
                 disabled={!isClickable}
             >
                 <Box
-                    bg={isCurrent ? 'surface.primary' : 'surface.secondary'}
-                    borderRadius="xl"
-                    borderWidth={isCurrent ? 1 : 0}
-                    borderColor={isCurrent ? 'accent.400' : 'transparent'}
-                    p={4}
+                    bg={isCurrent ? 'rgba(51, 207, 255, 0.05)' : '#111111'}
+                    borderRadius="2xl"
+                    borderWidth={1}
+                    borderColor={isCurrent ? '#33CFFF' : '#404040'}
+                    p={0}
+                    w={279}
+                    h={76}
+                    justifyContent="center"
+                    overflow="hidden"
                 >
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <VStack>
+                    <HStack px={4} alignItems="center" justifyContent="space-between" w="100%" h="100%">
+                        <VStack justifyContent="center">
                             {status === 'empty' ? (
                                 <Text color="text.tertiary" fontSize="sm">
                                     Sem tarefas agendadas
@@ -144,9 +215,9 @@ export const DayRow: React.FC<DayRowProps> = ({
                             ) : (
                                 <>
                                     <Text
-                                        color={isCurrent ? 'accent.400' : 'text.primary'}
+                                        color={isCurrent ? '#33CFFF' : 'text.primary'}
                                         fontSize="md"
-                                        fontWeight={isCurrent ? 'semibold' : 'normal'}
+                                        fontWeight={isCurrent ? 'bold' : 'medium'}
                                     >
                                         {taskCount} tarefas
                                     </Text>
@@ -156,7 +227,11 @@ export const DayRow: React.FC<DayRowProps> = ({
                                 </>
                             )}
                         </VStack>
-                        {renderIcon()}
+
+                        {/* Right Icon on Card */}
+                        <Box>
+                            {renderIcon()}
+                        </Box>
                     </HStack>
                 </Box>
             </Pressable>

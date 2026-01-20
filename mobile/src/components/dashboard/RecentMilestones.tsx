@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, HStack, VStack, Text, Pressable } from 'native-base';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path, Circle, Rect, G, Mask } from 'react-native-svg';
 
 interface Milestone {
     id: string;
@@ -14,13 +14,16 @@ interface RecentMilestonesProps {
     onMilestonePress?: (id: string) => void;
 }
 
-// Checkmark icon
-const CheckmarkIcon = ({ size = 20 }: { size?: number }) => (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-        <Circle cx={12} cy={12} r={10} fill="#33CFFF" />
+// Checkmark icon based on "check marcos recentes.svg"
+// Visually: Outer ring (fill 20% opacity, stroke) + Inner Cyan Circle with 'cutout' checkmark (simulated with black stroke)
+const CheckmarkIcon = ({ size = 31 }: { size?: number }) => (
+    <Svg width={size} height={size} viewBox="0 0 31 31" fill="none">
+        <Rect x="0.5" y="0.5" width="30" height="30" rx="15" fill="#00C3FF" fillOpacity="0.2" />
+        <Rect x="0.5" y="0.5" width="30" height="30" rx="15" stroke="#33CFFF" />
+        <Circle cx="15.5" cy="15.5" r="8.75" fill="#33CFFF" />
         <Path
-            d="M8 12L11 15L16 9"
-            stroke="#0D0D0D"
+            d="M12 15.5L14.625 18.125L19.875 12.875"
+            stroke="#0D0D0D" // Matches card background to simulate transparency/cutout
             strokeWidth={2}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -48,14 +51,17 @@ export const RecentMilestones: React.FC<RecentMilestonesProps> = ({
                             bg="surface.primary"
                             borderRadius="2xl"
                             borderWidth={1}
-                            borderColor="border.default"
+                            borderColor="#33CFFF"
+                            width="343px"
+                            height="73px"
                             p={4}
+                            justifyContent="center"
                         >
                             <HStack justifyContent="space-between" alignItems="center">
                                 <HStack space={3} alignItems="center" flex={1}>
-                                    <CheckmarkIcon size={24} />
+                                    <CheckmarkIcon size={31} />
                                     <VStack flex={1}>
-                                        <Text color="text.primary" fontSize="sm" fontWeight="medium">
+                                        <Text color="text.primary" fontSize="sm" fontWeight="medium" numberOfLines={1}>
                                             {milestone.title}
                                         </Text>
                                         <Text color="text.tertiary" fontSize="xs">
@@ -63,7 +69,7 @@ export const RecentMilestones: React.FC<RecentMilestonesProps> = ({
                                         </Text>
                                     </VStack>
                                 </HStack>
-                                <Text color="accent.400" fontSize="md" fontWeight="bold">
+                                <Text color="#33CFFF" fontSize="md" fontWeight="bold">
                                     +{milestone.xpReward} XP
                                 </Text>
                             </HStack>

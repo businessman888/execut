@@ -24,10 +24,10 @@ export const AIInsight: React.FC<AIInsightProps> = ({ message }) => {
 
                 {/* Content */}
                 <VStack flex={1} space={2}>
-                    <Text color="accent.400" fontSize="md" fontWeight="bold" letterSpacing="md">
+                    <Text color="accent.400" fontSize="md" fontWeight="bold" letterSpacing={1}>
                         AI INSIGHT
                     </Text>
-                    <Text color="text.secondary" fontSize="sm" lineHeight="xl">
+                    <Text color="text.secondary" fontSize="sm" lineHeight={20}>
                         "{message}"
                     </Text>
                 </VStack>

@@ -1,6 +1,6 @@
+
 import React from 'react';
-import { Box, HStack, VStack, Text, Image } from 'native-base';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { Box, HStack, Text, Image } from 'native-base';
 
 interface TopUser {
     id: string;
@@ -16,28 +16,22 @@ interface TopPodiumProps {
 }
 
 // Rank badge with number
-const RankBadge: React.FC<{ rank: 1 | 2 | 3 }> = ({ rank }) => {
-    const colors = {
-        1: { bg: '#33CFFF', text: '#0D0D0D' },
-        2: { bg: '#6B7280', text: '#F9FAFB' },
-        3: { bg: '#92400E', text: '#F9FAFB' },
-    };
-
+const RankBadge: React.FC<{ rank: 1 | 2 | 3; size?: number }> = ({ rank, size = 6 }) => {
     return (
         <Box
             position="absolute"
-            bottom={-4}
-            right={-4}
-            bg={colors[rank].bg}
+            bottom={0}
+            right={0}
+            bg="#33CFFF"
             borderRadius="full"
-            w={6}
-            h={6}
+            w={size}
+            h={size}
             alignItems="center"
             justifyContent="center"
             borderWidth={2}
             borderColor="#0D0D0D"
         >
-            <Text color={colors[rank].text} fontSize="xs" fontWeight="bold">
+            <Text color="#0D0D0D" fontSize="xs" fontWeight="bold">
                 {rank}
             </Text>
         </Box>
@@ -51,45 +45,86 @@ export const TopPodium: React.FC<TopPodiumProps> = ({ users }) => {
     const second = sortedUsers.find(u => u.rank === 2);
     const third = sortedUsers.find(u => u.rank === 3);
 
-    const renderUser = (user: TopUser | undefined, isFirst: boolean = false) => {
+    const renderFirstPlace = (user: TopUser | undefined) => {
         if (!user) return null;
-
         return (
             <Box
-                bg={isFirst ? 'surface.primary' : 'surface.secondary'}
-                borderRadius="2xl"
-                borderWidth={isFirst ? 1 : 0}
-                borderColor={isFirst ? 'accent.400' : 'transparent'}
-                p={3}
+                bg="#0D0D0D"
+                borderRadius={20}
+                borderWidth={1}
+                borderColor="#33CFFF"
+                width={118}
+                minWidth={118}
+                height={201}
                 alignItems="center"
-                w={isFirst ? 28 : 20}
+                justifyContent="center"
+                position="relative"
+                paddingTop={4} // Push content down slightly from top bar
             >
-                <Box position="relative">
+                {/* Top Fill Bar */}
+                <Box
+                    position="absolute"
+                    top={0}
+                    left={0}
+                    right={0}
+                    height="11px"
+                    bg="#33CFFF"
+                    borderTopRadius={18} // Slightly less than card radius to fit snug inside border if needed, or matched. Using 18-20 range.
+                    width="100%"
+                />
+
+                <Box mb={2} position="relative">
                     <Image
                         source={{ uri: user.avatar }}
                         alt={user.name}
-                        size={isFirst ? 16 : 12}
+                        size={60}
                         borderRadius="full"
-                        bg="gray.600"
+                        borderWidth={2}
+                        borderColor="#33CFFF"
+                        key={user.avatar}
                     />
-                    <RankBadge rank={user.rank} />
+                    <RankBadge rank={1} size={8} />
                 </Box>
-                <Text
-                    color="text.primary"
-                    fontSize={isFirst ? 'sm' : 'xs'}
-                    fontWeight="semibold"
-                    mt={3}
-                    textAlign="center"
-                    numberOfLines={1}
-                >
+                <Text color="#33CFFF" fontSize="sm" fontWeight="bold" textAlign="center" mb={0.5} numberOfLines={1} px={1}>
                     {user.name}
                 </Text>
-                {isFirst && user.title && (
-                    <Text color="accent.400" fontSize="2xs" fontWeight="medium">
+                {user.title && (
+                    <Text color="#33CFFF" fontSize="2xs" fontWeight="medium" opacity={0.8} numberOfLines={1}>
                         {user.title}
                     </Text>
                 )}
-                <Text color="text.tertiary" fontSize="2xs">
+            </Box>
+        );
+    };
+
+    const renderSidePlace = (user: TopUser | undefined, rank: 2 | 3) => {
+        if (!user) return null;
+        return (
+            <Box
+                bg="#0D0D0D"
+                borderRadius={20}
+                borderWidth={1}
+                borderColor="rgba(0, 195, 255, 0.2)" // #00C3FF at 20% opacity
+                width={103}
+                minWidth={103}
+                height={174}
+                alignItems="center"
+                justifyContent="center"
+            >
+                <Box mb={2} position="relative">
+                    <Image
+                        source={{ uri: user.avatar }}
+                        alt={user.name}
+                        size={49}
+                        borderRadius="full"
+                        bg="gray.800"
+                    />
+                    <RankBadge rank={rank} />
+                </Box>
+                <Text color="white" fontSize="xs" fontWeight="bold" textAlign="center" mb={0.5} numberOfLines={1} px={1}>
+                    {user.name}
+                </Text>
+                <Text color="gray.400" fontSize="2xs">
                     LVL {user.level}
                 </Text>
             </Box>
@@ -99,18 +134,18 @@ export const TopPodium: React.FC<TopPodiumProps> = ({ users }) => {
     return (
         <HStack justifyContent="center" alignItems="flex-end" space={2}>
             {/* 2nd Place */}
-            <Box mb={4}>
-                {renderUser(second)}
+            <Box mb={2}>
+                {renderSidePlace(second, 2)}
             </Box>
 
             {/* 1st Place */}
-            <Box>
-                {renderUser(first, true)}
+            <Box zIndex={10} mb={6}>
+                {renderFirstPlace(first)}
             </Box>
 
             {/* 3rd Place */}
-            <Box mb={4}>
-                {renderUser(third)}
+            <Box mb={2}>
+                {renderSidePlace(third, 3)}
             </Box>
         </HStack>
     );

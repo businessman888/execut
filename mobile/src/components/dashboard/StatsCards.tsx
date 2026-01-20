@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, HStack, VStack, Text } from 'native-base';
-import Svg, { Path, Circle } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 
 interface StatsCardsProps {
     totalXP: number;
@@ -9,33 +9,18 @@ interface StatsCardsProps {
     recordDays: number;
 }
 
-// Trophy icon
-const TrophyIcon = ({ color = '#33CFFF', size = 24 }: { color?: string; size?: number }) => (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M8 21H16M12 17V21M6 4H18M6 4C6 4 4 4 4 6C4 8 4 10 6 10M6 4V10M18 4C18 4 20 4 20 6C20 8 20 10 18 10M18 4V10M6 10C6 10 6 14 12 17M6 10H18M18 10C18 10 18 14 12 17"
-            stroke={color}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
+// Trophy icon (Cyan #33CFFF) - New SVG paths
+const TrophyIcon = ({ color = '#33CFFF', size = 28 }: { color?: string; size?: number }) => (
+    <Svg width={size} height={size} viewBox="0 0 30 30" fill="none">
+        <Path d="M27.5 10.2025V10.2937C27.5 11.3687 27.5 11.9075 27.2412 12.3475C26.9825 12.7875 26.5113 13.0487 25.5713 13.5725L24.58 14.1225C25.2625 11.8125 25.4912 9.32996 25.575 7.20746L25.5875 6.93121L25.59 6.86621C26.4037 7.14871 26.8612 7.35996 27.1462 7.75496C27.5 8.24621 27.5 8.89871 27.5 10.2025ZM2.5 10.2025V10.2937C2.5 11.3687 2.5 11.9075 2.75875 12.3475C3.0175 12.7875 3.48875 13.0487 4.42875 13.5725L5.42125 14.1225C4.7375 11.8125 4.50875 9.32996 4.425 7.20746L4.4125 6.93121L4.41125 6.86621C3.59625 7.14871 3.13875 7.35996 2.85375 7.75496C2.5 8.24621 2.5 8.89996 2.5 10.2025Z" fill={color} />
+        <Path fillRule="evenodd" clipRule="evenodd" d="M15 2.50004C17.23 2.50004 19.0662 2.69629 20.4712 2.93379C21.895 3.17379 22.6062 3.29379 23.2012 4.02629C23.7962 4.75879 23.7637 5.55004 23.7012 7.13254C23.4862 12.5688 22.3137 19.3575 15.9375 19.9575V24.375H17.725C18.0138 24.3752 18.2937 24.4754 18.517 24.6586C18.7404 24.8419 18.8933 25.0968 18.95 25.38L19.1875 26.5625H22.5C22.7486 26.5625 22.9871 26.6613 23.1629 26.8371C23.3387 27.0129 23.4375 27.2514 23.4375 27.5C23.4375 27.7487 23.3387 27.9871 23.1629 28.163C22.9871 28.3388 22.7486 28.4375 22.5 28.4375H7.49997C7.25133 28.4375 7.01287 28.3388 6.83705 28.163C6.66124 27.9871 6.56247 27.7487 6.56247 27.5C6.56247 27.2514 6.66124 27.0129 6.83705 26.8371C7.01287 26.6613 7.25133 26.5625 7.49997 26.5625H10.8125L11.05 25.38C11.1066 25.0968 11.2596 24.8419 11.4829 24.6586C11.7062 24.4754 11.9861 24.3752 12.275 24.375H14.0625V19.9575C7.68747 19.3575 6.51497 12.5675 6.29997 7.13254C6.23622 5.55004 6.20497 4.75754 6.79997 4.02629C7.39372 3.29379 8.10497 3.17379 9.52872 2.93379C11.3373 2.63753 13.1673 2.49245 15 2.50004ZM16.19 7.74879L16.0675 7.52879C15.5925 6.67504 15.355 6.25004 15 6.25004C14.645 6.25004 14.4075 6.67504 13.9325 7.52879L13.81 7.74879C13.675 7.99129 13.6075 8.11129 13.5025 8.19129C13.3962 8.27129 13.265 8.30129 13.0025 8.36004L12.765 8.41504C11.8425 8.62379 11.3812 8.72754 11.2712 9.08004C11.1612 9.43254 11.4762 9.80129 12.105 10.5363L12.2675 10.7263C12.4462 10.935 12.5362 11.0388 12.5762 11.1688C12.6162 11.2988 12.6025 11.4375 12.5762 11.7163L12.5512 11.97C12.4562 12.9513 12.4087 13.4425 12.695 13.66C12.9825 13.8775 13.415 13.6788 14.2787 13.2813L14.5012 13.1788C14.7475 13.0663 14.87 13.01 15 13.01C15.13 13.01 15.2525 13.0663 15.4987 13.1788L15.7212 13.2813C16.585 13.68 17.0175 13.8775 17.305 13.66C17.5925 13.4425 17.5437 12.9513 17.4487 11.97L17.4237 11.7163C17.3975 11.4375 17.3837 11.2988 17.4237 11.1688C17.4637 11.0388 17.5537 10.935 17.7325 10.7263L17.895 10.5363C18.5237 9.80129 18.8387 9.43379 18.7287 9.08004C18.6187 8.72754 18.1575 8.62379 17.235 8.41504L16.9975 8.36004C16.735 8.30129 16.6037 8.27254 16.4975 8.19129C16.3925 8.11129 16.325 7.99129 16.19 7.74879Z" fill={color} />
     </Svg>
 );
 
-// Fire icon
-const FireIcon = ({ color = '#33CFFF', size = 24 }: { color?: string; size?: number }) => (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-        <Path
-            d="M12 22C16.4183 22 20 18.4183 20 14C20 9.58172 12 2 12 2C12 2 4 9.58172 4 14C4 18.4183 7.58172 22 12 22Z"
-            stroke={color}
-            strokeWidth={1.5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-        <Path
-            d="M12 22C14.2091 22 16 20.2091 16 18C16 15.7909 12 12 12 12C12 12 8 15.7909 8 18C8 20.2091 9.79086 22 12 22Z"
-            fill={color}
-        />
+// Fire icon (Orange #FF8C61) - New SVG paths
+const FireIcon = ({ color = '#FF8C61', size = 28 }: { color?: string; size?: number }) => (
+    <Svg width={size} height="23" viewBox="0 0 18 23" fill="none">
+        <Path d="M15.8403 10.25C15.5528 9.875 15.2028 9.55 14.8778 9.225C14.0403 8.475 13.0903 7.9375 12.2903 7.15C10.4278 5.325 10.0153 2.3125 11.2028 0C10.0153 0.2875 8.97782 0.9375 8.09032 1.65C4.85282 4.25 3.57782 8.8375 5.10282 12.775C5.15282 12.9 5.20282 13.025 5.20282 13.1875C5.20282 13.4625 5.01532 13.7125 4.76532 13.8125C4.47782 13.9375 4.17782 13.8625 3.94032 13.6625C3.86938 13.6031 3.81004 13.531 3.76532 13.45C2.35282 11.6625 2.12782 9.1 3.07782 7.05C0.990321 8.75 -0.147179 11.625 0.0153209 14.3375C0.0903209 14.9625 0.165321 15.5875 0.377821 16.2125C0.552821 16.9625 0.890321 17.7125 1.26532 18.375C2.61532 20.5375 4.95282 22.0875 7.46532 22.4C10.1403 22.7375 13.0028 22.25 15.0528 20.4C17.3403 18.325 18.1403 15 16.9653 12.15L16.8028 11.825C16.5403 11.25 15.8403 10.25 15.8403 10.25ZM11.8903 18.125C11.5403 18.425 10.9653 18.75 10.5153 18.875C9.11532 19.375 7.71532 18.675 6.89032 17.85C8.37782 17.5 9.26532 16.4 9.52782 15.2875C9.74032 14.2875 9.34032 13.4625 9.17782 12.5C9.02782 11.575 9.05282 10.7875 9.39032 9.925C9.62782 10.4 9.87782 10.875 10.1778 11.25C11.1403 12.5 12.6528 13.05 12.9778 14.75C13.0278 14.925 13.0528 15.1 13.0528 15.2875C13.0903 16.3125 12.6403 17.4375 11.8903 18.125Z" fill={color} />
     </Svg>
 );
 
@@ -54,28 +39,23 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
                 borderRadius="2xl"
                 borderWidth={1}
                 borderColor="border.default"
-                p={4}
+                p={5}
+                pb={8}
             >
-                <HStack space={2} alignItems="flex-start">
-                    <Box
-                        bg="surface.secondary"
-                        borderRadius="full"
-                        p={2}
-                    >
-                        <TrophyIcon size={20} color="#33CFFF" />
-                    </Box>
+                <VStack space={6} alignItems="flex-start">
+                    <TrophyIcon size={30} color="#33CFFF" />
                     <VStack>
-                        <Text color="text.secondary" fontSize="xs">
+                        <Text color="#A0A0A0" fontSize="md" mb={1}>
                             Total de XP
                         </Text>
-                        <Text color="text.primary" fontSize="xl" fontWeight="bold">
+                        <Text color="#FFFFFF" fontSize="2xl" fontWeight="bold">
                             {totalXP.toLocaleString()}
                         </Text>
-                        <Text color="accent.400" fontSize="2xs">
+                        <Text color="#33CFFF" fontSize="sm">
                             {xpChange}
                         </Text>
                     </VStack>
-                </HStack>
+                </VStack>
             </Box>
 
             {/* Streak Card */}
@@ -85,28 +65,23 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
                 borderRadius="2xl"
                 borderWidth={1}
                 borderColor="border.default"
-                p={4}
+                p={5}
+                pb={8}
             >
-                <HStack space={2} alignItems="flex-start">
-                    <Box
-                        bg="surface.secondary"
-                        borderRadius="full"
-                        p={2}
-                    >
-                        <FireIcon size={20} color="#33CFFF" />
-                    </Box>
+                <VStack space={6} alignItems="flex-start">
+                    <FireIcon size={30} color="#FF8C61" />
                     <VStack>
-                        <Text color="text.secondary" fontSize="xs">
+                        <Text color="#A0A0A0" fontSize="md" mb={1}>
                             Streak Atual
                         </Text>
-                        <Text color="text.primary" fontSize="xl" fontWeight="bold">
+                        <Text color="#FFFFFF" fontSize="2xl" fontWeight="bold">
                             {streakDays} Dias
                         </Text>
-                        <Text color="text.tertiary" fontSize="2xs">
+                        <Text color="#FF8C61" fontSize="sm">
                             Recorde: {recordDays} dias
                         </Text>
                     </VStack>
-                </HStack>
+                </VStack>
             </Box>
         </HStack>
     );

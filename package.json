@@ -23,5 +23,9 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "packageManager": "npm@10.2.0"
+  "packageManager": "npm@10.2.0",
+  "dependencies": {
+    "react-native-worklets": "^0.7.2",
+    "react-native-worklets-core": "^1.6.2"
+  }
 }

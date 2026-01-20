@@ -3,6 +3,7 @@ import { Box, HStack, VStack, Text, Pressable } from 'native-base';
 import { StyleSheet, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Path, Circle } from 'react-native-svg';
+import { CheckBlueIcon } from '../icons/NavIcons';
 
 export type MonthStatus = 'completed' | 'in_progress' | 'pending';
 
@@ -90,61 +91,64 @@ export const MonthCard: React.FC<MonthCardProps> = ({
     const isActive = status === 'completed' || status === 'in_progress';
 
     return (
-        <Pressable onPress={onPress} flex={1}>
+        <Pressable onPress={onPress}>
             <Box
                 bg={isActive ? 'surface.primary' : 'surface.secondary'}
                 borderRadius="xl"
                 borderWidth={1}
                 borderColor={isActive ? 'border.default' : 'border.subtle'}
                 p={3}
-                minH={20}
+                w={167}
+                h={102}
             >
-                <VStack space={2}>
+                <VStack space={2} justifyContent="space-between" h="100%">
                     {/* Month and status icon */}
                     <HStack justifyContent="space-between" alignItems="center">
                         <Text
                             color="text.primary"
                             fontSize="md"
-                            fontWeight={isActive ? 'semibold' : 'normal'}
+                            fontWeight="bold"
                         >
                             {month}
                         </Text>
-                        {isCompleted ? (
-                            <CheckmarkIcon size={24} />
+                        {(isCompleted || status === 'in_progress') ? (
+                            <CheckBlueIcon size={24} color="#34D399" />
                         ) : (
                             <EmptyCircleIcon size={24} />
                         )}
                     </HStack>
 
-                    {/* Status and progress */}
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <Text color={getStatusColor(status)} fontSize="xs">
-                            {getStatusLabel(status)}
-                        </Text>
-                        <Text
-                            color={status === 'in_progress' ? 'accent.400' : 'text.secondary'}
-                            fontSize="xs"
-                            fontWeight="semibold"
-                        >
-                            {progress}%
-                        </Text>
-                    </HStack>
+                    <VStack space={1}>
+                        {/* Status and progress */}
+                        <HStack justifyContent="space-between" alignItems="center">
+                            <Text color="#9CA3AF" fontSize="xs">
+                                {status === 'in_progress' ? 'Completed' : getStatusLabel(status)}
+                            </Text>
+                            <Text
+                                color="text.primary"
+                                fontSize="xs"
+                                fontWeight="bold"
+                            >
+                                {progress}%
+                            </Text>
+                        </HStack>
 
-                    {/* Progress bar */}
-                    <Box
-                        w="100%"
-                        h={1}
-                        bg="rgba(255,255,255,0.1)"
-                        borderRadius="full"
-                        overflow="hidden"
-                    >
+                        {/* Progress bar */}
                         <Box
-                            w={`${progress}%`}
-                            h="100%"
-                            bg={getProgressColor(status)}
+                            w="100%"
+                            h={2}
+                            bg="surface.tertiary"
                             borderRadius="full"
-                        />
-                    </Box>
+                            overflow="hidden"
+                        >
+                            <Box
+                                w={`${progress}%`}
+                                h="100%"
+                                bg="#34D399"
+                                borderRadius="full"
+                            />
+                        </Box>
+                    </VStack>
                 </VStack>
             </Box>
         </Pressable>

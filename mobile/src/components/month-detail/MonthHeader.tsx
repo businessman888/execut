@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, HStack, VStack, Text, Pressable } from 'native-base';
 import Svg, { Path } from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface MonthHeaderProps {
     badge: string;
@@ -64,10 +65,10 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
 
             {/* Title */}
             <VStack>
-                <Text color="text.primary" fontSize="2xl" fontWeight="bold">
+                <Text color="text.primary" fontSize={28} fontWeight="bold">
                     {title}
                 </Text>
-                <Text color="accent.400" fontSize="2xl" fontWeight="bold">
+                <Text color="accent.400" fontSize={28} fontWeight="bold">
                     {subtitle}
                 </Text>
             </VStack>
@@ -86,17 +87,19 @@ export const MonthHeader: React.FC<MonthHeaderProps> = ({
                 {/* Progress Bar */}
                 <Box
                     w="100%"
-                    h={2}
-                    bg="rgba(255,255,255,0.1)"
+                    h={7}
+                    bg="surface.tertiary"
                     borderRadius="full"
                     overflow="hidden"
                 >
-                    <Box
-                        w={`${progress}%`}
-                        h="100%"
-                        bg="accent.400"
-                        borderRadius="full"
-                    />
+                    <Box w={`${progress}%`} h="100%" overflow="hidden">
+                        <LinearGradient
+                            colors={['#33CFFF', '#475FAF']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{ flex: 1 }}
+                        />
+                    </Box>
                 </Box>
             </VStack>
         </VStack>

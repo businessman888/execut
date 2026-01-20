@@ -20,7 +20,7 @@ export const EnergyCore: React.FC<EnergyCoreProps> = ({
         <VStack space={2} w="100%">
             {/* Energy Core Row */}
             <HStack justifyContent="space-between" alignItems="center">
-                <Text color="text.secondary" fontSize="xs" fontWeight="medium" letterSpacing="lg">
+                <Text color="text.secondary" fontSize="xs" fontWeight="medium" letterSpacing={2}>
                     ENERGY CORE
                 </Text>
                 <Text color="text.secondary" fontSize="xs">
@@ -29,10 +29,10 @@ export const EnergyCore: React.FC<EnergyCoreProps> = ({
             </HStack>
 
             {/* Progress Bar */}
-            <Box w="100%" h={2} bg="surface.secondary" borderRadius="full" overflow="hidden">
+            <Box w="100%" h={8} bg="surface.secondary" borderRadius="full" overflow="hidden">
                 <View style={[styles.progressBar, { width: `${progressPercentage}%` }]}>
                     <LinearGradient
-                        colors={['#33CFFF', '#00A3CC']}
+                        colors={['#33CFFF', '#475FAF']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={styles.gradient}
@@ -42,7 +42,7 @@ export const EnergyCore: React.FC<EnergyCoreProps> = ({
 
             {/* Charging Progress Row */}
             <HStack justifyContent="space-between" alignItems="center" mt={1}>
-                <Text color="accent.400" fontSize="xs" fontWeight="medium" letterSpacing="md">
+                <Text color="accent.400" fontSize="xs" fontWeight="medium" letterSpacing={1}>
                     CHARGING PROGRESS
                 </Text>
                 <Text color="text.secondary" fontSize="xs">

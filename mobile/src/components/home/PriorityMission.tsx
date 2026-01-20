@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, HStack, VStack, Text, Pressable } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
-import { TimerIcon, ThreeDotsIcon } from '../icons/TaskIcons';
+import { TimerIcon, ThreeDotsIcon, LightningBoltIcon } from '../icons/TaskIcons';
 
 interface PriorityMissionProps {
     badge: string;
@@ -29,7 +29,7 @@ export const PriorityMission: React.FC<PriorityMissionProps> = ({
                 bg="surface.primary"
                 borderRadius="2xl"
                 borderWidth={1}
-                borderColor="border.subtle"
+                borderColor="accent.400"
                 p={4}
                 overflow="hidden"
             >
@@ -43,7 +43,7 @@ export const PriorityMission: React.FC<PriorityMissionProps> = ({
                         py={1}
                     >
                         <HStack space={1} alignItems="center">
-                            <Text color="accent.400" fontSize="2xs">⚡</Text>
+                            <LightningBoltIcon size={15} color="#33CFFF" />
                             <Text color="accent.400" fontSize="xs" fontWeight="medium">
                                 {badge}
                             </Text>
@@ -78,10 +78,10 @@ export const PriorityMission: React.FC<PriorityMissionProps> = ({
                     </HStack>
 
                     {/* Progress Bar */}
-                    <Box w="100%" h={1.5} bg="surface.tertiary" borderRadius="full" overflow="hidden">
+                    <Box w="100%" h={7} bg="surface.tertiary" borderRadius="full" overflow="hidden">
                         <View style={[styles.progressBar, { width: `${progress}%` }]}>
                             <LinearGradient
-                                colors={['#33CFFF', '#00A3CC']}
+                                colors={['#33CFFF', '#475FAF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
                                 style={styles.gradient}

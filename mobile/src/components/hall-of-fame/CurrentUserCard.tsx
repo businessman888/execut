@@ -52,8 +52,9 @@ export const CurrentUserCard: React.FC<CurrentUserCardProps> = ({
                     <Image
                         source={{ uri: avatar }}
                         alt={name}
-                        size={12}
-                        borderRadius="full"
+                        size={45}
+                        borderRadius={100}
+                        style={{ borderRadius: 100 }}
                         borderWidth={2}
                         borderColor="accent.400"
                         bg="gray.600"

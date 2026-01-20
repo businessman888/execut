@@ -142,7 +142,7 @@ interface BoxProps {
     width?: number | string;
     height?: number | string;
     flex?: number;
-    borderRadius?: number;
+    borderRadius?: number | string;
     rounded?: string | number;
     borderWidth?: number;
     borderColor?: string;
@@ -163,6 +163,34 @@ interface BoxProps {
 
 const spacing = 4; // Base spacing unit
 
+// Resolve color tokens like 'text.primary', 'background.secondary', 'accent.400' to actual color values
+const resolveColor = (colorToken?: string): string | undefined => {
+    if (!colorToken) return undefined;
+
+    // If it's already a color value (starts with # or rgb), return as-is
+    if (colorToken.startsWith('#') || colorToken.startsWith('rgb')) {
+        return colorToken;
+    }
+
+    // Handle transparent
+    if (colorToken === 'transparent') return 'transparent';
+
+    // Parse token like 'text.primary' or 'accent.400'
+    const parts = colorToken.split('.');
+    if (parts.length < 2) return colorToken; // Not a token format
+
+    const [category, key] = parts;
+    const colors = theme.colors as any;
+
+    if (colors[category]) {
+        const value = colors[category][key];
+        if (value) return value;
+    }
+
+    // Return undefined if not found (let React Native handle invalid colors)
+    return colorToken;
+};
+
 const resolveSpacing = (value?: number) => value !== undefined ? value * spacing : undefined;
 
 const resolveRounded = (value?: string | number) => {
@@ -180,7 +208,7 @@ const resolveRounded = (value?: string | number) => {
 };
 
 const buildBoxStyle = (props: BoxProps): ViewStyle => ({
-    backgroundColor: props.bg || props.backgroundColor,
+    backgroundColor: resolveColor(props.bg || props.backgroundColor),
     padding: resolveSpacing(props.p),
     paddingHorizontal: resolveSpacing(props.px),
     paddingVertical: resolveSpacing(props.py),
@@ -198,9 +226,9 @@ const buildBoxStyle = (props: BoxProps): ViewStyle => ({
     width: props.w || props.width,
     height: props.h || props.height,
     flex: props.flex,
-    borderRadius: resolveRounded(props.rounded) || props.borderRadius,
+    borderRadius: resolveRounded(props.rounded) ?? resolveRounded(props.borderRadius),
     borderWidth: props.borderWidth,
-    borderColor: props.borderColor,
+    borderColor: resolveColor(props.borderColor),
     alignItems: props.alignItems,
     justifyContent: props.justifyContent,
     position: props.position,
@@ -337,7 +365,7 @@ export const Text: React.FC<TextProps> = ({
         numberOfLines={numberOfLines}
         style={[
             {
-                color: color || theme.colors.text.primary,
+                color: resolveColor(color) || theme.colors.text.primary,
                 fontSize: resolveFontSize(fontSize),
                 fontWeight: bold ? 'bold' : fontWeight,
                 fontStyle: italic ? 'italic' : undefined,

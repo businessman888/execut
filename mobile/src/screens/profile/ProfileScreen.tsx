@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BellIcon } from '../../components/icons/NavIcons';
 import { MindsetHeader, MentalEdgeCard, HabitItem, BrainIcon, PuzzleIcon } from '../../components/mindset';
+import { LogicIcon, MemoryIcon, FrameworksIcon, PracticeIcon } from '../../components/mindset/MindsetIcons';
 import { ProfileStackParamList } from '../../navigation/MainNavigator';
 
 type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'ProfileMain'>;
@@ -13,10 +14,10 @@ type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamLi
 export function ProfileScreen() {
     const navigation = useNavigation<ProfileScreenNavigationProp>();
     const [habits, setHabits] = useState([
-        { id: '1', title: 'Dormir 6h 45m', completed: false, image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=400' },
-        { id: '2', title: 'Correr 2km', completed: false, image: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=400' },
-        { id: '3', title: 'Beber 2L de água', completed: false, image: 'https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=400' },
-        { id: '4', title: 'Ler 15 páginas de livro', completed: false, image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400' },
+        { id: '1', title: 'Dormir 6h 45m', completed: false, image: require('../../assets/images/habit/sleep.webp') },
+        { id: '2', title: 'Correr 2km', completed: false, image: require('../../assets/images/habit/run.webp') },
+        { id: '3', title: 'Beber 2L de água', completed: false, image: require('../../assets/images/habit/water.webp') },
+        { id: '4', title: 'Ler 15 páginas de livro', completed: false, image: require('../../assets/images/habit/read.webp') },
     ]);
 
     // Mock data
@@ -35,14 +36,14 @@ export function ProfileScreen() {
             title: 'Praticas de Mindset',
             subtitle: 'Modulo: Decision Velocity',
             status: 'active' as const,
-            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+            icon: <PracticeIcon />,
         },
         {
             id: '2',
             title: 'Frameworks Mentais',
             subtitle: undefined,
             status: 'available' as const,
-            icon: <PuzzleIcon size={32} color="#9CA3AF" />,
+            icon: <FrameworksIcon />,
         },
         {
             id: '3',
@@ -50,7 +51,7 @@ export function ProfileScreen() {
             subtitle: undefined,
             status: 'locked' as const,
             unlockPoints: 3000,
-            image: 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400',
+            icon: <MemoryIcon />,
         },
         {
             id: '4',
@@ -58,7 +59,7 @@ export function ProfileScreen() {
             subtitle: undefined,
             status: 'locked' as const,
             unlockPoints: 10000,
-            image: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400',
+            icon: <LogicIcon />,
         },
     ];
 

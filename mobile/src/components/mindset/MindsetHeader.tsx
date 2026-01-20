@@ -1,6 +1,7 @@
 import React from 'react';
-import { Box, HStack, VStack, Text, Image, Progress, Pressable } from 'native-base';
-import Svg, { Circle, Path } from 'react-native-svg';
+import { Box, HStack, VStack, Text, Image, Pressable } from 'native-base';
+import Svg, { Path } from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface MindsetHeaderProps {
     avatar?: string;
@@ -58,12 +59,14 @@ export const MindsetHeader: React.FC<MindsetHeaderProps> = ({
                             <Image
                                 source={{ uri: avatar }}
                                 alt="Avatar"
-                                size={12}
+                                w={46}
+                                h={46}
                                 borderRadius="full"
                             />
                         ) : (
                             <Box
-                                size={12}
+                                w={46}
+                                h={46}
                                 borderRadius="full"
                                 bg="surface.secondary"
                                 alignItems="center"
@@ -77,10 +80,10 @@ export const MindsetHeader: React.FC<MindsetHeaderProps> = ({
 
                 {/* Status Info */}
                 <VStack flex={1}>
-                    <Text color="text.tertiary" fontSize="sm">
+                    <Text color="text.tertiary" fontSize={14}>
                         {status}
                     </Text>
-                    <Text color="text.primary" fontSize="md" fontWeight="semibold">
+                    <Text color="text.primary" fontSize={14} fontWeight="semibold">
                         Level {String(level).padStart(2, '0')} / {title}
                     </Text>
                 </VStack>
@@ -97,17 +100,20 @@ export const MindsetHeader: React.FC<MindsetHeaderProps> = ({
                     </Text>
                 </HStack>
                 <Box
-                    bg="surface.secondary"
+                    w="100%"
+                    h={7}
+                    bg="surface.tertiary"
                     borderRadius="full"
-                    h={2}
                     overflow="hidden"
                 >
-                    <Box
-                        bg="accent.400"
-                        h="100%"
-                        w={`${Math.min(progress, 100)}%`}
-                        borderRadius="full"
-                    />
+                    <Box w={`${Math.min(progress, 100)}%`} h="100%" overflow="hidden">
+                        <LinearGradient
+                            colors={['#33CFFF', '#475FAF']}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 0 }}
+                            style={{ flex: 1 }}
+                        />
+                    </Box>
                 </Box>
             </VStack>
         </VStack>

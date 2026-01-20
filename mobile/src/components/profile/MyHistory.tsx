@@ -139,7 +139,7 @@ export const MyHistory: React.FC<MyHistoryProps> = ({
                                 </Text>
                                 <StatusBadge status={entry.status} />
                             </HStack>
-                            <Text color="text.tertiary" fontSize="sm" lineHeight="lg">
+                            <Text color="text.tertiary" fontSize="sm" lineHeight={18}>
                                 {entry.content}
                             </Text>
                         </VStack>

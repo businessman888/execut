@@ -1,35 +1,36 @@
 {
-    "expo": {
-        "name": "Execut",
-        "slug": "execut",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "userInterfaceStyle": "automatic",
-        "splash": {
-            "backgroundColor": "#131F54"
-        },
-        "assetBundlePatterns": [
-            "**/*"
-        ],
-        "ios": {
-            "supportsTablet": true,
-            "bundleIdentifier": "com.execut.app"
-        },
-        "android": {
-            "package": "com.execut.app",
-            "adaptiveIcon": {
-                "backgroundColor": "#131F54"
-            }
-        },
-        "web": {},
-        "plugins": [
-            "expo-secure-store",
-            "expo-local-authentication"
-        ],
-        "extra": {
-            "eas": {
-                "projectId": "your-eas-project-id"
-            }
-        }
+  "expo": {
+    "name": "Execut",
+    "slug": "execut",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#131F54"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.execut.app"
+    },
+    "android": {
+      "package": "com.execut.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#131F54"
+      }
+    },
+    "web": {},
+    "plugins": [
+      "expo-secure-store",
+      "expo-local-authentication",
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
     }
+  }
 }

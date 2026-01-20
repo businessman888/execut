@@ -61,10 +61,10 @@ export const QuarterGrid: React.FC<QuarterGridProps> = ({ quarters, progress }) 
 
             {/* Progress Bar */}
             <VStack space={1}>
-                <Box w="100%" h={2} bg="surface.tertiary" borderRadius="full" overflow="hidden">
+                <Box w="100%" h={7} bg="surface.tertiary" borderRadius="full" overflow="hidden">
                     <View style={[styles.progressBar, { width: `${progress}%` }]}>
                         <LinearGradient
-                            colors={['#33CFFF', '#00A3CC']}
+                            colors={['#33CFFF', '#475FAF']}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 0 }}
                             style={styles.gradient}

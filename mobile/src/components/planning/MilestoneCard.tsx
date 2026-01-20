@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, HStack, VStack, Text, Pressable } from 'native-base';
+import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
 import { MoneyBagIcon, CelebrationIcon } from '../icons/NavIcons';
 import { QuarterGrid } from './QuarterGrid';
 
@@ -16,6 +17,33 @@ interface MilestoneCardProps {
     onPress?: () => void;
 }
 
+// Custom Circle Icon with Gradient Stroke
+const CircleIconWithGradient = ({ size = 25 }) => (
+    <Box width={size} height={size} justifyContent="center" alignItems="center">
+        <Svg width={size} height={size} viewBox="0 0 25 25" fill="none">
+            <Defs>
+                <LinearGradient id="circleGradient" x1="0" y1="12" x2="25" y2="12" gradientUnits="userSpaceOnUse">
+                    <Stop offset="0" stopColor="#33CFFF" />
+                    <Stop offset="1" stopColor="#475FAF" />
+                </LinearGradient>
+            </Defs>
+            <Circle
+                cx="12.5"
+                cy="12.5"
+                r="8"
+                stroke="url(#circleGradient)"
+                strokeWidth="5"
+            />
+            <Circle
+                cx="12.5"
+                cy="12.5"
+                r="2"
+                fill="#000000"
+            />
+        </Svg>
+    </Box>
+);
+
 export const MilestoneCard: React.FC<MilestoneCardProps> = ({
     yearNumber,
     phase,
@@ -31,9 +59,9 @@ export const MilestoneCard: React.FC<MilestoneCardProps> = ({
     const renderIcon = () => {
         switch (icon) {
             case 'money':
-                return <MoneyBagIcon size={24} color="#33CFFF" />;
+                return <MoneyBagIcon size={30} color="#33CFFF" />;
             case 'celebration':
-                return <CelebrationIcon size={24} color="#F59E0B" />;
+                return <CelebrationIcon size={30} color="#F59E0B" />;
             default:
                 return null;
         }
@@ -41,58 +69,72 @@ export const MilestoneCard: React.FC<MilestoneCardProps> = ({
 
     return (
         <VStack space={2}>
-            {/* Year badge and phase */}
-            <HStack space={2} alignItems="center">
-                <Box
-                    bg={isActive ? 'accent.400' : 'transparent'}
-                    borderRadius="full"
-                    w={3}
-                    h={3}
-                />
-                <Text color="text.tertiary" fontSize="2xs" letterSpacing="lg">
-                    ANO {String(yearNumber).padStart(2, '0')} - {phase}
-                </Text>
-            </HStack>
+            {/* Header: Circle Icon, Year/Phase, Title and MoneyBag Icon */}
+            <HStack alignItems="flex-start" space={3}>
+                {/* Left Column: Circle Icon and Line */}
+                <VStack alignItems="center" height="100%">
+                    {isActive ? (
+                        <CircleIconWithGradient size={32} />
+                    ) : (
+                        <Box
+                            w={6}
+                            h={6}
+                            borderRadius="full"
+                            bg="surface.tertiary"
+                            borderWidth={2}
+                            borderColor="text.tertiary"
+                        />
+                    )}
+                    {/* Vertical Line would go here in parent container context */}
+                </VStack>
 
-            {/* Title with icon */}
-            <HStack alignItems="center" space={2} ml={5}>
-                <Text color="text.primary" fontSize="md" fontWeight="semibold">
-                    {title}
-                </Text>
-                {icon && (
-                    <Box>
-                        {renderIcon()}
-                    </Box>
-                )}
-            </HStack>
-
-            {/* Revenue Card */}
-            <Pressable onPress={onPress}>
-                <Box
-                    bg="surface.primary"
-                    borderRadius="2xl"
-                    borderWidth={1}
-                    borderColor="border.default"
-                    p={4}
-                    ml={5}
-                >
-                    <VStack space={showQuarters ? 4 : 0}>
-                        {/* Revenue Display */}
-                        <Text color="text.secondary" fontSize="2xl" fontWeight="semibold">
-                            <Text color="text.secondary" fontSize="2xl">R$ </Text>
-                            <Text color="text.primary" fontSize="3xl" fontWeight="bold">
-                                {revenue.split('/')[0].replace('R$ ', '')}
+                {/* Right Column: Text Content */}
+                <VStack flex={1} space={1}>
+                    <HStack justifyContent="space-between" alignItems="center" pr={2}>
+                        <VStack>
+                            <Text color={isActive ? "accent.400" : "text.tertiary"} fontSize="xs" letterSpacing={1} fontWeight="medium">
+                                ANO {String(yearNumber).padStart(2, '0')} - {phase}
                             </Text>
-                            <Text color="text.secondary" fontSize="lg">/mês</Text>
-                        </Text>
+                            <Text color="text.primary" fontSize="lg" fontWeight="bold">
+                                {title}
+                            </Text>
+                        </VStack>
 
-                        {/* Quarter Grid (only for Year 1) */}
-                        {showQuarters && quarters && (
-                            <QuarterGrid quarters={quarters} progress={progress} />
+                        {icon && (
+                            <Box opacity={isActive ? 1 : 0.5}>
+                                {renderIcon()}
+                            </Box>
                         )}
-                    </VStack>
-                </Box>
-            </Pressable>
+                    </HStack>
+
+                    {/* Revenue Card */}
+                    <Pressable onPress={onPress} mt={2}>
+                        <Box
+                            bg="surface.primary"
+                            borderRadius={20}
+                            borderWidth={1}
+                            borderColor={isActive ? "accent.400" : "border.default"}
+                            p={6}
+                        >
+                            <VStack space={showQuarters ? 6 : 0}>
+                                {/* Revenue Display */}
+                                <HStack alignItems="baseline">
+                                    <Text color="accent.400" fontSize="2xl" fontWeight="bold">R$ </Text>
+                                    <Text color="accent.400" fontSize="3xl" fontWeight="bold">
+                                        {revenue.split('/')[0].replace('R$ ', '')}
+                                    </Text>
+                                    <Text color="text.secondary" fontSize="md" ml={1}>/mês</Text>
+                                </HStack>
+
+                                {/* Quarter Grid (only for Year 1) */}
+                                {showQuarters && quarters && (
+                                    <QuarterGrid quarters={quarters} progress={progress} />
+                                )}
+                            </VStack>
+                        </Box>
+                    </Pressable>
+                </VStack>
+            </HStack>
         </VStack>
     );
 };

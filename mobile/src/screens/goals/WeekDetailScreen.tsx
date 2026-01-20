@@ -189,20 +189,24 @@ export function WeekDetailScreen() {
                         </Text>
 
                         {/* Days List */}
-                        <VStack space={3}>
+                        <Box>
                             {mockDays.map((day, index) => (
-                                <DayRow
+                                <Box
                                     key={index}
-                                    dayName={day.dayName}
-                                    dayNumber={day.dayNumber}
-                                    taskCount={day.taskCount}
-                                    status={day.status}
-                                    statusLabel={day.statusLabel}
-                                    isCurrent={day.isCurrent}
-                                    onPress={() => console.log(`${day.dayName} ${day.dayNumber} pressed`)}
-                                />
+                                    style={{ marginBottom: 21 }}
+                                >
+                                    <DayRow
+                                        dayName={day.dayName}
+                                        dayNumber={day.dayNumber}
+                                        taskCount={day.taskCount}
+                                        status={day.status}
+                                        statusLabel={day.statusLabel}
+                                        isCurrent={day.isCurrent}
+                                        onPress={() => console.log(`${day.dayName} ${day.dayNumber} pressed`)}
+                                    />
+                                </Box>
                             ))}
-                        </VStack>
+                        </Box>
                     </VStack>
                 </VStack>
             </ScrollView>

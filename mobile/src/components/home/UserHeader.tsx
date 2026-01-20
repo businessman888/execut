@@ -26,10 +26,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
                 {/* Avatar */}
                 <Pressable onPress={onAvatarPress} _pressed={{ opacity: 0.7 }}>
                     <Box
-                        w={12}
-                        h={12}
+                        w={50}
+                        h={50}
                         borderRadius="full"
-                        borderWidth={1}
+                        borderWidth={2}
                         borderColor="border.default"
                         overflow="hidden"
                     >
@@ -59,10 +59,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
 
                 {/* User Info */}
                 <VStack>
-                    <Text color="text.primary" fontSize="md" fontWeight="semibold">
+                    <Text color="text.primary" fontSize="xl" fontWeight="bold">
                         {userName}
                     </Text>
-                    <Text color="text.secondary" fontSize="xs">
+                    <Text color="text.secondary" fontSize="sm">
                         {userStatus}
                     </Text>
                 </VStack>
@@ -75,11 +75,11 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
                     bg="surface.secondary"
                     borderWidth={1}
                     borderColor="border.default"
-                    px={3}
-                    py={1}
+                    px={4}
+                    py={2}
                     borderRadius="full"
                 >
-                    <Text color="text.primary" fontSize="xs" fontWeight="bold">
+                    <Text color="text.primary" fontSize="sm" fontWeight="bold">
                         LVL {level}
                     </Text>
                 </Box>
@@ -89,14 +89,14 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
                     bg="surface.secondary"
                     borderWidth={1}
                     borderColor="border.default"
-                    px={3}
-                    py={1}
+                    px={4}
+                    py={2}
                     borderRadius="full"
-                    space={1}
+                    space={2}
                     alignItems="center"
                 >
-                    <FireIcon size={14} color="#FF6B35" />
-                    <Text color="text.primary" fontSize="xs" fontWeight="bold">
+                    <FireIcon size={16} color="#FF6B35" />
+                    <Text color="text.primary" fontSize="sm" fontWeight="bold">
                         {streak}
                     </Text>
                 </HStack>

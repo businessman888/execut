@@ -79,29 +79,29 @@ export const MentalEdgeCard: React.FC<MentalEdgeCardProps> = ({
         <Pressable onPress={onPress} disabled={isLocked}>
             <Box
                 bg="surface.primary"
-                borderRadius="2xl"
+                borderRadius={15}
                 borderWidth={isActive ? 1 : 0}
                 borderColor={isActive ? 'accent.400' : 'transparent'}
                 overflow="hidden"
                 opacity={isLocked ? 0.7 : 1}
+                w={342}
+                h={113}
             >
-                <HStack alignItems="center">
+                <HStack w="100%" h="100%" alignItems="center" px={4} space={4}>
                     {/* Image or Icon Section */}
                     {image ? (
                         <Image
                             source={{ uri: image }}
                             alt={title}
-                            w={20}
-                            h={20}
+                            w="58px"
+                            h="58px"
                             resizeMode="cover"
+                            borderRadius="lg"
                         />
                     ) : (
                         <Box
-                            w={20}
-                            h={20}
-                            bg="surface.secondary"
-                            alignItems="center"
                             justifyContent="center"
+                            alignItems="center"
                         >
                             {icon}
                         </Box>

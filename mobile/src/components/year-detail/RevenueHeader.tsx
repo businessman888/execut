@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, HStack, VStack, Text } from 'native-base';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 interface RevenueHeaderProps {
     revenue: string;
@@ -59,54 +59,60 @@ export const RevenueHeader: React.FC<RevenueHeaderProps> = ({
             borderWidth={1}
             borderColor="border.default"
             p={4}
+            w={355}
+            h={197}
         >
-            <VStack space={3}>
+            <VStack h="100%" justifyContent="space-between" py={2}>
                 {/* Top section with revenue and circular progress */}
                 <HStack justifyContent="space-between" alignItems="flex-start">
-                    <VStack>
-                        <Text color="text.secondary" fontSize="xs">
+                    <VStack space={1}>
+                        <Text color="#9CA3AF" fontSize={14}>
                             Meta de faturamento
                         </Text>
-                        <Text color="text.primary" fontSize="3xl" fontWeight="bold">
+                        <Text color="#33CFFF" fontSize={32} fontWeight="bold" lineHeight={38}>
                             R$ {revenue}
                         </Text>
-                        <Text color="accent.400" fontSize="xs">
-                            +{percentageIncrease}% vs último ano
+                        <Text color="#33CFFF" fontSize={12}>
+                            +{percentageIncrease}% vs Último ano
                         </Text>
                     </VStack>
 
                     {/* Circular Progress */}
-                    <Box position="relative" alignItems="center" justifyContent="center">
-                        <CircularProgress progress={progress} size={60} />
+                    <Box position="relative" alignItems="center" justifyContent="center" mt={2}>
+                        <CircularProgress progress={progress} size={58.33} />
                         <Box position="absolute">
-                            <Text color="text.primary" fontSize="xs" fontWeight="semibold">
+                            <Text color="#33CFFF" fontSize="xs" fontWeight="semibold">
                                 {progress}%
                             </Text>
                         </Box>
                     </Box>
                 </HStack>
 
-                {/* Progress bar section */}
-                <VStack space={1}>
+                {/* Progress Bar */}
+                <VStack space={2}>
                     <HStack justifyContent="space-between" alignItems="center">
-                        <Text color="text.secondary" fontSize="xs">
+                        <Text color="text.secondary" fontSize={14}>
                             Atualmente
                         </Text>
-                        <Text color="text.secondary" fontSize="xs">
+                        <Text color="text.secondary" fontSize={14}>
                             R$ {currentRevenue}
                         </Text>
                     </HStack>
-
-                    {/* Linear progress bar */}
-                    <Box w="100%" h={2} bg="surface.tertiary" borderRadius="full" overflow="hidden">
-                        <View style={[styles.progressBar, { width: `${progress}%` }]}>
+                    <Box
+                        w="100%"
+                        h={7}
+                        bg="surface.tertiary"
+                        borderRadius="full"
+                        overflow="hidden"
+                    >
+                        <Box w={`${progress}%`} h="100%" overflow="hidden">
                             <LinearGradient
-                                colors={['#33CFFF', '#00A3CC']}
+                                colors={['#33CFFF', '#475FAF']}
                                 start={{ x: 0, y: 0 }}
                                 end={{ x: 1, y: 0 }}
-                                style={styles.gradient}
+                                style={{ flex: 1 }}
                             />
-                        </View>
+                        </Box>
                     </Box>
                 </VStack>
             </VStack>

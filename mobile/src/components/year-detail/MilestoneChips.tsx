@@ -1,6 +1,6 @@
-import React from 'react';
 import { Box, HStack, Text, Pressable, ScrollView } from 'native-base';
 import Svg, { Circle } from 'react-native-svg';
+import { CheckBlueIcon } from '../icons/NavIcons';
 
 interface MilestoneChip {
     id: string;
@@ -51,24 +51,20 @@ export const MilestoneChips: React.FC<MilestoneChipsProps> = ({
                             >
                                 <HStack space={2} alignItems="center">
                                     {/* Circle indicator */}
-                                    <Svg width={16} height={16} viewBox="0 0 16 16">
-                                        <Circle
-                                            cx={8}
-                                            cy={8}
-                                            r={6}
-                                            stroke={milestone.isActive ? '#33CFFF' : '#6B7280'}
-                                            strokeWidth={1.5}
-                                            fill={milestone.isActive ? '#33CFFF' : 'none'}
-                                        />
-                                        {milestone.isActive && (
+                                    {milestone.isActive ? (
+                                        <CheckBlueIcon size={16} />
+                                    ) : (
+                                        <Svg width={16} height={16} viewBox="0 0 16 16">
                                             <Circle
                                                 cx={8}
                                                 cy={8}
-                                                r={3}
-                                                fill="#0D0D0D"
+                                                r={6}
+                                                stroke="#6B7280"
+                                                strokeWidth={1.5}
+                                                fill="none"
                                             />
-                                        )}
-                                    </Svg>
+                                        </Svg>
+                                    )}
                                     <Text
                                         color={milestone.isActive ? 'accent.400' : 'text.secondary'}
                                         fontSize="sm"
