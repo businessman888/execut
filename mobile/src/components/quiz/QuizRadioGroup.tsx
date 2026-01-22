@@ -1,12 +1,12 @@
 import React from 'react';
 import { Box, Text, VStack, HStack, Pressable } from '../ui';
-import { Svg, Path, Rect, Circle, Line, G } from 'react-native-svg';
+import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 
 interface RadioOption {
     value: string;
     label: string;
     description: string;
-    icon: 'briefcase' | 'arrows' | 'rocket' | 'person' | 'chart';
+    icon: 'briefcase' | 'arrows' | 'rocket' | 'person' | 'chart' | 'helpCircle' | 'close' | 'pulse' | 'flame' | 'fireTruck' | 'brain' | 'construct' | 'checkmarkDone' | 'phonePortrait' | 'hourglass' | 'notifications' | 'people' | 'thumbsUp' | 'thumbsDown';
 }
 
 interface QuizRadioGroupProps {
@@ -15,35 +15,25 @@ interface QuizRadioGroupProps {
     onChange: (value: string) => void;
 }
 
-// Icon components
+// Icon components using @expo/vector-icons
 const BriefcaseIcon: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
-    <Box w={size} h={size} alignItems="center" justifyContent="center">
-        <Text color={color} fontSize="md">💼</Text>
-    </Box>
+    <Ionicons name="briefcase" size={size} color={color} />
 );
 
 const ArrowsIcon: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
-    <Box w={size} h={size} alignItems="center" justifyContent="center">
-        <Text color={color} fontSize="md">↔️</Text>
-    </Box>
+    <MaterialCommunityIcons name="swap-horizontal" size={size} color={color} />
 );
 
 const RocketIcon: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
-    <Box w={size} h={size} alignItems="center" justifyContent="center">
-        <Text color={color} fontSize="md">🚀</Text>
-    </Box>
+    <Ionicons name="rocket" size={size} color={color} />
 );
 
 const PersonIcon: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
-    <Box w={size} h={size} alignItems="center" justifyContent="center">
-        <Text color={color} fontSize="md">👤</Text>
-    </Box>
+    <Ionicons name="person" size={size} color={color} />
 );
 
 const ChartIcon: React.FC<{ color: string; size?: number }> = ({ color, size = 20 }) => (
-    <Box w={size} h={size} alignItems="center" justifyContent="center">
-        <Text color={color} fontSize="md">📊</Text>
-    </Box>
+    <Ionicons name="bar-chart" size={size} color={color} />
 );
 
 const getIcon = (iconName: string, isSelected: boolean) => {
@@ -51,17 +41,45 @@ const getIcon = (iconName: string, isSelected: boolean) => {
 
     switch (iconName) {
         case 'briefcase':
-            return <BriefcaseIcon color={color} />;
+            return <Ionicons name="briefcase" size={20} color={color} />;
         case 'arrows':
-            return <ArrowsIcon color={color} />;
+            return <MaterialCommunityIcons name="swap-horizontal" size={20} color={color} />;
         case 'rocket':
-            return <RocketIcon color={color} />;
+            return <Ionicons name="rocket" size={20} color={color} />;
         case 'person':
-            return <PersonIcon color={color} />;
+            return <Ionicons name="person" size={20} color={color} />;
         case 'chart':
-            return <ChartIcon color={color} />;
+            return <Ionicons name="bar-chart" size={20} color={color} />;
+        case 'helpCircle':
+            return <Ionicons name="help-circle" size={20} color={color} />;
+        case 'close':
+            return <Ionicons name="close" size={20} color={color} />;
+        case 'pulse':
+            return <Ionicons name="pulse" size={20} color={color} />;
+        case 'flame':
+            return <Ionicons name="flame" size={20} color={color} />;
+        case 'fireTruck':
+            return <MaterialCommunityIcons name="fire-truck" size={20} color={color} />;
+        case 'brain':
+            return <MaterialCommunityIcons name="brain" size={20} color={color} />;
+        case 'construct':
+            return <Ionicons name="construct" size={20} color={color} />;
+        case 'checkmarkDone':
+            return <Ionicons name="checkmark-done" size={20} color={color} />;
+        case 'phonePortrait':
+            return <Ionicons name="phone-portrait" size={20} color={color} />;
+        case 'hourglass':
+            return <Ionicons name="hourglass" size={20} color={color} />;
+        case 'notifications':
+            return <Ionicons name="notifications" size={20} color={color} />;
+        case 'people':
+            return <Ionicons name="people" size={20} color={color} />;
+        case 'thumbsUp':
+            return <Ionicons name="thumbs-up" size={20} color={color} />;
+        case 'thumbsDown':
+            return <Ionicons name="thumbs-down" size={20} color={color} />;
         default:
-            return <BriefcaseIcon color={color} />;
+            return <Ionicons name="briefcase" size={20} color={color} />;
     }
 };
 

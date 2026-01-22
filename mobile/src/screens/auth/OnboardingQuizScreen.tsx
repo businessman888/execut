@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, ScrollView, Text, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup } from '../../components/quiz';
+import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider } from '../../components/quiz';
 
 // Quiz step definitions
 const QUIZ_STEPS = [
@@ -41,87 +41,90 @@ const QUIZ_STEPS = [
         ],
     },
     {
-        id: 'financialGoal5Years',
+        id: 'currentSituation',
         titleLines: [
-            { text: 'Qual sua meta de', color: 'primary' as const },
-            { text: 'renda mensal', color: 'accent' as const },
-            { text: 'em 5 anos?', color: 'primary' as const },
+            { text: 'Sendo bem direto: Você', color: 'primary' as const },
+            { text: 'está hoje em qual dessas', color: 'primary' as const },
+            { text: 'situações?', color: 'accent' as const },
         ],
-        type: 'number',
-        placeholder: 'Ex: 50000',
+        type: 'radioGroup',
+        options: [
+            { value: 'lost', label: 'Me sinto perdido', description: 'Estado Estagnado', icon: 'helpCircle' as const },
+            { value: 'no_execution', label: 'Tenho ideias/não executo', description: 'Estado de procrastinação', icon: 'close' as const },
+            { value: 'chaos', label: 'Algo rodando/caos', description: 'Estado de escala', icon: 'pulse' as const },
+            { value: 'burnout', label: 'Escravo do negócio', description: 'Estado do Burnout', icon: 'flame' as const },
+        ],
     },
     {
-        id: 'currentIncome',
-        titleLines: [
-            { text: 'Qual sua', color: 'primary' as const },
-            { text: 'renda mensal', color: 'accent' as const },
-            { text: 'atual?', color: 'primary' as const },
-        ],
-        type: 'number',
-        placeholder: 'Ex: 5000',
-    },
-    {
-        id: 'availableTime',
+        id: 'hoursPerDay',
         titleLines: [
             { text: 'Quantas horas por dia', color: 'primary' as const },
-            { text: 'você pode dedicar', color: 'accent' as const },
-            { text: 'ao seu desenvolvimento?', color: 'primary' as const },
+            { text: 'Você Realmente', color: 'accent' as const },
+            { text: 'dedica ao seu negócio?', color: 'primary' as const },
         ],
-        type: 'radio',
+        type: 'hoursSlider',
+    },
+    {
+        id: 'workEngineering',
+        titleLines: [
+            { text: 'Sua Nova', color: 'primary' as const },
+            { text: 'Engenharia', color: 'accent' as const },
+            { text: 'de trabalho', color: 'primary' as const },
+        ],
+        type: 'featureShowcase',
+    },
+    {
+        id: 'organizationLevel',
+        titleLines: [
+            { text: 'Como você define o seu', color: 'primary' as const },
+            { text: 'nível de organização', color: 'accent' as const },
+            { text: 'pessoal hoje?', color: 'primary' as const },
+        ],
+        type: 'radioGroup',
         options: [
-            { value: '1-2h', label: '1-2 horas' },
-            { value: '3-4h', label: '3-4 horas' },
-            { value: '5-6h', label: '5-6 horas' },
-            { value: '7-8h', label: '7-8 horas' },
-            { value: 'full-time', label: 'Tempo integral' },
+            { value: 'chaos', label: 'Caos Total', description: 'Sinto que estou sempre apagando incêndios', icon: 'fireTruck' as const },
+            { value: 'mental', label: 'Organização Mental', description: 'Confio na memória, mas gera ansiedade', icon: 'brain' as const },
+            { value: 'tools_inconsistent', label: 'Uso ferramentas mas perco-me', description: 'Falta consistência', icon: 'construct' as const },
+            { value: 'highly_organized', label: 'Altamente organizado', description: 'Processos claros e rotina otimizada', icon: 'checkmarkDone' as const },
         ],
     },
     {
-        id: 'experienceLevel',
+        id: 'timeThief',
         titleLines: [
-            { text: 'Qual seu nível de', color: 'primary' as const },
-            { text: 'experiência', color: 'accent' as const },
-            { text: 'em empreendedorismo?', color: 'primary' as const },
+            { text: 'Qual é o seu maior', color: 'primary' as const },
+            { text: '"ladrão de tempo"', color: 'accent' as const },
+            { text: 'atualmente?', color: 'primary' as const },
         ],
-        type: 'radio',
+        type: 'radioGroup',
         options: [
-            { value: 'none', label: 'Nenhuma experiência' },
-            { value: 'beginner', label: 'Iniciante' },
-            { value: 'intermediate', label: 'Intermediário' },
-            { value: 'advanced', label: 'Avançado' },
+            { value: 'social_media', label: 'Redes Sociais', description: 'Scrolling Infinito', icon: 'phonePortrait' as const },
+            { value: 'procrastination', label: 'Procastinação', description: 'Adiar o vital', icon: 'hourglass' as const },
+            { value: 'interruptions', label: 'Interrupções', description: 'Foco fragmentado', icon: 'notifications' as const },
+            { value: 'meetings', label: 'Excesso de reuniões', description: 'Teoria vs Prático', icon: 'people' as const },
         ],
     },
     {
-        id: 'businessArea',
+        id: 'managementTool',
         titleLines: [
-            { text: 'Em qual área você', color: 'primary' as const },
-            { text: 'quer empreender?', color: 'accent' as const },
+            { text: 'Você utiliza alguma', color: 'primary' as const },
+            { text: 'ferramenta de gestão', color: 'accent' as const },
+            { text: 'hoje?', color: 'primary' as const },
         ],
-        type: 'radio',
+        type: 'radioGroup',
         options: [
-            { value: 'infoproducts', label: 'Infoprodutos' },
-            { value: 'ecommerce', label: 'E-commerce' },
-            { value: 'digital_services', label: 'Serviços Digitais' },
-            { value: 'saas', label: 'SaaS' },
-            { value: 'consulting', label: 'Consultoria' },
-            { value: 'content_creation', label: 'Criação de Conteúdo' },
+            { value: 'yes', label: 'Sim', description: '', icon: 'thumbsUp' as const },
+            { value: 'no', label: 'Não', description: '', icon: 'thumbsDown' as const },
         ],
     },
     {
-        id: 'mainMotivation',
+        id: 'consumptionVsExecution',
         titleLines: [
-            { text: 'O que mais te', color: 'primary' as const },
-            { text: 'motiva', color: 'accent' as const },
-            { text: 'a empreender?', color: 'primary' as const },
+            { text: 'Na última semana,', color: 'primary' as const },
+            { text: 'quanto tempo passou a', color: 'primary' as const },
+            { text: 'consumir', color: 'accent' as const },
+            { text: 'conteúdo vs a executar?', color: 'accent' as const },
         ],
-        type: 'radio',
-        options: [
-            { value: 'financial_freedom', label: 'Liberdade financeira' },
-            { value: 'autonomy', label: 'Autonomia e liberdade' },
-            { value: 'impact', label: 'Impacto social' },
-            { value: 'personal_achievement', label: 'Realização pessoal' },
-            { value: 'legacy', label: 'Deixar um legado' },
-        ],
+        type: 'balanceSlider',
     },
 ];
 
@@ -156,8 +159,8 @@ export function OnboardingQuizScreen() {
     };
 
     const isCurrentAnswerValid = () => {
-        // Age picker has a default value, so it's always valid
-        if (step.type === 'age') return true;
+        // Age picker, hours slider, feature showcase and balance slider have default values, so they're always valid
+        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider') return true;
 
         const answer = answers[step.id];
         if (!answer) return false;
@@ -258,6 +261,22 @@ export function OnboardingQuizScreen() {
                         maxAge={80}
                     />
                 );
+            case 'hoursSlider':
+                return (
+                    <HoursSlider
+                        value={answers[step.id] || 12.5}
+                        onChange={handleAnswer}
+                    />
+                );
+            case 'featureShowcase':
+                return <FeatureShowcase />;
+            case 'balanceSlider':
+                return (
+                    <BalanceSlider
+                        value={answers[step.id] || 50}
+                        onChange={handleAnswer}
+                    />
+                );
             default:
                 return null;
         }
@@ -279,11 +298,12 @@ export function OnboardingQuizScreen() {
                 {/* Quiz Content */}
                 <QuizContainer
                     titleLines={step.titleLines}
-                    buttonLabel={currentStep === totalSteps - 1 ? 'Finalizar' : 'Continuar'}
+                    buttonLabel="Continuar"
                     onContinue={handleContinue}
                     isButtonDisabled={!isCurrentAnswerValid()}
                     showBack={currentStep > 0}
                     onBack={handleBack}
+                    largeTitleSize={step.type === 'featureShowcase'}
                 >
                     {renderStepContent()}
                 </QuizContainer>

@@ -20,6 +20,8 @@ interface QuizContainerProps {
     showBack?: boolean;
     /** Button press handler for back */
     onBack?: () => void;
+    /** Use larger title font size (32px) */
+    largeTitleSize?: boolean;
 }
 
 export const QuizContainer: React.FC<QuizContainerProps> = ({
@@ -30,22 +32,25 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
     isButtonDisabled = false,
     showBack = false,
     onBack,
+    largeTitleSize = false,
 }) => {
     return (
         <VStack flex={1} justifyContent="space-between">
             {/* Question Section */}
-            <VStack space={1} mt={10}>
-                {titleLines.map((line, index) => (
-                    <Text
-                        key={index}
-                        color={line.color === 'accent' ? 'accent.400' : 'text.primary'}
-                        fontSize="2xl"
-                        fontWeight="500"
-                        lineHeight={32}
-                    >
-                        {line.text}
-                    </Text>
-                ))}
+            <VStack space={0} mt={10} alignItems="center">
+                <VStack space={0} alignItems="flex-start">
+                    {titleLines.map((line, index) => (
+                        <Text
+                            key={index}
+                            color={line.color === 'accent' ? 'accent.400' : 'text.primary'}
+                            fontSize={largeTitleSize ? 32 : 22}
+                            fontWeight="500"
+                            lineHeight={largeTitleSize ? 40 : 30}
+                        >
+                            {line.text}
+                        </Text>
+                    ))}
+                </VStack>
             </VStack>
 
             {/* Content (inputs, options, etc.) */}
@@ -62,7 +67,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
                             onPress={onBack}
                             flex={1}
                             bg="surface.secondary"
-                            borderRadius={12}
+                            borderRadius={40}
                             py={4}
                             alignItems="center"
                             justifyContent="center"
@@ -77,8 +82,8 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
                             onPress={onContinue}
                             disabled={isButtonDisabled}
                             flex={1}
-                            bg={isButtonDisabled ? 'surface.tertiary' : 'transparent'}
-                            borderRadius={12}
+                            bg={isButtonDisabled ? 'surface.tertiary' : '#2A2A2A'}
+                            borderRadius={40}
                             py={4}
                             alignItems="center"
                             justifyContent="center"
@@ -94,15 +99,25 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
                         </Pressable>
                     </HStack>
                 ) : (
-                    <Button
+                    <Pressable
                         onPress={onContinue}
-                        isDisabled={isButtonDisabled}
-                        rounded="xl"
+                        disabled={isButtonDisabled}
+                        bg={isButtonDisabled ? '#2A2A2A' : '#00C3FF'}
+                        borderRadius={40}
                         py={4}
                         w="100%"
+                        alignItems="center"
+                        justifyContent="center"
+                        opacity={isButtonDisabled ? 0.7 : 1}
                     >
-                        {buttonLabel}
-                    </Button>
+                        <Text
+                            color={isButtonDisabled ? '#6B7280' : '#000000'}
+                            fontSize="md"
+                            fontWeight="600"
+                        >
+                            {buttonLabel}
+                        </Text>
+                    </Pressable>
                 )}
             </Box>
         </VStack>
@@ -148,7 +163,7 @@ const styles = StyleSheet.create({
     },
     inputLine: {
         height: 1,
-        backgroundColor: '#404040',
+        backgroundColor: '#00C3FF',
         width: '100%',
     },
 });
