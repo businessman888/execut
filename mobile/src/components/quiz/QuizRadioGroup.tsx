@@ -6,7 +6,7 @@ interface RadioOption {
     value: string;
     label: string;
     description: string;
-    icon: 'briefcase' | 'arrows' | 'rocket' | 'person' | 'chart' | 'helpCircle' | 'close' | 'pulse' | 'flame' | 'fireTruck' | 'brain' | 'construct' | 'checkmarkDone' | 'phonePortrait' | 'hourglass' | 'notifications' | 'people' | 'thumbsUp' | 'thumbsDown';
+    icon: 'briefcase' | 'arrows' | 'rocket' | 'person' | 'chart' | 'helpCircle' | 'close' | 'pulse' | 'flame' | 'fireTruck' | 'brain' | 'construct' | 'checkmarkDone' | 'phonePortrait' | 'hourglass' | 'notifications' | 'people' | 'thumbsUp' | 'thumbsDown' | 'wallet' | 'map' | 'alert' | 'time' | 'search' | 'warning' | 'reload' | 'trendingDown' | 'remove' | 'eyeOff' | 'git-branch' | 'cloudy' | 'cash' | 'megaphone' | 'analytics' | 'colorPalette' | 'checkmark' | 'globe';
 }
 
 interface QuizRadioGroupProps {
@@ -78,6 +78,42 @@ const getIcon = (iconName: string, isSelected: boolean) => {
             return <Ionicons name="thumbs-up" size={20} color={color} />;
         case 'thumbsDown':
             return <Ionicons name="thumbs-down" size={20} color={color} />;
+        case 'wallet':
+            return <Ionicons name="wallet" size={20} color={color} />;
+        case 'map':
+            return <Ionicons name="map" size={20} color={color} />;
+        case 'alert':
+            return <Ionicons name="alert-circle" size={20} color={color} />;
+        case 'time':
+            return <Ionicons name="time" size={20} color={color} />;
+        case 'search':
+            return <Ionicons name="search" size={20} color={color} />;
+        case 'warning':
+            return <Ionicons name="warning" size={20} color={color} />;
+        case 'reload':
+            return <Ionicons name="reload" size={20} color={color} />;
+        case 'trendingDown':
+            return <Ionicons name="trending-down" size={20} color={color} />;
+        case 'remove':
+            return <Ionicons name="remove-circle" size={20} color={color} />;
+        case 'eyeOff':
+            return <Ionicons name="eye-off" size={20} color={color} />;
+        case 'git-branch':
+            return <Ionicons name="git-branch" size={20} color={color} />;
+        case 'cloudy':
+            return <Ionicons name="cloudy" size={20} color={color} />;
+        case 'cash':
+            return <Ionicons name="cash" size={20} color={color} />;
+        case 'megaphone':
+            return <Ionicons name="megaphone" size={20} color={color} />;
+        case 'analytics':
+            return <Ionicons name="analytics" size={20} color={color} />;
+        case 'colorPalette':
+            return <Ionicons name="color-palette" size={20} color={color} />;
+        case 'checkmark':
+            return <Ionicons name="checkmark" size={20} color={color} />;
+        case 'globe':
+            return <Ionicons name="globe" size={20} color={color} />;
         default:
             return <Ionicons name="briefcase" size={20} color={color} />;
     }
