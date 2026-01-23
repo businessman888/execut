@@ -15,8 +15,10 @@ const BENEFITS: BenefitItem[] = [
 export const EnergyAnalysis: React.FC = () => {
     return (
         <ScrollView
+            flex={1}
+            w="100%"
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingTop: 20, paddingBottom: 20 }}
+            contentContainerStyle={{ paddingTop: 40, paddingBottom: 100 }}
         >
             <VStack space={0} alignItems="center" w="100%" style={{ gap: 20 }}>
                 {/* Comparison Card */}
