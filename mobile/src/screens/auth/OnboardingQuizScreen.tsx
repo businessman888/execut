@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, ScrollView, Text, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider } from '../../components/quiz';
+import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis } from '../../components/quiz';
 
 // Quiz step definitions
 const QUIZ_STEPS = [
@@ -109,6 +109,15 @@ const QUIZ_STEPS = [
             { value: 'completely_lost', label: 'Não faço ideia', description: 'Estou completamente perdido', icon: 'helpCircle' as const },
             { value: 'tried_failed', label: 'Já tentei várias coisas', description: 'Nada deu certo', icon: 'close' as const },
         ],
+    },
+    {
+        id: 'energyAnalysis',
+        route: 'A',
+        titleLines: [
+            { text: 'Análise de fuga', color: 'primary' as const },
+            { text: 'de Energia', color: 'accent' as const },
+        ],
+        type: 'energyAnalysis',
     },
     {
         id: 'realAvailability',
@@ -687,8 +696,8 @@ export function OnboardingQuizScreen() {
     };
 
     const isCurrentAnswerValid = () => {
-        // Age picker, hours slider, feature showcase and balance slider have default values, so they're always valid
-        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider') return true;
+        // Age picker, hours slider, feature showcase, energy analysis and balance slider have default values, so they're always valid
+        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider' || step.type === 'energyAnalysis') return true;
 
         const answer = answers[step.id];
         if (!answer) return false;
@@ -798,6 +807,8 @@ export function OnboardingQuizScreen() {
                 );
             case 'featureShowcase':
                 return <FeatureShowcase />;
+            case 'energyAnalysis':
+                return <EnergyAnalysis />;
             case 'balanceSlider':
                 return (
                     <BalanceSlider
