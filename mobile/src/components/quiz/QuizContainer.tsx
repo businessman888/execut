@@ -21,7 +21,10 @@ interface QuizContainerProps {
     /** Button press handler for back */
     onBack?: () => void;
     /** Use larger title font size (32px) */
+    /** Use larger title font size (32px) */
     largeTitleSize?: boolean;
+    /** Custom button component to replace the default buttons */
+    customButton?: React.ReactNode;
 }
 
 export const QuizContainer: React.FC<QuizContainerProps> = ({
@@ -33,6 +36,7 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
     showBack = false,
     onBack,
     largeTitleSize = false,
+    customButton,
 }) => {
     return (
         <VStack flex={1} justifyContent="space-between">
@@ -60,7 +64,9 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
 
             {/* Buttons */}
             <Box pb={8}>
-                {showBack ? (
+                {customButton ? (
+                    customButton
+                ) : showBack ? (
                     <HStack space={3} justifyContent="space-between">
                         {/* Back Button */}
                         <Pressable

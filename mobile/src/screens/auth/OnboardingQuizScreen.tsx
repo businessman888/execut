@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, ScrollView, Text, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis } from '../../components/quiz';
+import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis, BarrierAnalysis, SocialProof, FreedomPath, PlanSummary, Testimonials } from '../../components/quiz';
 
 // Quiz step definitions
 const QUIZ_STEPS = [
@@ -344,6 +344,12 @@ const QUIZ_STEPS = [
         ],
     },
     {
+        id: 'barrierAnalysis',
+        route: 'A',
+        titleLines: [],
+        type: 'barrierAnalysis',
+    },
+    {
         id: 'screenTime',
         route: 'common',
         titleLines: [
@@ -425,6 +431,12 @@ const QUIZ_STEPS = [
             { value: '8_9', label: '8-9 (Disposto a sacrificar)', description: 'Muito pelos objetivos', icon: 'flame' as const },
             { value: '10', label: '10 (Modo obsessivo)', description: 'Sucesso acima de tudo', icon: 'rocket' as const },
         ],
+    },
+    {
+        id: 'socialProof',
+        route: 'common',
+        titleLines: [],
+        type: 'socialProof',
     },
     // ==================== FASE 4: BIOHACKING E ENERGIA ====================
     {
@@ -509,6 +521,12 @@ const QUIZ_STEPS = [
             { value: 'three', label: 'Três de forma regular', description: 'Preciso melhorar', icon: 'warning' as const },
             { value: 'all', label: 'Todos ou quase todos', description: 'Sei que afeta meu desempenho', icon: 'alert' as const },
         ],
+    },
+    {
+        id: 'freedomPath',
+        route: 'common',
+        titleLines: [],
+        type: 'freedomPath',
     },
     {
         id: 'bodyCare',
@@ -626,6 +644,18 @@ const QUIZ_STEPS = [
             { value: 'fastest', label: 'O mais rápido possível', description: 'Não importa o que custar', icon: 'rocket' as const },
         ],
     },
+    {
+        id: 'planSummary',
+        route: 'common',
+        titleLines: [],
+        type: 'planSummary',
+    },
+    {
+        id: 'testimonials',
+        route: 'common',
+        titleLines: [],
+        type: 'testimonials',
+    },
 ];
 
 export function OnboardingQuizScreen() {
@@ -685,7 +715,12 @@ export function OnboardingQuizScreen() {
     };
 
     const handleContinue = () => {
+        console.log('handleContinue called');
+        console.log('currentStepIndex:', currentStepIndex);
+        console.log('totalSteps:', totalSteps);
+
         if (currentStepIndex < totalSteps - 1) {
+            console.log('Advancing to next step:', currentStepIndex + 1);
             setCurrentStepIndex((prev) => prev + 1);
         } else {
             // Quiz completed - submit answers
@@ -696,8 +731,8 @@ export function OnboardingQuizScreen() {
     };
 
     const isCurrentAnswerValid = () => {
-        // Age picker, hours slider, feature showcase, energy analysis and balance slider have default values, so they're always valid
-        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider' || step.type === 'energyAnalysis') return true;
+        // Age picker, hours slider, feature showcase, energy analysis, balance slider, barrier analysis, social proof, freedom path, plan summary and testimonials have default values, so they're always valid
+        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider' || step.type === 'energyAnalysis' || step.type === 'barrierAnalysis' || step.type === 'socialProof' || step.type === 'freedomPath' || step.type === 'planSummary' || step.type === 'testimonials') return true;
 
         const answer = answers[step.id];
         if (!answer) return false;
@@ -809,6 +844,16 @@ export function OnboardingQuizScreen() {
                 return <FeatureShowcase />;
             case 'energyAnalysis':
                 return <EnergyAnalysis />;
+            case 'barrierAnalysis':
+                return <BarrierAnalysis />;
+            case 'socialProof':
+                return <SocialProof />;
+            case 'freedomPath':
+                return <FreedomPath />;
+            case 'planSummary':
+                return <PlanSummary userName={answers['name']} />;
+            case 'testimonials':
+                return <Testimonials />;
             case 'balanceSlider':
                 return (
                     <BalanceSlider
@@ -819,6 +864,79 @@ export function OnboardingQuizScreen() {
             default:
                 return null;
         }
+    };
+
+    const renderCustomButton = () => {
+        if (step.type === 'planSummary') {
+            return (
+                <Pressable
+                    onPress={() => {
+                        console.log('Custom Button Pressed');
+                        handleContinue();
+                    }}
+                    w="100%"
+                    bg="#00C3FF"
+                    borderRadius={40}
+                    py={4}
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{
+                        shadowColor: '#00C3FF',
+                        shadowOffset: { width: 0, height: 0 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 20,
+                        elevation: 10,
+                    }}
+                >
+                    <VStack alignItems="center" space={0}>
+                        <Text color="#000000" fontSize="lg" fontWeight="900" style={{ letterSpacing: 1 }}>
+                            ATIVAR MEU PLANO AGORA
+                        </Text>
+                        <Text color="#000000" fontSize="sm" fontWeight="500">
+                            Acesso imediato a uma nova vida!
+                        </Text>
+                    </VStack>
+                </Pressable>
+            );
+        }
+
+        if (step.type === 'testimonials') {
+            return (
+                <Box pb={4}>
+                    <Pressable
+                        onPress={handleBack}
+                        w="100%"
+                        bg="#1A1A1A"
+                        borderRadius={40}
+                        py={4}
+                        alignItems="center"
+                        justifyContent="center"
+                        mb={3}
+                    >
+                        <Text color="#FFFFFF" fontSize="md" fontWeight="600">
+                            Voltar
+                        </Text>
+                    </Pressable>
+
+                    <Pressable
+                        onPress={handleContinue}
+                        w="100%"
+                        bg="rgba(16, 185, 129, 0.1)" // Dark Green tint
+                        borderRadius={40}
+                        py={4}
+                        alignItems="center"
+                        justifyContent="center"
+                        borderWidth={1}
+                        borderColor="#10B981"
+                    >
+                        <Text color="#10B981" fontSize="md" fontWeight="600">
+                            Mudar de vida!
+                        </Text>
+                    </Pressable>
+                </Box>
+            )
+        }
+        return undefined;
     };
 
     return (
@@ -843,6 +961,7 @@ export function OnboardingQuizScreen() {
                     showBack={currentStepIndex > 0}
                     onBack={handleBack}
                     largeTitleSize={step.type === 'featureShowcase'}
+                    customButton={renderCustomButton()}
                 >
                     {renderStepContent()}
                 </QuizContainer>
