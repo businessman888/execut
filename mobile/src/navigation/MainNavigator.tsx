@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTheme } from 'native-base';
+import { theme } from '../theme';
 
 // Screens
 import { HomeScreen } from '../screens/home/HomeScreen';
@@ -99,7 +99,7 @@ function ProfileStackNavigator() {
 }
 
 export function MainNavigator() {
-    const { colors } = useTheme();
+    const colors = theme.colors;
 
     return (
         <Tab.Navigator

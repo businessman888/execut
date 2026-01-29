@@ -41,29 +41,31 @@ export const QuizContainer: React.FC<QuizContainerProps> = ({
     return (
         <VStack flex={1} justifyContent="space-between">
             {/* Question Section */}
-            <VStack space={0} mt={10} alignItems="center">
-                <VStack space={0} alignItems="flex-start">
-                    {titleLines.map((line, index) => (
-                        <Text
-                            key={index}
-                            color={line.color === 'accent' ? 'accent.400' : 'text.primary'}
-                            fontSize={largeTitleSize ? 32 : 22}
-                            fontWeight="500"
-                            lineHeight={largeTitleSize ? 40 : 30}
-                        >
-                            {line.text}
-                        </Text>
-                    ))}
+            {titleLines.length > 0 && (
+                <VStack space={0} mt={10} alignItems="center" style={{ zIndex: 10, backgroundColor: '#0D0D0D' }}>
+                    <VStack space={0} alignItems="flex-start">
+                        {titleLines.map((line, index) => (
+                            <Text
+                                key={index}
+                                color={line.color === 'accent' ? 'accent.400' : 'text.primary'}
+                                fontSize={largeTitleSize ? 32 : 22}
+                                fontWeight="500"
+                                lineHeight={largeTitleSize ? 40 : 30}
+                            >
+                                {line.text}
+                            </Text>
+                        ))}
+                    </VStack>
                 </VStack>
-            </VStack>
+            )}
 
             {/* Content (inputs, options, etc.) */}
-            <Box flex={1} justifyContent="center">
+            <Box flex={1} justifyContent="center" style={{ overflow: 'hidden', zIndex: 1 }}>
                 {children}
             </Box>
 
             {/* Buttons */}
-            <Box pb={8}>
+            <Box pb={8} style={{ zIndex: 10, backgroundColor: '#0D0D0D' }}>
                 {customButton ? (
                     customButton
                 ) : showBack ? (

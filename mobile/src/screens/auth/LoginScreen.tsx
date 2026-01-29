@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, VStack, Heading, Text, Input, Button, Center, Pressable, useToast } from 'native-base';
+import { Box, VStack, Text, Button, Center, Pressable, Input, Heading, useToast } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

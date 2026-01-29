@@ -18,9 +18,19 @@ export const EnergyAnalysis: React.FC = () => {
             flex={1}
             w="100%"
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingTop: 40, paddingBottom: 100 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
         >
-            <VStack space={0} alignItems="center" w="100%" style={{ gap: 20 }}>
+            <VStack flex={1} space={0} alignItems="center" w="100%">
+                {/* Title Section - included in scroll */}
+                <VStack space={0} alignItems="center" mt={4} mb={6}>
+                    <Text color="#FFFFFF" fontSize={22} fontWeight="500" textAlign="center">
+                        Análise de fuga
+                    </Text>
+                    <Text color="#00C3FF" fontSize={22} fontWeight="500" textAlign="center">
+                        de Energia
+                    </Text>
+                </VStack>
+
                 {/* Comparison Card */}
                 <Box
                     w={320}
@@ -29,6 +39,7 @@ export const EnergyAnalysis: React.FC = () => {
                     p={5}
                     borderWidth={1}
                     borderColor="rgba(0, 195, 255, 0.2)"
+                    mb={5}
                 >
                     {/* Metrics Header */}
                     <HStack justifyContent="space-between" mb={4}>
@@ -81,7 +92,7 @@ export const EnergyAnalysis: React.FC = () => {
                 </Box>
 
                 {/* Description Text */}
-                <Box px={4}>
+                <Box px={4} mb={5}>
                     <Text color="#6B7280" fontSize="sm" textAlign="center" lineHeight={20}>
                         Detectamos gargalos na sua execução.{'\n'}
                         Vamos eliminá-los agora.

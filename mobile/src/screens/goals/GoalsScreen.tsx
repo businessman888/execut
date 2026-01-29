@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, VStack, ScrollView } from 'native-base';
+import { Box, VStack, ScrollView } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';

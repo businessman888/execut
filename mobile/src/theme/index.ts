@@ -1,4 +1,4 @@
-import { extendTheme } from 'native-base';
+// Theme configuration - standalone version without native-base dependency
 
 // Brand colors from design system
 const BRAND = {
@@ -27,7 +27,7 @@ const ACCENT = {
     900: '#002733',
 };
 
-export const theme = extendTheme({
+export const theme = {
     colors: {
         brand: BRAND,
         accent: ACCENT,
@@ -91,24 +91,9 @@ export const theme = extendTheme({
         body: 'Poppins',
         mono: 'JetBrainsMono',
     },
-    components: {
-        Button: {
-            baseStyle: {
-                rounded: 'lg',
-            },
-            defaultProps: {
-                colorScheme: 'accent',
-            },
-        },
-        Input: {
-            baseStyle: {
-                rounded: 'lg',
-            },
-        },
-    },
     config: {
         initialColorMode: 'dark',
     },
-});
+};
 
 export type AppTheme = typeof theme;

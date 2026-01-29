@@ -113,10 +113,7 @@ const QUIZ_STEPS = [
     {
         id: 'energyAnalysis',
         route: 'A',
-        titleLines: [
-            { text: 'Análise de fuga', color: 'primary' as const },
-            { text: 'de Energia', color: 'accent' as const },
-        ],
+        titleLines: [],
         type: 'energyAnalysis',
     },
     {

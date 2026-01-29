@@ -1,0 +1,90 @@
+﻿src/components/hall-of-fame/CurrentUserCard.tsx(33,13): error TS2322: Type '{ children: Element; bg: string; borderTopRadius: string; borderTopWidth: number; borderTopColor: string; p: number; }' is not assignable to type 'IntrinsicAttributes & BoxProps'.
+  Property 'borderTopRadius' does not exist on type 'IntrinsicAttributes & BoxProps'. Did you mean 'borderRadius'?
+src/components/hall-of-fame/CurrentUserCard.tsx(44,21): error TS2322: Type '{ children: string; color: string; fontSize: string; fontWeight: "bold"; w: number; textAlign: "center"; }' is not assignable to type 'IntrinsicAttributes & TextProps'.
+  Property 'w' does not exist on type 'IntrinsicAttributes & TextProps'.
+src/components/hall-of-fame/CurrentUserCard.tsx(58,25): error TS2322: Type '{ source: { uri: string; }; alt: string; size: number; borderRadius: number; style: { borderRadius: number; }; borderWidth: number; borderColor: string; bg: string; }' is not assignable to type 'IntrinsicAttributes & ImageProps'.
+  Property 'borderWidth' does not exist on type 'IntrinsicAttributes & ImageProps'.
+src/components/hall-of-fame/LeaderboardRow.tsx(72,77): error TS2322: Type '{ children: string; color: string; fontSize: string; fontWeight: "normal"; width: number; textAlign: "center"; }' is not assignable to type 'IntrinsicAttributes & TextProps'.
+  Property 'width' does not exist on type 'IntrinsicAttributes & TextProps'.
+src/components/hall-of-fame/LeaderboardRow.tsx(85,29): error TS2322: Type '{ source: { uri: string; }; alt: string; size: number; borderRadius: number; style: { borderRadius: number; }; bg: string; }' is not assignable to type 'IntrinsicAttributes & ImageProps'.
+  Property 'bg' does not exist on type 'IntrinsicAttributes & ImageProps'.
+src/components/hall-of-fame/LeaderboardRow.tsx(94,67): error TS2322: Type 'string' is not assignable to type 'number'.
+src/components/icons/NavIcons.tsx(31,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: CircleProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+  Overload 2 of 2, '(props: CircleProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<...> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+src/components/icons/NavIcons.tsx(39,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: CircleProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+  Overload 2 of 2, '(props: CircleProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<...> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+src/components/icons/NavIcons.tsx(47,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: CircleProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+  Overload 2 of 2, '(props: CircleProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<...> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+src/components/icons/NavIcons.tsx(55,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: CircleProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+  Overload 2 of 2, '(props: CircleProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<...> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type '{ cx: string; cy: string; r: string; stroke: string; strokeWidth: number; strokeLinejoin: string; }' is not assignable to type 'IntrinsicAttributes & CircleProps'.
+      Property 'strokeLinejoin' does not exist on type 'IntrinsicAttributes & CircleProps'.
+src/components/mindset/MentalEdgeCard.tsx(99,29): error TS2322: Type 'string' is not assignable to type 'number'.
+src/components/month-detail/WeekCard.tsx(171,30): error TS2322: Type 'string' is not assignable to type 'number'.
+src/components/quiz/SocialProof.tsx(114,61): error TS2322: Type '"wolf"' is not assignable to type '"symbol" | "function" | "wrap" | "opacity" | "solid" | "ghost" | "numeric" | "contain" | "repeat" | "anchor" | "link" | "at" | "sort" | "map" | "filter" | "details" | "head" | "label" | ... 7430 more ... | undefined'.
+src/components/quiz/Testimonials.tsx(65,17): error TS2322: Type '{ children: Element[]; horizontal: true; showsHorizontalScrollIndicator: false; contentContainerStyle: { paddingHorizontal: number; paddingBottom: number; }; snapToInterval: number; decelerationRate: string; }' is not assignable to type 'IntrinsicAttributes & ScrollViewProps'.
+  Property 'snapToInterval' does not exist on type 'IntrinsicAttributes & ScrollViewProps'.
+src/components/quiz/Testimonials.tsx(131,69): error TS2322: Type '{ children: string; color: string; fontSize: string; fontStyle: string; }' is not assignable to type 'IntrinsicAttributes & TextProps'.
+  Property 'fontStyle' does not exist on type 'IntrinsicAttributes & TextProps'.
+src/components/ui/index.tsx(725,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: ImageProps): Image', gave the following error.
+    Type '{ width: string | number | undefined; height: string | number | undefined; borderRadius: number | undefined; }' is not assignable to type 'ImageStyle | Falsy | RegisteredStyle<ImageStyle> | RecursiveArray<ImageStyle | Falsy | RegisteredStyle<ImageStyle>> | readonly (ImageStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+      Types of property 'width' are incompatible.
+        Type 'string | number | undefined' is not assignable to type 'DimensionValue | undefined'.
+          Type 'string' is not assignable to type 'DimensionValue | undefined'.
+  Overload 2 of 2, '(props: ImageProps, context: any): Image', gave the following error.
+    Type '{ width: string | number | undefined; height: string | number | undefined; borderRadius: number | undefined; }' is not assignable to type 'ImageStyle | Falsy | RegisteredStyle<ImageStyle> | RecursiveArray<ImageStyle | Falsy | RegisteredStyle<ImageStyle>> | readonly (ImageStyle | ... 1 more ... | RegisteredStyle<...>)[]'.
+      Types of property 'width' are incompatible.
+        Type 'string | number | undefined' is not assignable to type 'DimensionValue | undefined'.
+          Type 'string' is not assignable to type 'DimensionValue | undefined'.
+src/components/ui/index.tsx(760,13): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: ViewProps): View', gave the following error.
+    Type '{ width: string | number | undefined; height: number; backgroundColor: string; borderRadius: number | undefined; overflow: "hidden"; }' is not assignable to type 'StyleProp<ViewStyle>'.
+      Types of property 'width' are incompatible.
+        Type 'string | number | undefined' is not assignable to type 'DimensionValue | undefined'.
+          Type 'string' is not assignable to type 'DimensionValue | undefined'.
+  Overload 2 of 2, '(props: ViewProps, context: any): View', gave the following error.
+    Type '{ width: string | number | undefined; height: number; backgroundColor: string; borderRadius: number | undefined; overflow: "hidden"; }' is not assignable to type 'StyleProp<ViewStyle>'.
+      Types of property 'width' are incompatible.
+        Type 'string | number | undefined' is not assignable to type 'DimensionValue | undefined'.
+          Type 'string' is not assignable to type 'DimensionValue | undefined'.
+src/components/ui/index.tsx(832,7): error TS2339: Property 'Group' does not exist on type 'FC<RadioProps>'.
+src/components/week-detail/DayRow.tsx(158,21): error TS2322: Type '{ children: string; color: string; fontSize: string; fontWeight: "medium"; mb: number; zIndex: number; bg: string; }' is not assignable to type 'IntrinsicAttributes & TextProps'.
+  Property 'zIndex' does not exist on type 'IntrinsicAttributes & TextProps'.
+src/components/week-detail/DayRow.tsx(172,21): error TS2322: Type 'string' is not assignable to type 'number'.
+src/components/year-detail/RevenueHeader.tsx(40,17): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(props: CircleProps, context?: any): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | ... 4 more ... | undefined', gave the following error.
+    Type 'number' is not assignable to type 'string'.
+  Overload 2 of 2, '(props: CircleProps): string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<...> | Promise<...> | Component<...> | null | undefined', gave the following error.
+    Type 'number' is not assignable to type 'string'.
+src/navigation/MainNavigator.tsx(4,26): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
+src/screens/auth/LoginScreen.tsx(2,88): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
+src/screens/auth/SignUpScreen.tsx(2,88): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
+src/screens/goals/GoalsScreen.tsx(2,41): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
+src/screens/goals/MonthDetailScreen.tsx(2,66): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
+src/screens/goals/WeekDetailScreen.tsx(228,21): error TS2322: Type '{ children: string; bg: string; borderRadius: string; py: number; _pressed: { bg: string; }; _text: { color: string; fontWeight: string; fontSize: string; }; onPress: () => void; }' is not assignable to type 'IntrinsicAttributes & ButtonProps'.
+  Property '_pressed' does not exist on type 'IntrinsicAttributes & ButtonProps'.
+src/screens/profile/ProfileScreen.tsx(133,49): error TS2339: Property 'image' does not exist on type '{ id: string; title: string; subtitle: string; status: "active"; icon: Element; unlockPoints?: undefined; } | { id: string; title: string; subtitle: undefined; status: "available"; icon: Element; unlockPoints?: undefined; } | { ...; }'.
+  Property 'image' does not exist on type '{ id: string; title: string; subtitle: string; status: "active"; icon: Element; unlockPoints?: undefined; }'.
+src/screens/profile/UserProfileScreen.tsx(146,25): error TS2322: Type '{ avatar: string; entries: ({ id: string; time: string; content: string; status: "executado"; } | { id: string; time: string; content: string; status: "planejado"; } | { id: string; time: string; content: string; status: "reflex├úo"; })[]; onPost: (text: string) => void; }' is not assignable to type 'IntrinsicAttributes & MyHistoryProps'.
+  Property 'avatar' does not exist on type 'IntrinsicAttributes & MyHistoryProps'.
+src/services/api/client.ts(19,24): error TS2552: Cannot find name 'HeadersInit'. Did you mean 'HeadersInit_'?
+src/theme/index.ts(1,29): error TS2307: Cannot find module 'native-base' or its corresponding type declarations.
