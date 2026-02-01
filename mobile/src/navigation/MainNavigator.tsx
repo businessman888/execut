@@ -31,15 +31,19 @@ export type GoalsStackParamList = {
         phase: string;
         title: string;
         revenue: string;
+        yearId?: string;
     };
     MonthDetail: {
         month: string;
         yearNumber: number;
+        monthId?: string;
     };
     WeekDetail: {
         weekNumber: number;
         dateRange: string;
         month: string;
+        weekId?: string;
+        monthId?: string;
     };
 };
 

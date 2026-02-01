@@ -16,9 +16,9 @@ class ApiClient {
         endpoint: string,
         options: RequestInit = {}
     ): Promise<T> {
-        const headers: HeadersInit = {
+        const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            ...options.headers,
+            ...(options.headers as Record<string, string>),
         };
 
         if (this.token) {
@@ -84,6 +84,55 @@ class ApiClient {
         return this.request('/planning/quiz', {
             method: 'POST',
             body: JSON.stringify(quizData),
+        });
+    }
+
+    async generatePlan(quizData: any) {
+        return this.request('/planning/generate-plan', {
+            method: 'POST',
+            body: JSON.stringify(quizData),
+        });
+    }
+
+    async getFullPlan(userId: string) {
+        return this.request(`/planning/full-plan/${userId}`);
+    }
+
+    async getCurrentDayTasks(userId: string) {
+        return this.request(`/planning/current-tasks/${userId}`);
+    }
+
+    async expandMonth(monthId: string, userId: string) {
+        return this.request(`/planning/expand-month/${monthId}`, {
+            method: 'POST',
+            body: JSON.stringify({ userId }),
+        });
+    }
+
+    async checkMonthTransition(userId: string) {
+        return this.request(`/planning/check-transition/${userId}`);
+    }
+
+    async togglePlanningTask(taskId: string, userId: string) {
+        return this.request(`/planning/tasks/${taskId}/toggle`, {
+            method: 'PUT',
+            body: JSON.stringify({ userId }),
+        });
+    }
+
+    async getWeeklyReview(userId: string) {
+        return this.request(`/planning/weekly-review/${userId}`);
+    }
+
+    async processRemainingYear1(userId: string) {
+        return this.request(`/planning/process-year1/${userId}`, {
+            method: 'POST',
+        });
+    }
+
+    async processMonthTransition(userId: string) {
+        return this.request(`/planning/process-month-transition/${userId}`, {
+            method: 'POST',
         });
     }
 

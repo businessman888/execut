@@ -1,27 +1,29 @@
-import React from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { Box, VStack, HStack, Text, ScrollView, Pressable, Button } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp, CommonActions } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronBackIcon } from '../../components/icons/NavIcons';
 import { WeekObjectiveCard, DayRow, DayStatus } from '../../components/week-detail';
+import { DailyTaskModal } from '../../components/modals';
+import { GoalsStackParamList, MainTabParamList } from '../../navigation/MainNavigator';
+import { useGoalsStore } from '../../store/goalsStore';
+import { DailyTask } from '../../types/planning';
 import Svg, { Path } from 'react-native-svg';
 
-type WeekDetailRouteParams = {
-    WeekDetail: {
-        weekNumber: number;
-        dateRange: string;
-        month: string;
-    };
-};
+type WeekDetailNavigationProp = NativeStackNavigationProp<GoalsStackParamList, 'WeekDetail'>;
+type WeekDetailRouteProp = RouteProp<GoalsStackParamList, 'WeekDetail'>;
 
 interface DayData {
     dayName: string;
     dayNumber: number;
+    fullDate: string;
     taskCount: number;
     status: DayStatus;
     statusLabel: string;
     isCurrent: boolean;
+    tasks: DailyTask[];
 }
 
 // Three dots menu icon
@@ -43,68 +45,164 @@ const DotsIcon = ({ color = '#6B7280', size = 24 }: { color?: string; size?: num
 );
 
 export function WeekDetailScreen() {
-    const navigation = useNavigation();
-    const route = useRoute<RouteProp<WeekDetailRouteParams, 'WeekDetail'>>();
+    const navigation = useNavigation<WeekDetailNavigationProp>();
+    const route = useRoute<WeekDetailRouteProp>();
 
-    const { weekNumber = 2, dateRange = 'APR 08 - APR 14', month = 'Abril' } = route.params || {};
+    const { weekNumber = 1, dateRange = 'FEB 01 - FEB 07', month = 'Fevereiro', weekId } = route.params || {};
 
-    // Mock data - will be replaced with API calls
-    const mockObjective = {
-        title: 'Launch Beta v2.0',
-        description: 'Deploy to early adopters & collect feedback',
-        progress: 65,
+    // State for modal
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedDay, setSelectedDay] = useState<DayData | null>(null);
+
+    // Long press handling
+    const longPressTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    // Get data from store
+    const weeklyPlans = useGoalsStore((state) => state.weeklyPlans);
+    const dailyTasks = useGoalsStore((state) => state.dailyTasks);
+
+    // Find current week
+    const currentWeek = useMemo(() => {
+        if (weekId) {
+            return weeklyPlans.find((w) => w.id === weekId);
+        }
+        return weeklyPlans.find((w) => w.weekNumber === weekNumber);
+    }, [weeklyPlans, weekId, weekNumber]);
+
+    // Get tasks for this week
+    const tasksForWeek = useMemo(() => {
+        if (!currentWeek) return [];
+        return dailyTasks.filter((t) => t.weeklyPlanId === currentWeek.id);
+    }, [dailyTasks, currentWeek]);
+
+    // Calculate week progress
+    const weekProgress = useMemo(() => {
+        if (tasksForWeek.length === 0) return 0;
+        const completed = tasksForWeek.filter((t) => t.completed).length;
+        return Math.round((completed / tasksForWeek.length) * 100);
+    }, [tasksForWeek]);
+
+    // Get today's date
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    // Build days data
+    const daysData = useMemo((): DayData[] => {
+        const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+        const days: DayData[] = [];
+
+        // Group tasks by date
+        const tasksByDate: Record<string, DailyTask[]> = {};
+        tasksForWeek.forEach((task) => {
+            if (!tasksByDate[task.scheduledDate]) {
+                tasksByDate[task.scheduledDate] = [];
+            }
+            tasksByDate[task.scheduledDate].push(task);
+        });
+
+        // Get unique dates sorted
+        const uniqueDates = [...new Set(tasksForWeek.map((t) => t.scheduledDate))].sort();
+
+        uniqueDates.forEach((dateStr) => {
+            const date = new Date(dateStr + 'T12:00:00'); // Avoid timezone issues
+            const dayOfWeek = date.getDay();
+            const dayNumber = date.getDate();
+            const tasksForDay = tasksByDate[dateStr] || [];
+            const completedTasks = tasksForDay.filter((t) => t.completed).length;
+
+            const isToday = dateStr === todayStr;
+            const isPast = dateStr < todayStr;
+            const isFuture = dateStr > todayStr;
+
+            let status: DayStatus = 'scheduled';
+            let statusLabel = 'Agendadas';
+
+            if (isToday) {
+                status = 'current';
+                statusLabel = 'Em progresso';
+            } else if (isPast) {
+                if (completedTasks === tasksForDay.length && tasksForDay.length > 0) {
+                    status = 'completed';
+                    statusLabel = 'Completo';
+                } else {
+                    status = 'completed';
+                    statusLabel = `${completedTasks}/${tasksForDay.length}`;
+                }
+            } else if (tasksForDay.length === 0) {
+                status = 'empty';
+                statusLabel = '';
+            }
+
+            days.push({
+                dayName: dayNames[dayOfWeek],
+                dayNumber,
+                fullDate: dateStr,
+                taskCount: tasksForDay.length,
+                status,
+                statusLabel,
+                isCurrent: isToday,
+                tasks: tasksForDay,
+            });
+        });
+
+        return days;
+    }, [tasksForWeek, todayStr]);
+
+    // Handle day press - navigate to Home if today, show modal otherwise
+    const handleDayPress = (day: DayData) => {
+        if (day.isCurrent) {
+            // Navigate to Home tab
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [
+                        {
+                            name: 'Main',
+                            state: {
+                                routes: [{ name: 'Home' }],
+                            },
+                        },
+                    ],
+                })
+            );
+        }
     };
 
-    const mockDays: DayData[] = [
-        {
-            dayName: 'Seg',
-            dayNumber: 22,
-            taskCount: 5,
-            status: 'completed',
-            statusLabel: 'Completo',
-            isCurrent: false,
-        },
-        {
-            dayName: 'Ter',
-            dayNumber: 24,
-            taskCount: 3,
-            status: 'current',
-            statusLabel: 'Em progresso',
-            isCurrent: true,
-        },
-        {
-            dayName: 'Qua',
-            dayNumber: 25,
-            taskCount: 4,
-            status: 'scheduled',
-            statusLabel: 'Agendadas',
-            isCurrent: false,
-        },
-        {
-            dayName: 'Qui',
-            dayNumber: 26,
-            taskCount: 2,
-            status: 'scheduled',
-            statusLabel: 'Agendadas',
-            isCurrent: false,
-        },
-        {
-            dayName: 'Sex',
-            dayNumber: 27,
-            taskCount: 6,
-            status: 'scheduled',
-            statusLabel: 'Agendadas',
-            isCurrent: false,
-        },
-        {
-            dayName: 'Sab',
-            dayNumber: 28,
-            taskCount: 0,
-            status: 'empty',
-            statusLabel: '',
-            isCurrent: false,
-        },
-    ];
+    // Handle long press start
+    const handlePressIn = (day: DayData) => {
+        longPressTimeout.current = setTimeout(() => {
+            // Show modal for future days
+            if (!day.isCurrent && day.tasks.length > 0) {
+                setSelectedDay(day);
+                setModalVisible(true);
+            }
+        }, 500);
+    };
+
+    // Handle press out (cancel long press)
+    const handlePressOut = () => {
+        if (longPressTimeout.current) {
+            clearTimeout(longPressTimeout.current);
+            longPressTimeout.current = null;
+        }
+    };
+
+    const handleGoToToday = () => {
+        // Navigate to Home tab
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: 'Main',
+                        state: {
+                            routes: [{ name: 'Home' }],
+                        },
+                    },
+                ],
+            })
+        );
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
@@ -131,10 +229,10 @@ export function WeekDetailScreen() {
                 {/* Title */}
                 <VStack alignItems="center">
                     <Text color="text.secondary" fontSize="lg" fontWeight="normal">
-                        Plano Semanal
+                        Semana {weekNumber}
                     </Text>
                     <Text color="text.tertiary" fontSize="xs">
-                        {dateRange}
+                        {currentWeek?.dateRange || dateRange}
                     </Text>
                 </VStack>
 
@@ -169,16 +267,16 @@ export function WeekDetailScreen() {
                                 py={1}
                             >
                                 <Text color="background.primary" fontSize="xs" fontWeight="semibold">
-                                    Prioridade: Alta
+                                    {weekProgress}% concluído
                                 </Text>
                             </Box>
                         </HStack>
 
                         {/* Objective Card */}
                         <WeekObjectiveCard
-                            title={mockObjective.title}
-                            description={mockObjective.description}
-                            progress={mockObjective.progress}
+                            title={currentWeek?.title || 'Objetivo da Semana'}
+                            description={currentWeek?.description || 'Complete as tarefas diárias'}
+                            progress={weekProgress}
                         />
                     </VStack>
 
@@ -190,22 +288,38 @@ export function WeekDetailScreen() {
 
                         {/* Days List */}
                         <Box>
-                            {mockDays.map((day, index) => (
+                            {daysData.length > 0 ? (
+                                daysData.map((day, index) => (
+                                    <Pressable
+                                        key={`${day.dayNumber}-${index}`}
+                                        onPress={() => handleDayPress(day)}
+                                        onPressIn={() => handlePressIn(day)}
+                                        onPressOut={handlePressOut}
+                                        style={{ marginBottom: 21 }}
+                                    >
+                                        <DayRow
+                                            dayName={day.dayName}
+                                            dayNumber={day.dayNumber}
+                                            taskCount={day.taskCount}
+                                            status={day.status}
+                                            statusLabel={day.statusLabel}
+                                            isCurrent={day.isCurrent}
+                                            onPress={() => handleDayPress(day)}
+                                        />
+                                    </Pressable>
+                                ))
+                            ) : (
                                 <Box
-                                    key={index}
-                                    style={{ marginBottom: 21 }}
+                                    bg="background.secondary"
+                                    borderRadius="xl"
+                                    p={6}
+                                    alignItems="center"
                                 >
-                                    <DayRow
-                                        dayName={day.dayName}
-                                        dayNumber={day.dayNumber}
-                                        taskCount={day.taskCount}
-                                        status={day.status}
-                                        statusLabel={day.statusLabel}
-                                        isCurrent={day.isCurrent}
-                                        onPress={() => console.log(`${day.dayName} ${day.dayNumber} pressed`)}
-                                    />
+                                    <Text color="text.tertiary" fontSize="md" textAlign="center">
+                                        Nenhuma tarefa agendada para esta semana.
+                                    </Text>
                                 </Box>
-                            ))}
+                            )}
                         </Box>
                     </VStack>
                 </VStack>
@@ -231,11 +345,26 @@ export function WeekDetailScreen() {
                         fontWeight: 'bold',
                         fontSize: 'md',
                     }}
-                    onPress={() => console.log('Ver Tarefas de Hoje pressed')}
+                    onPress={handleGoToToday}
                 >
                     Ver Tarefas de Hoje
                 </Button>
             </Box>
+
+            {/* Daily Task Modal */}
+            {selectedDay && (
+                <DailyTaskModal
+                    visible={modalVisible}
+                    onClose={() => {
+                        setModalVisible(false);
+                        setSelectedDay(null);
+                    }}
+                    dayName={selectedDay.dayName}
+                    dayNumber={selectedDay.dayNumber}
+                    tasks={selectedDay.tasks}
+                    date={selectedDay.fullDate}
+                />
+            )}
         </SafeAreaView>
     );
 }

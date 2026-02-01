@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Box, VStack, ScrollView, Text, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { ActivityIndicator, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis, BarrierAnalysis, SocialProof, FreedomPath, PlanSummary, Testimonials } from '../../components/quiz';
+import { apiClient } from '../../services/api/client';
+import { useAuthStore } from '../../store/authStore';
+import { GeneratedPlan } from '../../types/planning';
 
 // Quiz step definitions
 const QUIZ_STEPS = [
@@ -655,9 +661,17 @@ const QUIZ_STEPS = [
     },
 ];
 
+type RootStackParamList = {
+    PlanningSuccess: { planId: string; plan: GeneratedPlan };
+    MainTabs: undefined;
+};
+
 export function OnboardingQuizScreen() {
+    const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+    const { user } = useAuthStore();
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
+    const [isGenerating, setIsGenerating] = useState(false);
 
     // Determine which route the user should follow based on startingPoint answer
     const getUserRoute = (): 'A' | 'B' | null => {
@@ -711,7 +725,7 @@ export function OnboardingQuizScreen() {
         }
     };
 
-    const handleContinue = () => {
+    const handleContinue = async () => {
         console.log('handleContinue called');
         console.log('currentStepIndex:', currentStepIndex);
         console.log('totalSteps:', totalSteps);
@@ -720,12 +734,124 @@ export function OnboardingQuizScreen() {
             console.log('Advancing to next step:', currentStepIndex + 1);
             setCurrentStepIndex((prev) => prev + 1);
         } else {
-            // Quiz completed - submit answers
+            // Quiz completed - generate plan via AI
             console.log('Quiz completed:', answers);
             console.log('User Route:', getUserRoute());
-            // TODO: Navigate to next screen (auth or home)
+
+            setIsGenerating(true);
+
+            try {
+                // Preparar dados do quiz para a API
+                const quizData = {
+                    userId: user?.id || 'anonymous',
+                    name: answers['name'],
+                    age: answers['age'] || 26,
+                    professionalSituation: mapProfessionalSituation(answers['startingPoint']),
+                    startingPoint: answers['startingPoint'],
+                    route: getUserRoute() || 'A',
+                    routeResponses: extractRouteResponses(answers, getUserRoute() || 'A'),
+                    behavioralAudit: extractBehavioralAudit(answers),
+                    biohackingResponses: extractBiohackingResponses(answers),
+                    vision5Years: extractVision5Years(answers),
+                    financialGoal5Years: mapFinancialGoal(answers['netWorthTarget']),
+                    currentIncome: mapCurrentIncome(answers['currentRevenue']),
+                };
+
+                console.log('Sending quiz data to API:', quizData);
+
+                const response = await apiClient.generatePlan(quizData) as { planId: string; plan: GeneratedPlan };
+
+                console.log('Plan generated:', response);
+
+                // Navegar para tela de sucesso
+                navigation.navigate('PlanningSuccess', {
+                    planId: response.planId,
+                    plan: response.plan,
+                });
+            } catch (error) {
+                console.error('Error generating plan:', error);
+                Alert.alert(
+                    'Erro ao gerar plano',
+                    'Ocorreu um erro ao gerar seu plano. Por favor, tente novamente.',
+                    [{ text: 'OK' }]
+                );
+            } finally {
+                setIsGenerating(false);
+            }
         }
     };
+
+    // Funções auxiliares para mapear respostas
+    function mapProfessionalSituation(startingPoint: string): string {
+        switch (startingPoint) {
+            case 'lost':
+            case 'no_execution':
+                return 'freelancer';
+            case 'chaos':
+                return 'digital_entrepreneur_disorganized';
+            case 'slave':
+                return 'established_business';
+            default:
+                return 'clt';
+        }
+    }
+
+    function extractRouteResponses(allAnswers: Record<string, any>, route: string): Record<string, string> {
+        const routeQuestionIds = route === 'A'
+            ? ['mainBlock', 'realAvailability', 'directionClarity', 'changeFuel']
+            : ['independenceTest', 'elephantInRoom', 'businessIdentity', 'magicNumber', 'currentRevenue', 'mainBottleneck', 'teamStructure', 'strategicAlignment'];
+
+        return routeQuestionIds.reduce((acc, id) => {
+            if (allAnswers[id]) acc[id] = allAnswers[id];
+            return acc;
+        }, {} as Record<string, string>);
+    }
+
+    function extractBehavioralAudit(allAnswers: Record<string, any>): Record<string, string> {
+        const auditIds = ['personalIntegrity', 'screenTime', 'abandonmentRate', 'focusCapacity', 'procrastinationRoot', 'realAmbition'];
+        return auditIds.reduce((acc, id) => {
+            if (allAnswers[id]) acc[id] = allAnswers[id];
+            return acc;
+        }, {} as Record<string, string>);
+    }
+
+    function extractBiohackingResponses(allAnswers: Record<string, any>): Record<string, string> {
+        const bioIds = ['energyLevel', 'sleepQuality', 'sunExposure', 'physicalActivity', 'dopamineVices', 'bodyCare', 'mentalState'];
+        return bioIds.reduce((acc, id) => {
+            if (allAnswers[id]) acc[id] = allAnswers[id];
+            return acc;
+        }, {} as Record<string, string>);
+    }
+
+    function extractVision5Years(allAnswers: Record<string, any>): Record<string, string> {
+        const visionIds = ['arrivalMoment', 'netWorthTarget', 'incomeTarget', 'killerHabit', 'planSpeed'];
+        return visionIds.reduce((acc, id) => {
+            if (allAnswers[id]) acc[id] = allAnswers[id];
+            return acc;
+        }, {} as Record<string, string>);
+    }
+
+    function mapFinancialGoal(netWorthTarget: string): number {
+        switch (netWorthTarget) {
+            case '100k_500k': return 500000;
+            case '500k_1m': return 1000000;
+            case '1m_3m': return 3000000;
+            case '3m_10m': return 10000000;
+            case 'more_10m': return 20000000;
+            default: return 1000000;
+        }
+    }
+
+    function mapCurrentIncome(currentRevenue: string): number {
+        switch (currentRevenue) {
+            case '0_3k': return 2000;
+            case '3k_10k': return 6500;
+            case '10k_30k': return 20000;
+            case '30k_100k': return 65000;
+            case 'more_100k': return 150000;
+            default: return 0;
+        }
+    }
 
     const isCurrentAnswerValid = () => {
         // Age picker, hours slider, feature showcase, energy analysis, balance slider, barrier analysis, social proof, freedom path, plan summary and testimonials have default values, so they're always valid

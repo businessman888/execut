@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Box, VStack, HStack, Text, ScrollView, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -7,12 +7,14 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ChevronBackIcon } from '../../components/icons/NavIcons';
 import { MonthHeader, WeekCard, WeekStatus } from '../../components/month-detail';
 import { GoalsStackParamList } from '../../navigation/MainNavigator';
+import { useGoalsStore } from '../../store/goalsStore';
 import Svg, { Path } from 'react-native-svg';
 
 type MonthDetailNavigationProp = NativeStackNavigationProp<GoalsStackParamList, 'MonthDetail'>;
 type MonthDetailRouteProp = RouteProp<GoalsStackParamList, 'MonthDetail'>;
 
 interface WeekData {
+    id: string;
     weekNumber: number;
     dateRange: string;
     title: string;
@@ -44,61 +46,101 @@ export function MonthDetailScreen() {
     const navigation = useNavigation<MonthDetailNavigationProp>();
     const route = useRoute<MonthDetailRouteProp>();
 
-    const { month = 'Abril', yearNumber = 1 } = route.params || {};
+    const { month = 'Fevereiro', yearNumber = 1, monthId } = route.params || {};
 
-    // Mock data - will be replaced with API calls
-    const mockMonthData = {
-        badge: 'Estratégia',
-        focusLabel: 'Foco do mês',
-        title: 'Validação de',
-        subtitle: 'Mercado',
-        progress: 35,
-    };
+    // Get data from store
+    const monthlyPlans = useGoalsStore((state) => state.monthlyPlans);
+    const weeklyPlans = useGoalsStore((state) => state.weeklyPlans);
+    const dailyTasks = useGoalsStore((state) => state.dailyTasks);
 
-    const mockWeeks: WeekData[] = [
-        {
-            weekNumber: 1,
-            dateRange: '01-07 APR',
-            title: 'Definição de Persona',
-            description: 'Mapeamento de dores e necessidades',
-            status: 'completed',
-            progress: 100,
-            isCurrent: false,
-        },
-        {
-            weekNumber: 2,
-            dateRange: '08-14 APR',
-            title: 'Entrevistas com usuários',
-            description: 'Validar hipóteses com 10 early adopters',
-            status: 'current',
-            progress: 40,
-            isCurrent: true,
-        },
-        {
-            weekNumber: 3,
-            dateRange: '15-21 APR',
-            title: 'Análise de dados',
-            description: 'Compilação dos feedbacks qualitativos',
-            status: 'pending',
-            progress: 0,
-            isCurrent: false,
-        },
-        {
-            weekNumber: 4,
-            dateRange: '22-31 MAY',
-            title: 'Interação do Produto',
-            description: 'Ajustes baseados na validação',
-            status: 'pending',
-            progress: 0,
-            isCurrent: false,
-        },
-    ];
+    // Find current month plan
+    const currentMonth = useMemo(() => {
+        if (monthId) {
+            return monthlyPlans.find((m) => m.id === monthId);
+        }
+        // Fallback: find by month name
+        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        const monthIndex = monthNames.indexOf(month) + 1;
+        return monthlyPlans.find((m) => m.monthNumber === monthIndex);
+    }, [monthlyPlans, monthId, month]);
+
+    // Get weekly plans for this month
+    const weeksForMonth = useMemo(() => {
+        if (!currentMonth) return [];
+        return weeklyPlans.filter((w) => w.monthlyPlanId === currentMonth.id);
+    }, [weeklyPlans, currentMonth]);
+
+    // Calculate progress for each week
+    const weeksWithProgress = useMemo((): WeekData[] => {
+        return weeksForMonth.map((week) => {
+            const tasksForWeek = dailyTasks.filter((t) => t.weeklyPlanId === week.id);
+            const completedTasks = tasksForWeek.filter((t) => t.completed).length;
+            const progress = tasksForWeek.length > 0
+                ? Math.round((completedTasks / tasksForWeek.length) * 100)
+                : 0;
+
+            // Determine status
+            let status: WeekStatus = 'pending';
+            if (week.status === 'current') {
+                status = 'current';
+            } else if (week.status === 'completed' || progress === 100) {
+                status = 'completed';
+            }
+
+            return {
+                id: week.id,
+                weekNumber: week.weekNumber,
+                dateRange: week.dateRange,
+                title: week.title,
+                description: week.description || '',
+                status,
+                progress,
+                isCurrent: week.status === 'current',
+            };
+        });
+    }, [weeksForMonth, dailyTasks]);
+
+    // Calculate overall month progress
+    const monthProgress = useMemo(() => {
+        if (weeksWithProgress.length === 0) return 0;
+        const totalProgress = weeksWithProgress.reduce((sum, w) => sum + w.progress, 0);
+        return Math.round(totalProgress / weeksWithProgress.length);
+    }, [weeksWithProgress]);
+
+    // Month header data
+    const monthHeaderData = useMemo(() => {
+        if (!currentMonth) {
+            return {
+                badge: 'Estratégia',
+                focusLabel: 'Foco do mês',
+                title: month,
+                subtitle: '',
+                progress: 0,
+            };
+        }
+
+        // Split title into two lines if needed
+        const titleParts = currentMonth.objectiveTitle.split(' ');
+        const midPoint = Math.ceil(titleParts.length / 2);
+        const title = titleParts.slice(0, midPoint).join(' ');
+        const subtitle = titleParts.slice(midPoint).join(' ');
+
+        return {
+            badge: 'Estratégia',
+            focusLabel: 'Foco do mês',
+            title: title || currentMonth.objectiveTitle,
+            subtitle: subtitle || '',
+            progress: monthProgress,
+        };
+    }, [currentMonth, month, monthProgress]);
 
     const handleWeekPress = (week: WeekData) => {
         navigation.navigate('WeekDetail', {
             weekNumber: week.weekNumber,
             dateRange: week.dateRange,
             month: month,
+            weekId: week.id,
         });
     };
 
@@ -149,28 +191,42 @@ export function MonthDetailScreen() {
                 <VStack px={4} space={5}>
                     {/* Month Header */}
                     <MonthHeader
-                        badge={mockMonthData.badge}
-                        focusLabel={mockMonthData.focusLabel}
-                        title={mockMonthData.title}
-                        subtitle={mockMonthData.subtitle}
-                        progress={mockMonthData.progress}
+                        badge={monthHeaderData.badge}
+                        focusLabel={monthHeaderData.focusLabel}
+                        title={monthHeaderData.title}
+                        subtitle={monthHeaderData.subtitle}
+                        progress={monthHeaderData.progress}
                     />
 
                     {/* Weeks List */}
                     <VStack space={4}>
-                        {mockWeeks.map((week) => (
-                            <WeekCard
-                                key={week.weekNumber}
-                                weekNumber={week.weekNumber}
-                                dateRange={week.dateRange}
-                                title={week.title}
-                                description={week.description}
-                                status={week.status}
-                                progress={week.progress}
-                                isCurrent={week.isCurrent}
-                                onPress={() => handleWeekPress(week)}
-                            />
-                        ))}
+                        {weeksWithProgress.length > 0 ? (
+                            weeksWithProgress.map((week) => (
+                                <WeekCard
+                                    key={week.id}
+                                    weekNumber={week.weekNumber}
+                                    dateRange={week.dateRange}
+                                    title={week.title}
+                                    description={week.description}
+                                    status={week.status}
+                                    progress={week.progress}
+                                    isCurrent={week.isCurrent}
+                                    onPress={() => handleWeekPress(week)}
+                                />
+                            ))
+                        ) : (
+                            <Box
+                                bg="background.secondary"
+                                borderRadius="xl"
+                                p={6}
+                                alignItems="center"
+                            >
+                                <Text color="text.tertiary" fontSize="md" textAlign="center">
+                                    Este mês ainda não foi planejado detalhadamente.
+                                    {'\n'}Volte no último dia do mês anterior.
+                                </Text>
+                            </Box>
+                        )}
                     </VStack>
                 </VStack>
             </ScrollView>

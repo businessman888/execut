@@ -465,6 +465,8 @@ export const Heading: React.FC<HeadingProps> = ({ size = 'lg', style, ...props }
 interface PressableProps extends BoxProps {
     onPress?: () => void;
     onLongPress?: () => void;
+    onPressIn?: () => void;
+    onPressOut?: () => void;
     disabled?: boolean;
     _pressed?: { opacity?: number };
 }
@@ -473,6 +475,8 @@ export const Pressable: React.FC<PressableProps> = ({
     children,
     onPress,
     onLongPress,
+    onPressIn,
+    onPressOut,
     disabled,
     style,
     _pressed,
@@ -481,6 +485,8 @@ export const Pressable: React.FC<PressableProps> = ({
     <RNPressable
         onPress={onPress}
         onLongPress={onLongPress}
+        onPressIn={onPressIn}
+        onPressOut={onPressOut}
         disabled={disabled}
         style={({ pressed }) => [
             buildBoxStyle(props),
@@ -503,6 +509,8 @@ interface ButtonProps extends BoxProps {
     leftIcon?: ReactNode;
     rightIcon?: ReactNode;
     size?: 'xs' | 'sm' | 'md' | 'lg';
+    _pressed?: { bg?: string; opacity?: number };
+    _text?: { color?: string; fontWeight?: string; fontSize?: string };
 }
 
 export const Button: React.FC<ButtonProps> = ({
