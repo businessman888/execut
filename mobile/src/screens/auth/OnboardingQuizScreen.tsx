@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis, BarrierAnalysis, SocialProof, FreedomPath, PlanSummary, Testimonials } from '../../components/quiz';
 import { apiClient } from '../../services/api/client';
 import { useAuthStore } from '../../store/authStore';
+import { useGoalsStore } from '../../store/goalsStore';
 import { GeneratedPlan } from '../../types/planning';
 
 // Quiz step definitions
@@ -672,6 +673,9 @@ export function OnboardingQuizScreen() {
     const [currentStepIndex, setCurrentStepIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<string, any>>({});
     const [isGenerating, setIsGenerating] = useState(false);
+    const [generatedPlan, setGeneratedPlanLocal] = useState<GeneratedPlan | null>(null);
+    const [generatedPlanId, setGeneratedPlanId] = useState<string | null>(null);
+    const { setGeneratedPlan } = useGoalsStore();
 
     // Determine which route the user should follow based on startingPoint answer
     const getUserRoute = (): 'A' | 'B' | null => {
@@ -729,15 +733,25 @@ export function OnboardingQuizScreen() {
         console.log('handleContinue called');
         console.log('currentStepIndex:', currentStepIndex);
         console.log('totalSteps:', totalSteps);
+        console.log('current step type:', step.type);
 
-        if (currentStepIndex < totalSteps - 1) {
-            console.log('Advancing to next step:', currentStepIndex + 1);
-            setCurrentStepIndex((prev) => prev + 1);
-        } else {
-            // Quiz completed - generate plan via AI
-            console.log('Quiz completed:', answers);
-            console.log('User Route:', getUserRoute());
+        // Se estamos na etapa de testimonials, navegar para MainTabs
+        if (step.type === 'testimonials') {
+            console.log('Testimonials step - saving plan and navigating to MainTabs');
+            if (generatedPlan && generatedPlanId) {
+                setGeneratedPlan(generatedPlanId, generatedPlan);
+            }
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'MainTabs' }],
+            });
+            return;
+        }
 
+        // Verificar se a próxima etapa é planSummary - se sim, gerar o plano antes de avançar
+        const nextStep = filteredSteps[currentStepIndex + 1];
+        if (nextStep?.type === 'planSummary' && !generatedPlan) {
+            console.log('Next step is planSummary - generating plan first');
             setIsGenerating(true);
 
             try {
@@ -763,11 +777,12 @@ export function OnboardingQuizScreen() {
 
                 console.log('Plan generated:', response);
 
-                // Navegar para tela de sucesso
-                navigation.navigate('PlanningSuccess', {
-                    planId: response.planId,
-                    plan: response.plan,
-                });
+                // Armazenar o plano no estado local para passar para PlanSummary
+                setGeneratedPlanLocal(response.plan);
+                setGeneratedPlanId(response.planId);
+
+                // Agora sim avançar para a etapa do planSummary
+                setCurrentStepIndex((prev) => prev + 1);
             } catch (error) {
                 console.error('Error generating plan:', error);
                 Alert.alert(
@@ -778,6 +793,13 @@ export function OnboardingQuizScreen() {
             } finally {
                 setIsGenerating(false);
             }
+            return;
+        }
+
+        // Avançar para a próxima etapa normalmente
+        if (currentStepIndex < totalSteps - 1) {
+            console.log('Advancing to next step:', currentStepIndex + 1);
+            setCurrentStepIndex((prev) => prev + 1);
         }
     };
 
@@ -974,7 +996,14 @@ export function OnboardingQuizScreen() {
             case 'freedomPath':
                 return <FreedomPath />;
             case 'planSummary':
-                return <PlanSummary userName={answers['name']} />;
+                return (
+                    <PlanSummary
+                        userName={answers['name']}
+                        generatedPlan={generatedPlan}
+                        userRoute={getUserRoute() || 'A'}
+                        targetIncome={answers['incomeTarget']}
+                    />
+                );
             case 'testimonials':
                 return <Testimonials />;
             case 'balanceSlider':
@@ -1078,9 +1107,9 @@ export function OnboardingQuizScreen() {
                 {/* Quiz Content */}
                 <QuizContainer
                     titleLines={step.titleLines}
-                    buttonLabel="Continuar"
+                    buttonLabel={filteredSteps[currentStepIndex + 1]?.type === 'planSummary' ? 'Finalizar' : 'Continuar'}
                     onContinue={handleContinue}
-                    isButtonDisabled={!isCurrentAnswerValid()}
+                    isButtonDisabled={!isCurrentAnswerValid() || isGenerating}
                     showBack={currentStepIndex > 0}
                     onBack={handleBack}
                     largeTitleSize={step.type === 'featureShowcase'}
@@ -1088,6 +1117,31 @@ export function OnboardingQuizScreen() {
                 >
                     {renderStepContent()}
                 </QuizContainer>
+
+                {/* Loading Overlay */}
+                {isGenerating && (
+                    <Box
+                        position="absolute"
+                        top={0}
+                        left={0}
+                        right={0}
+                        bottom={0}
+                        bg="rgba(0, 0, 0, 0.85)"
+                        alignItems="center"
+                        justifyContent="center"
+                        zIndex={999}
+                    >
+                        <VStack space={4} alignItems="center">
+                            <ActivityIndicator size="large" color="#00C3FF" />
+                            <Text color="#FFFFFF" fontSize="lg" fontWeight="600">
+                                Gerando seu plano personalizado...
+                            </Text>
+                            <Text color="#6B7280" fontSize="sm" textAlign="center" style={{ paddingHorizontal: 32 }}>
+                                Aguarde enquanto nossa IA cria o roteiro perfeito para sua jornada
+                            </Text>
+                        </VStack>
+                    </Box>
+                )}
             </Box>
         </SafeAreaView>
     );

@@ -35,7 +35,7 @@ export class AIAgentService {
             const userPrompt = this.formatQuizResponsesForAI(quizResponses);
 
             const message = await this.anthropic.messages.create({
-                model: 'claude-sonnet-4-20250514',
+                model: 'claude-sonnet-4-5-20250929',
                 max_tokens: 8192,
                 temperature: 0.7,
                 system: systemPrompt,
@@ -83,7 +83,7 @@ Gere 4 semanas com tarefas diárias específicas e acionáveis.
 `;
 
             const message = await this.anthropic.messages.create({
-                model: 'claude-sonnet-4-20250514',
+                model: 'claude-sonnet-4-5-20250929',
                 max_tokens: 4096,
                 temperature: 0.7,
                 system: systemPrompt,
@@ -116,7 +116,7 @@ Gere 4 semanas com tarefas diárias específicas e acionáveis.
 
         try {
             const message = await this.anthropic.messages.create({
-                model: 'claude-sonnet-4-20250514',
+                model: 'claude-sonnet-4-5-20250929',
                 max_tokens: 1024,
                 messages: [{
                     role: 'user',
