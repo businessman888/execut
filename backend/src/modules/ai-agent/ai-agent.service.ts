@@ -25,25 +25,24 @@ export class AIAgentService {
     // ============================================
 
     async generateFiveYearPlanFromQuiz(quizResponses: QuizResponseDto): Promise<GeneratedPlanDto> {
-        // TEMPORARY: Using fallback to bypass Railway timeout issue
-        // TODO: Re-enable AI once timeout is resolved
-        this.logger.log('Using fallback plan (AI temporarily disabled due to timeout issues)');
-        return this.getFallbackPlan(quizResponses);
+        this.logger.log(`Starting plan generation for user: ${quizResponses.userId}`);
 
-        /* ORIGINAL CODE - Re-enable when timeout is fixed:
         if (!this.isConfigured) {
             this.logger.warn('Anthropic API not configured, using fallback plan');
             return this.getFallbackPlan(quizResponses);
         }
 
         try {
-            const systemPrompt = this.getInitialPlanSystemPrompt();
-            const userPrompt = this.formatQuizResponsesForAI(quizResponses);
+            const systemPrompt = this.getOptimizedSystemPrompt();
+            const userPrompt = this.formatQuizForAI(quizResponses);
+
+            this.logger.log('Calling Claude API...');
+            const startTime = Date.now();
 
             const message = await this.anthropic.messages.create({
-                model: 'claude-sonnet-4-5-20250929',
-                max_tokens: 20000,
-                temperature: 0.7,
+                model: "claude-haiku-4-5-20251001", // Faster model
+                max_tokens: 8192,
+                temperature: 1,
                 system: systemPrompt,
                 messages: [{
                     role: 'user',
@@ -51,19 +50,79 @@ export class AIAgentService {
                 }],
             });
 
+            const elapsed = Date.now() - startTime;
+            this.logger.log(`Claude API responded in ${elapsed}ms`);
+
             const content = message.content[0];
             if (content.type === 'text') {
                 const parsed = this.parseAndValidateResponse(content.text);
-                this.logger.log('Successfully generated 5-year plan from AI');
+                this.logger.log('Successfully generated plan from AI');
                 return parsed;
             }
 
             throw new Error('Invalid AI response type');
         } catch (error) {
             this.logger.error('AI generation error:', error);
+            this.logger.log('Falling back to template plan');
             return this.getFallbackPlan(quizResponses);
         }
-        */
+    }
+
+    private getOptimizedSystemPrompt(): string {
+        return `Você é um consultor de negócios. Gere um plano de 5 anos para empreendedores brasileiros.
+
+RETORNE APENAS JSON VÁLIDO com esta estrutura:
+
+{
+  "vision_statement": "Visão inspiradora em 1 frase",
+  "vision_5_years": [
+    {"year": 1, "phase": "IMPLANTAÇÃO", "goal": "Meta do ano", "revenue_target": 10000},
+    {"year": 2, "phase": "EXPANSÃO", "goal": "Meta do ano", "revenue_target": 25000},
+    {"year": 3, "phase": "MATURIDADE", "goal": "Meta do ano", "revenue_target": 50000},
+    {"year": 4, "phase": "GLOBALIZAÇÃO", "goal": "Meta do ano", "revenue_target": 100000},
+    {"year": 5, "phase": "LEGADO", "goal": "Meta do ano", "revenue_target": 200000}
+  ],
+  "year_01_roadmap": [
+    {"month": 1, "month_name": "Fevereiro", "objective_title": "Título", "objective_description": "Descrição", "status": "unlocked"},
+    {"month": 2, "month_name": "Março", "objective_title": "Título", "objective_description": "Descrição", "status": "locked"},
+    ... até month 12
+  ],
+  "month_01_detail": {
+    "focus": "Foco do mês",
+    "weeks": [
+      {
+        "week_number": 1,
+        "date_range": "01-07 FEV",
+        "title": "Título da semana",
+        "description": "Descrição",
+        "daily_tasks": [
+          {"day": 1, "day_name": "Sab", "tasks": [{"title": "Tarefa", "description": "Detalhe", "category": "Estratégia", "xp_reward": 25}]},
+          {"day": 2, "day_name": "Dom", "tasks": [{"title": "Tarefa", "description": "Detalhe", "category": "Marketing", "xp_reward": 20}]},
+          ... até day 7
+        ]
+      },
+      ... 4 semanas no total
+    ]
+  }
+}
+
+REGRAS:
+- Personalize baseado nas respostas do usuário
+- Categorias válidas: Estratégia, Marketing, Vendas, Produto, Operações
+- XP: 10-15 fácil, 20-30 médio, 35-50 difícil
+- Mês 01 = Fevereiro 2026
+- NÃO inclua markdown, apenas JSON puro`;
+    }
+
+    private formatQuizForAI(quiz: QuizResponseDto): string {
+        return `Nome: ${quiz.name}
+Idade: ${quiz.age}
+Situação: ${quiz.professionalSituation}
+Ponto de Partida: ${quiz.startingPoint}
+Rota: ${quiz.route}
+Meta 5 anos: R$ ${quiz.financialGoal5Years || 50000}/mês
+
+Gere o plano personalizado em JSON.`;
     }
 
     // ============================================
