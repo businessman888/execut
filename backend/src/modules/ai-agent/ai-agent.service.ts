@@ -25,6 +25,12 @@ export class AIAgentService {
     // ============================================
 
     async generateFiveYearPlanFromQuiz(quizResponses: QuizResponseDto): Promise<GeneratedPlanDto> {
+        // TEMPORARY: Using fallback to bypass Railway timeout issue
+        // TODO: Re-enable AI once timeout is resolved
+        this.logger.log('Using fallback plan (AI temporarily disabled due to timeout issues)');
+        return this.getFallbackPlan(quizResponses);
+
+        /* ORIGINAL CODE - Re-enable when timeout is fixed:
         if (!this.isConfigured) {
             this.logger.warn('Anthropic API not configured, using fallback plan');
             return this.getFallbackPlan(quizResponses);
@@ -57,6 +63,7 @@ export class AIAgentService {
             this.logger.error('AI generation error:', error);
             return this.getFallbackPlan(quizResponses);
         }
+        */
     }
 
     // ============================================
