@@ -757,7 +757,7 @@ export function OnboardingQuizScreen() {
             try {
                 // Preparar dados do quiz para a API
                 const quizData = {
-                    userId: user?.id || 'anonymous',
+                    userId: user!.id,
                     name: answers['name'],
                     age: answers['age'] || 26,
                     professionalSituation: mapProfessionalSituation(answers['startingPoint']),

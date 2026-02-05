@@ -36,7 +36,7 @@ export class AIAgentService {
 
             const message = await this.anthropic.messages.create({
                 model: 'claude-sonnet-4-5-20250929',
-                max_tokens: 8192,
+                max_tokens: 20000,
                 temperature: 0.7,
                 system: systemPrompt,
                 messages: [{
