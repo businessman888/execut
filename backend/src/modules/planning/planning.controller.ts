@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Put, Logger, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { PlanningService } from './planning.service';
 import { QuizResponseDto } from './dto/quiz-response.dto';
@@ -8,6 +8,8 @@ import { GeneratedPlanDto, ExpandMonthResponseDto } from './dto/generate-plan.dt
 @ApiBearerAuth()
 @Controller('planning')
 export class PlanningController {
+    private readonly logger = new Logger(PlanningController.name);
+
     constructor(private readonly planningService: PlanningService) { }
 
     // ============================================
@@ -18,7 +20,28 @@ export class PlanningController {
     @ApiOperation({ summary: 'Gerar plano de 5 anos baseado no quiz' })
     @ApiResponse({ status: 201, description: 'Plano gerado com sucesso', type: GeneratedPlanDto })
     async generatePlan(@Body() dto: QuizResponseDto) {
-        return this.planningService.generateInitialPlan(dto);
+        this.logger.log(`[generate-plan] Starting for user: ${dto.userId}`);
+        this.logger.log(`[generate-plan] Quiz data received: ${JSON.stringify({ name: dto.name, route: dto.route })}`);
+
+        try {
+            const startTime = Date.now();
+            const result = await this.planningService.generateInitialPlan(dto);
+            const elapsed = Date.now() - startTime;
+
+            this.logger.log(`[generate-plan] Success! PlanId: ${result.planId}, Time: ${elapsed}ms`);
+            return result;
+        } catch (error) {
+            this.logger.error(`[generate-plan] Error: ${error.message}`);
+            this.logger.error(`[generate-plan] Stack: ${error.stack}`);
+            throw new HttpException(
+                {
+                    message: 'Failed to generate plan',
+                    error: error.message,
+                    details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+                },
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     // ============================================

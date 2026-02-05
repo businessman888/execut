@@ -18,15 +18,22 @@ export class PlanningService {
     // ============================================
 
     async generateInitialPlan(dto: QuizResponseDto): Promise<{ plan: GeneratedPlanDto; planId: string }> {
-        this.logger.log(`Generating initial plan for user ${dto.userId}`);
+        this.logger.log(`[Step 1] Starting plan generation for user ${dto.userId}`);
 
         // 1. Chamar IA para gerar plano completo
+        this.logger.log(`[Step 2] Calling AI Agent...`);
+        const aiStartTime = Date.now();
         const generatedPlan = await this.aiAgent.generateFiveYearPlanFromQuiz(dto);
+        this.logger.log(`[Step 2] AI Agent completed in ${Date.now() - aiStartTime}ms`);
+        this.logger.log(`[Step 2] Plan vision: ${generatedPlan.vision_statement?.substring(0, 50)}...`);
 
         // 2. Persistir no banco de dados
+        this.logger.log(`[Step 3] Persisting plan to database...`);
+        const dbStartTime = Date.now();
         const planId = await this.persistPlan(dto.userId, dto, generatedPlan);
+        this.logger.log(`[Step 3] Database persistence completed in ${Date.now() - dbStartTime}ms`);
 
-        this.logger.log(`Plan ${planId} created successfully for user ${dto.userId}`);
+        this.logger.log(`[Step 4] SUCCESS! Plan ${planId} created for user ${dto.userId}`);
 
         return {
             plan: generatedPlan,
