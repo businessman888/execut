@@ -38,7 +38,7 @@ function getCategoryIcon(category: string | null, color: string = '#9CA3AF') {
 }
 
 export function HomeScreen() {
-    const { user } = useAuthStore();
+    const { user, profile } = useAuthStore();
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
     // Dados do store
@@ -69,21 +69,23 @@ export function HomeScreen() {
         .filter((t) => t.completed)
         .reduce((acc, task) => acc + task.xpReward, 0);
 
-    // Mock data (parcialmente derivado do store)
-    const mockUserData = {
-        name: user?.fullName?.split(' ')[0] || 'Patrick',
-        status: 'Premium status',
-        level: 24,
-        streak: 12,
-        avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',
+    // Dados reais do usuário (com fallbacks para novos usuários)
+    const userName = profile?.fullName?.split(' ')[0] || user?.fullName?.split(' ')[0] || 'Usuário';
+    const realUserData = {
+        name: userName,
+        status: profile?.fullName ? 'Membro ativo' : 'Novo membro',
+        level: profile?.currentLevel ?? 0,
+        streak: profile?.streak ?? 0,
+        avatarUrl: profile?.avatarUrl,
     };
 
-    const mockEnergyData = {
-        currentXP: completedXP || 750,
-        maxXP: dailyXP || 1000,
+    // Dados reais de energia/progresso
+    const realEnergyData = {
+        currentXP: completedXP,
+        maxXP: dailyXP || 25,
         efficiency: currentDayTasks.length > 0
             ? Math.round((currentDayTasks.filter((t) => t.completed).length / currentDayTasks.length) * 100)
-            : 75,
+            : 0,
     };
 
     const mockMissionData = {
@@ -143,19 +145,19 @@ export function HomeScreen() {
                 <VStack px={4} pt={4} space={5}>
                     {/* User Header */}
                     <UserHeader
-                        userName={mockUserData.name}
-                        userStatus={mockUserData.status}
-                        level={mockUserData.level}
-                        streak={mockUserData.streak}
-                        avatarUrl={mockUserData.avatarUrl}
+                        userName={realUserData.name}
+                        userStatus={realUserData.status}
+                        level={realUserData.level}
+                        streak={realUserData.streak}
+                        avatarUrl={realUserData.avatarUrl}
                         onAvatarPress={() => navigation.navigate('UserProfile')}
                     />
 
                     {/* Energy Core */}
                     <EnergyCore
-                        currentXP={mockEnergyData.currentXP}
-                        maxXP={mockEnergyData.maxXP}
-                        efficiency={mockEnergyData.efficiency}
+                        currentXP={realEnergyData.currentXP}
+                        maxXP={realEnergyData.maxXP}
+                        efficiency={realEnergyData.efficiency}
                     />
 
                     {/* Priority Mission Section */}

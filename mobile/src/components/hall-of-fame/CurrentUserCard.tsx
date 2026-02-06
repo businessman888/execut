@@ -5,7 +5,7 @@ import Svg, { Path } from 'react-native-svg';
 interface CurrentUserCardProps {
     rank: number;
     name: string;
-    avatar: string;
+    avatar?: string;
     streakDays: number;
     xp: number;
 }

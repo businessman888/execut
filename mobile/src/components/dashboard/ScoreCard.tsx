@@ -4,7 +4,8 @@ import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 
 interface ScoreCardProps {
     score: number;
-    percentageChange: number;
+    percentageChange?: number;
+    changeMessage?: string;
     isPositive?: boolean;
 }
 
@@ -29,8 +30,16 @@ const ExecutionScoreIcon = ({ size = 100 }: { size?: number }) => (
 export const ScoreCard: React.FC<ScoreCardProps> = ({
     score,
     percentageChange,
+    changeMessage,
     isPositive = true,
 }) => {
+    // Determine what message to show
+    const displayMessage = changeMessage
+        ? changeMessage
+        : percentageChange !== undefined
+            ? `${isPositive ? '+' : ''}${percentageChange}% vs ontem`
+            : '';
+
     return (
         <Box
             bg="surface.primary"
@@ -50,8 +59,8 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({
                     <Text color="text.primary" fontSize="4xl" fontWeight="bold" mb={1}>
                         {score}%
                     </Text>
-                    <Text color="#00B050" fontSize="sm" fontWeight="semibold">
-                        {isPositive ? '+' : ''}{percentageChange}% vs ontem
+                    <Text color={changeMessage ? "#00C3FF" : "#00B050"} fontSize="sm" fontWeight="semibold">
+                        {displayMessage}
                     </Text>
                 </VStack>
 

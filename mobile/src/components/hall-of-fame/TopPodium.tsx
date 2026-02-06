@@ -6,7 +6,7 @@ import { Image as RNImage } from 'react-native';
 interface TopUser {
     id: string;
     name: string;
-    avatar: string;
+    avatar?: string;
     level: number;
     rank: 1 | 2 | 3;
     title?: string;
@@ -42,12 +42,13 @@ const RankBadge: React.FC<{ rank: 1 | 2 | 3; size?: number }> = ({ rank, size = 
 
 // Circular Avatar with rank badge
 const CircularAvatar: React.FC<{
-    uri: string;
+    uri?: string;
     size: number;
     rank: 1 | 2 | 3;
     hasBorder?: boolean;
     borderColor?: string;
-}> = ({ uri, size, rank, hasBorder = false, borderColor = '#33CFFF' }) => {
+    name?: string;
+}> = ({ uri, size, rank, hasBorder = false, borderColor = '#33CFFF', name = '?' }) => {
     const borderWidth = hasBorder ? 3 : 0;
     const innerSize = size - (borderWidth * 2);
 
@@ -64,15 +65,21 @@ const CircularAvatar: React.FC<{
                 justifyContent="center"
                 bg="#1A1A1A"
             >
-                <RNImage
-                    source={{ uri }}
-                    style={{
-                        width: innerSize,
-                        height: innerSize,
-                        borderRadius: innerSize / 2,
-                    }}
-                    resizeMode="cover"
-                />
+                {uri ? (
+                    <RNImage
+                        source={{ uri }}
+                        style={{
+                            width: innerSize,
+                            height: innerSize,
+                            borderRadius: innerSize / 2,
+                        }}
+                        resizeMode="cover"
+                    />
+                ) : (
+                    <Text color="#6B7280" fontSize={size * 0.4} fontWeight="bold">
+                        {name.charAt(0).toUpperCase()}
+                    </Text>
+                )}
             </Box>
             <RankBadge rank={rank} size={28} />
         </Box>

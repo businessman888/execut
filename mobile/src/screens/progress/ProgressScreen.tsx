@@ -12,59 +12,59 @@ import {
     FocusDistribution,
     RecentMilestones,
 } from '../../components/dashboard';
+import { useAuthStore } from '../../store/authStore';
+import { usePlanProgress } from '../../store/goalsStore';
 
 export function ProgressScreen() {
     const navigation = useNavigation();
+    const { profile } = useAuthStore();
+    const { totalTasks, completedTasks, progressPercent } = usePlanProgress();
 
-    // Mock data - will be replaced with API calls
-    const mockScore = {
-        score: 88,
-        percentageChange: 5,
+    // Verificar se usuário tem progresso
+    const hasProgress = totalTasks > 0 && completedTasks > 0;
+
+    // Dados reais de score (baseado em tarefas completadas)
+    const realScore = {
+        score: progressPercent,
+        changeMessage: hasProgress ? undefined : 'Comece suas tarefas!',
+        percentageChange: hasProgress ? 0 : undefined,
     };
 
-    const mockActivity = {
-        data: [45, 60, 70, 55, 80, 75, 90],
+    // Dados reais de atividade (7 dias - todos zeros se sem progresso)
+    const realActivity = {
+        data: hasProgress ? [0, 0, 0, 0, 0, 0, progressPercent] : [0, 0, 0, 0, 0, 0, 0],
         labels: ['S', 'T', 'Q', 'Q', 'S', 'S', 'D'],
-        status: 'Ótimo',
+        status: hasProgress ? (progressPercent >= 70 ? 'Ótimo' : progressPercent >= 40 ? 'Bom' : 'Iniciando') : 'Sem atividade',
     };
 
-    const mockStats = {
-        totalXP: 12450,
-        xpChange: '+1.2k essa semana',
-        streakDays: 15,
-        recordDays: 22,
+    // Dados reais de estatísticas
+    const realStats = {
+        totalXP: profile?.totalXp ?? 0,
+        xpChange: hasProgress ? '+0 essa semana' : 'Comece a executar!',
+        streakDays: profile?.streak ?? 0,
+        recordDays: profile?.streak ?? 0,
     };
 
-    const mockInsight = {
-        message: "Sua produtividade em 'Estudos' aumentou 12% esta semana. Considere focar em 'vendas' amanhã entre 09:00 e 11:00 para otimizar seus resultados.",
+    // Insight baseado no progresso
+    const realInsight = {
+        message: hasProgress
+            ? `Você completou ${completedTasks} de ${totalTasks} tarefas. Continue assim para melhorar sua produtividade!`
+            : 'Comece a executar suas tarefas para receber insights personalizados sobre sua produtividade!',
     };
 
-    const mockFocusItems = [
-        { label: 'Produtos', percentage: 50, color: '#33CFFF' },
-        { label: 'Vendas', percentage: 28, color: '#6366F1' },
-        { label: 'Estudos', percentage: 22, color: '#2DD4BF' },
-    ];
+    // Distribuição de foco (vazia se sem progresso)
+    const realFocusItems = hasProgress
+        ? [
+            { label: 'Tarefas', percentage: 100, color: '#33CFFF' },
+        ]
+        : [
+            { label: 'Sem dados', percentage: 100, color: '#333333' },
+        ];
 
-    const mockMilestones = [
-        {
-            id: '1',
-            title: 'Meta de vendas batida',
-            completedAt: 'Finalizado há 2 horas',
-            xpReward: 500,
-        },
-        {
-            id: '2',
-            title: 'Curso de UI concluído',
-            completedAt: 'Finalizado ontem',
-            xpReward: 1200,
-        },
-        {
-            id: '3',
-            title: 'Review Semanal finalizada',
-            completedAt: 'Finalizado há 2 dias',
-            xpReward: 300,
-        },
-    ];
+    // Milestones recentes (vazio se sem progresso)
+    const realMilestones = hasProgress
+        ? []
+        : [];
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
@@ -113,38 +113,39 @@ export function ProgressScreen() {
                 <VStack px={4} space={4}>
                     {/* Score Card */}
                     <ScoreCard
-                        score={mockScore.score}
-                        percentageChange={mockScore.percentageChange}
+                        score={realScore.score}
+                        percentageChange={realScore.percentageChange}
+                        changeMessage={realScore.changeMessage}
                         isPositive={true}
                     />
 
                     {/* Activity Chart */}
                     <ActivityChart
-                        data={mockActivity.data}
-                        labels={mockActivity.labels}
-                        status={mockActivity.status}
+                        data={realActivity.data}
+                        labels={realActivity.labels}
+                        status={realActivity.status}
                     />
 
                     {/* Stats Cards */}
                     <StatsCards
-                        totalXP={mockStats.totalXP}
-                        xpChange={mockStats.xpChange}
-                        streakDays={mockStats.streakDays}
-                        recordDays={mockStats.recordDays}
+                        totalXP={realStats.totalXP}
+                        xpChange={realStats.xpChange}
+                        streakDays={realStats.streakDays}
+                        recordDays={realStats.recordDays}
                     />
 
                     {/* AI Insights */}
                     <AIInsightsCard
-                        message={mockInsight.message}
+                        message={realInsight.message}
                         onViewMore={() => console.log('View more insights pressed')}
                     />
 
                     {/* Focus Distribution */}
-                    <FocusDistribution items={mockFocusItems} />
+                    <FocusDistribution items={realFocusItems} />
 
                     {/* Recent Milestones */}
                     <RecentMilestones
-                        milestones={mockMilestones}
+                        milestones={realMilestones}
                         onMilestonePress={(id) => console.log(`Milestone ${id} pressed`)}
                     />
                 </VStack>

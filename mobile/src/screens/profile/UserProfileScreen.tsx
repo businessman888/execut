@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { ChevronBackIcon } from '../../components/icons/NavIcons';
 import { ProfileCard, AchievementsRow, MainObjectiveCard, MyHistory } from '../../components/profile';
 import Svg, { Path } from 'react-native-svg';
+import { useAuthStore } from '../../store/authStore';
+import { usePlanProgress, useFiveYearPlan } from '../../store/goalsStore';
 
 // Settings gear icon
 const GearIcon = ({ size = 24, color = '#F9FAFB' }: { size?: number; color?: string }) => (
@@ -29,49 +31,49 @@ const GearIcon = ({ size = 24, color = '#F9FAFB' }: { size?: number; color?: str
 
 export function UserProfileScreen() {
     const navigation = useNavigation();
+    const { user, profile } = useAuthStore();
+    const { progressPercent, currentMonth, totalTasks, completedTasks } = usePlanProgress();
+    const { isPlanGenerated } = useFiveYearPlan();
 
-    // Mock data - will be replaced with API calls
-    const mockProfile = {
-        avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-        name: 'Patrick Sterling',
-        role: 'Founder',
-        level: 42,
-        isTopPercent: true,
-        topPercent: 1,
+    // Dados reais do perfil (com fallbacks para novos usuários)
+    const realProfile = {
+        avatar: profile?.avatarUrl,
+        name: profile?.fullName || user?.fullName || 'Usuário',
+        role: isPlanGenerated ? 'Membro ativo' : 'Novo membro',
+        level: profile?.currentLevel ?? 0,
+        isTopPercent: false,
+        topPercent: 0,
     };
 
-    const mockAchievements = [
-        { id: '1', title: 'Launch', icon: 'rocket' as const, isUnlocked: true },
-        { id: '2', title: 'Revenue', icon: 'coin' as const, isUnlocked: true },
-        { id: '3', title: 'Streak', icon: 'lightning' as const, isUnlocked: true },
+    // Conquistas baseadas no progresso real
+    const hasCompletedTasks = completedTasks > 0;
+    const hasStreak = (profile?.streak ?? 0) > 0;
+    const hasPlan = isPlanGenerated;
+
+    const realAchievements = [
+        { id: '1', title: 'Launch', icon: 'rocket' as const, isUnlocked: hasPlan },
+        { id: '2', title: 'Revenue', icon: 'coin' as const, isUnlocked: hasCompletedTasks },
+        { id: '3', title: 'Streak', icon: 'lightning' as const, isUnlocked: hasStreak },
     ];
 
-    const mockObjective = {
-        quarter: 'Q3 Focus',
-        title: 'Lançamento do Produto',
-        progress: 75,
+    // Objetivo principal baseado no plano real
+    const realObjective = {
+        quarter: currentMonth?.objectiveTitle ? 'Foco Atual' : 'Começar',
+        title: currentMonth?.objectiveTitle || 'Crie seu plano de 5 anos',
+        progress: progressPercent,
     };
 
-    const mockHistoryEntries = [
-        {
-            id: '1',
-            time: '10:00 AM',
-            content: 'Revisão completa para a o deck da Série B do nosso pitch. Focado na escalabilidade do modelo de negócio.',
-            status: 'executado' as const,
-        },
-        {
-            id: '2',
-            time: '08:00 AM',
-            content: 'Amanhã pela manhã será totalmente voltada para a estratégia de alavancagem e aumento de faturamento da empresa.',
-            status: 'planejado' as const,
-        },
-        {
-            id: '3',
-            time: '11:30 AM',
-            content: 'Pensar como é possível aplicar melhores mudanças de infra do sistema sem o comprometer de modo problemático.',
-            status: 'reflexão' as const,
-        },
-    ];
+    // Histórico vazio para novos usuários
+    const realHistoryEntries = hasCompletedTasks
+        ? [
+            {
+                id: '1',
+                time: 'Agora',
+                content: `Você completou ${completedTasks} de ${totalTasks} tarefas do seu plano.`,
+                status: 'executado' as const,
+            },
+        ]
+        : [];
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
@@ -120,31 +122,30 @@ export function UserProfileScreen() {
                 <VStack px={4} space={6}>
                     {/* Profile Card */}
                     <ProfileCard
-                        avatar={mockProfile.avatar}
-                        name={mockProfile.name}
-                        role={mockProfile.role}
-                        level={mockProfile.level}
-                        isTopPercent={mockProfile.isTopPercent}
-                        topPercent={mockProfile.topPercent}
+                        avatar={realProfile.avatar}
+                        name={realProfile.name}
+                        role={realProfile.role}
+                        level={realProfile.level}
+                        isTopPercent={realProfile.isTopPercent}
+                        topPercent={realProfile.topPercent}
                     />
 
                     {/* Achievements */}
                     <AchievementsRow
-                        achievements={mockAchievements}
+                        achievements={realAchievements}
                         onViewAll={() => console.log('View all achievements')}
                     />
 
                     {/* Main Objective */}
                     <MainObjectiveCard
-                        quarter={mockObjective.quarter}
-                        title={mockObjective.title}
-                        progress={mockObjective.progress}
+                        quarter={realObjective.quarter}
+                        title={realObjective.title}
+                        progress={realObjective.progress}
                     />
 
                     {/* My History */}
                     <MyHistory
-                        avatar={mockProfile.avatar}
-                        entries={mockHistoryEntries}
+                        entries={realHistoryEntries}
                         onPost={(text) => console.log('Posted:', text)}
                     />
                 </VStack>

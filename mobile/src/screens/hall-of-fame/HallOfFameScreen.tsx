@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { BellIcon } from '../../components/icons/NavIcons';
 import { TopPodium, LeaderboardRow, CurrentUserCard } from '../../components/hall-of-fame';
 import Svg, { Path } from 'react-native-svg';
+import { useAuthStore } from '../../store/authStore';
 
 // Trophy icon
 const TrophyIcon = ({ color = '#33CFFF', size = 24 }: { color?: string; size?: number }) => (
@@ -33,75 +34,52 @@ const ArrowDownIcon = ({ color = '#33CFFF', size = 16 }: { color?: string; size?
 
 export function HallOfFameScreen() {
     const [showMore, setShowMore] = useState(false);
+    const { user, profile } = useAuthStore();
 
-    // Mock data - will be replaced with API calls
-    const mockTopUsers = [
+    // Dados do usuário atual (real)
+    const currentUserData = {
+        rank: 0, // Sem ranking ainda (não temos leaderboard real)
+        name: 'Você',
+        avatar: profile?.avatarUrl,
+        streakDays: profile?.streak ?? 0,
+        xp: profile?.totalXp ?? 0,
+    };
+
+    // Top 3 - Placeholder (sem dados de outros usuários ainda)
+    const emptyTopUsers = [
         {
             id: '1',
-            name: 'Matheus',
-            avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-            level: 50,
+            name: '???',
+            avatar: undefined,
+            level: 0,
             rank: 1 as const,
-            title: 'ELITE LVL 50',
+            title: 'Aguardando...',
         },
         {
             id: '2',
-            name: 'Lucas M.',
-            avatar: 'https://randomuser.me/api/portraits/men/45.jpg',
-            level: 42,
+            name: '???',
+            avatar: undefined,
+            level: 0,
             rank: 2 as const,
         },
         {
             id: '3',
-            name: 'Márcio P.',
-            avatar: 'https://randomuser.me/api/portraits/men/67.jpg',
-            level: 38,
+            name: '???',
+            avatar: undefined,
+            level: 0,
             rank: 3 as const,
         },
     ];
 
-    const mockLeaderboard = [
-        {
-            id: '4',
-            rank: 4,
-            name: 'Ricardo Silva',
-            avatar: 'https://randomuser.me/api/portraits/men/22.jpg',
-            streakDays: 12,
-            xp: 12450,
-        },
-        {
-            id: '5',
-            rank: 5,
-            name: 'Ana Clara',
-            avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-            streakDays: 8,
-            xp: 12450,
-        },
-        {
-            id: '6',
-            rank: 6,
-            name: 'Pedro Henrique',
-            avatar: 'https://randomuser.me/api/portraits/men/55.jpg',
-            streakDays: 0,
-            xp: 12450,
-        },
-        {
-            id: '7',
-            rank: 7,
-            name: 'Juliana G.',
-            avatar: 'https://randomuser.me/api/portraits/women/33.jpg',
-            streakDays: 24,
-            xp: 12450,
-        },
-    ];
-
-    const mockCurrentUser = {
-        rank: 7,
-        name: 'Você',
-        avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
-        streakDays: 24,
-        xp: 12450,
-    };
+    // Leaderboard vazio (sem dados de outros usuários)
+    const emptyLeaderboard: {
+        id: string;
+        rank: number;
+        name: string;
+        avatar?: string;
+        streakDays: number;
+        xp: number;
+    }[] = [];
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
@@ -145,29 +123,40 @@ export function HallOfFameScreen() {
                 <VStack px={4} space={5}>
                     {/* Top 3 Podium */}
                     <Box mt={4}>
-                        <TopPodium users={mockTopUsers} />
+                        <TopPodium users={emptyTopUsers} />
                     </Box>
 
-                    {/* Leaderboard */}
-                    <VStack space={3}>
-                        {mockLeaderboard.map((user) => (
-                            <LeaderboardRow
-                                key={user.id}
-                                user={user}
-                                onPress={() => console.log(`User ${user.id} pressed`)}
-                            />
-                        ))}
-                    </VStack>
-
-                    {/* Ver mais button */}
-                    <Pressable onPress={() => setShowMore(!showMore)}>
-                        <HStack justifyContent="center" alignItems="center" space={1} py={2}>
-                            <Text color="accent.400" fontSize="sm" fontWeight="medium">
-                                Ver mais
+                    {/* Leaderboard - Vazio para novos usuários */}
+                    {emptyLeaderboard.length > 0 ? (
+                        <VStack space={3}>
+                            {emptyLeaderboard.map((leaderUser) => (
+                                <LeaderboardRow
+                                    key={leaderUser.id}
+                                    user={leaderUser}
+                                    onPress={() => console.log(`User ${leaderUser.id} pressed`)}
+                                />
+                            ))}
+                        </VStack>
+                    ) : (
+                        <Box bg="#1A1A1A" borderRadius={16} p={6} alignItems="center">
+                            <Text color="#6B7280" fontSize="sm" textAlign="center">
+                                Em breve você verá outros usuários aqui!{'\n'}
+                                Continue executando suas tarefas.
                             </Text>
-                            <ArrowDownIcon size={16} color="#33CFFF" />
-                        </HStack>
-                    </Pressable>
+                        </Box>
+                    )}
+
+                    {/* Ver mais button - oculto quando não há leaderboard */}
+                    {emptyLeaderboard.length > 0 && (
+                        <Pressable onPress={() => setShowMore(!showMore)}>
+                            <HStack justifyContent="center" alignItems="center" space={1} py={2}>
+                                <Text color="accent.400" fontSize="sm" fontWeight="medium">
+                                    Ver mais
+                                </Text>
+                                <ArrowDownIcon size={16} color="#33CFFF" />
+                            </HStack>
+                        </Pressable>
+                    )}
                 </VStack>
             </ScrollView>
 
@@ -179,13 +168,14 @@ export function HallOfFameScreen() {
                 right={0}
             >
                 <CurrentUserCard
-                    rank={mockCurrentUser.rank}
-                    name={mockCurrentUser.name}
-                    avatar={mockCurrentUser.avatar}
-                    streakDays={mockCurrentUser.streakDays}
-                    xp={mockCurrentUser.xp}
+                    rank={currentUserData.rank}
+                    name={currentUserData.name}
+                    avatar={currentUserData.avatar}
+                    streakDays={currentUserData.streakDays}
+                    xp={currentUserData.xp}
                 />
             </Box>
         </SafeAreaView>
     );
 }
+

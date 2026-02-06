@@ -6,7 +6,7 @@ interface LeaderboardUser {
     id: string;
     rank: number;
     name: string;
-    avatar: string;
+    avatar?: string;
     streakDays: number;
     xp: number;
 }

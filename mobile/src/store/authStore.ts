@@ -16,6 +16,7 @@ interface Profile {
     avatarUrl?: string;
     currentLevel: number;
     totalXp: number;
+    streak: number;
     isPublic: boolean;
 }
 
