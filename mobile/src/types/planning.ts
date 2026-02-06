@@ -43,6 +43,7 @@ export interface MonthlyPlan {
     unlockedAt: string | null;
     createdAt: string;
     weeklyPlans?: WeeklyPlan[];
+    keyObjectives?: string[]; // 4 main objectives for the month
 }
 
 // === METAS ANUAIS ===
@@ -124,6 +125,7 @@ export interface GeneratedPlan {
         objective_title: string;
         objective_description: string;
         status: 'unlocked' | 'locked';
+        key_objectives: string[]; // 4 main objectives for the month
     }>;
     month_01_detail: {
         focus: string;

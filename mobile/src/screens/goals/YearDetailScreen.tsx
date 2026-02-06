@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Modal, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
+import { Modal, TouchableOpacity, StyleSheet, Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { PlanningHeader } from '../../components/planning';
 import {
@@ -30,6 +30,7 @@ interface MonthData {
     objectiveTitle: string;
     objectiveDescription: string | null;
     monthNumber: number;
+    keyObjectives?: string[];
 }
 
 export function YearDetailScreen() {
@@ -53,6 +54,9 @@ export function YearDetailScreen() {
         ? monthlyPlans.filter((m) => m.yearlyGoalId === yearGoal.id)
         : [];
 
+    // Mês de início do plano (0-indexed: Janeiro=0, Fevereiro=1)
+    const PLAN_START_MONTH = 1; // Fevereiro
+
     // Converter para formato de exibição
     const monthNames = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -61,17 +65,27 @@ export function YearDetailScreen() {
 
     const monthAbbr = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 
+    // Helper: converter índice do plano (1-12) para índice do calendário (0-11)
+    const getCalendarMonthIndex = (planMonthNumber: number): number => {
+        // planMonthNumber 1 = Fevereiro (índice 1), planMonthNumber 12 = Janeiro (índice 0)
+        return (PLAN_START_MONTH + planMonthNumber - 1) % 12;
+    };
+
     const months: MonthData[] = yearMonthlyPlans.length > 0
-        ? yearMonthlyPlans.map((plan) => ({
-            id: plan.id,
-            month: monthAbbr[plan.monthNumber - 1],
-            monthName: monthNames[plan.monthNumber - 1],
-            status: mapStatus(plan.status),
-            progress: plan.progress,
-            objectiveTitle: plan.objectiveTitle,
-            objectiveDescription: plan.objectiveDescription,
-            monthNumber: plan.monthNumber,
-        }))
+        ? yearMonthlyPlans.map((plan) => {
+            const calendarIndex = getCalendarMonthIndex(plan.monthNumber);
+            return {
+                id: plan.id,
+                month: monthAbbr[calendarIndex],
+                monthName: monthNames[calendarIndex],
+                status: mapStatus(plan.status, plan.monthNumber, PLAN_START_MONTH + 1),
+                progress: plan.progress,
+                objectiveTitle: plan.objectiveTitle,
+                objectiveDescription: plan.objectiveDescription,
+                monthNumber: plan.monthNumber,
+                keyObjectives: plan.keyObjectives || [],
+            };
+        })
         : getMockMonths();
 
     // Calcular progresso geral
@@ -88,14 +102,15 @@ export function YearDetailScreen() {
     }
 
     const handleMonthPress = (month: MonthData) => {
-        // Se mês estiver bloqueado, não navegar
-        if (month.status === 'pending') {
+        // Se mês estiver bloqueado ou inativo, não navegar
+        if (month.status === 'pending' || month.status === 'inactive') {
             return;
         }
 
         navigation.navigate('MonthDetail', {
             month: month.monthName,
             yearNumber: yearNumber,
+            monthId: month.id, // Passar o ID direto para lookup preciso
         });
     };
 
@@ -230,6 +245,19 @@ export function YearDetailScreen() {
                             </Text>
                         )}
 
+                        {/* 4 Key Objectives */}
+                        {previewModal.month?.keyObjectives && previewModal.month.keyObjectives.length > 0 && (
+                            <View style={styles.objectivesList}>
+                                <Text style={styles.objectivesHeader}>Marcos Principais:</Text>
+                                {previewModal.month.keyObjectives.map((objective, index) => (
+                                    <View key={index} style={styles.objectiveItem}>
+                                        <View style={styles.objectiveBullet} />
+                                        <Text style={styles.objectiveText}>{objective}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        )}
+
                         <View style={styles.lockedBadge}>
                             <Ionicons name="time-outline" size={16} color="#8A8A8A" />
                             <Text style={styles.lockedText}>
@@ -251,7 +279,21 @@ export function YearDetailScreen() {
 }
 
 // Mapear status do backend para frontend
-function mapStatus(status: MonthlyPlan['status']): MonthStatus {
+function mapStatus(status: MonthlyPlan['status'], monthNumber: number, planStartMonth: number = 2): MonthStatus {
+    // planStartMonth = 2 significa que o plano começa em Fevereiro
+    // Se o mês no plano é anterior ao mês atual, é inativo (não teve atividades)
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // 1-indexed (Janeiro = 1)
+
+    // Calcular o mês real baseado no início do plano
+    // monthNumber 1 do plano = mês de início (ex: Fevereiro = 2)
+    const realMonth = ((planStartMonth - 1 + monthNumber - 1) % 12) + 1;
+
+    // Se o status é 'locked' e o mês é antes do mês atual, é inativo
+    if (status === 'locked' && realMonth < currentMonth) {
+        return 'inactive';
+    }
+
     switch (status) {
         case 'unlocked':
             return 'in_progress';
@@ -272,22 +314,20 @@ function getMockMonths(): MonthData[] {
     const monthAbbr = ['JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN', 'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'];
 
     return [
-        { id: '1', month: 'JAN', monthName: 'Janeiro', status: 'completed', progress: 100, objectiveTitle: 'Validação', objectiveDescription: null, monthNumber: 1 },
-        { id: '2', month: 'FEV', monthName: 'Fevereiro', status: 'in_progress', progress: 65, objectiveTitle: 'MVP', objectiveDescription: null, monthNumber: 2 },
-        { id: '3', month: 'MAR', monthName: 'Março', status: 'pending', progress: 0, objectiveTitle: 'Lançamento', objectiveDescription: 'Lançar produto para primeiros clientes', monthNumber: 3 },
-        { id: '4', month: 'ABR', monthName: 'Abril', status: 'pending', progress: 0, objectiveTitle: 'Escala', objectiveDescription: null, monthNumber: 4 },
-        { id: '5', month: 'MAI', monthName: 'Maio', status: 'pending', progress: 0, objectiveTitle: 'Otimização', objectiveDescription: null, monthNumber: 5 },
-        { id: '6', month: 'JUN', monthName: 'Junho', status: 'pending', progress: 0, objectiveTitle: 'Crescimento', objectiveDescription: null, monthNumber: 6 },
-        { id: '7', month: 'JUL', monthName: 'Julho', status: 'pending', progress: 0, objectiveTitle: 'Consolidação', objectiveDescription: null, monthNumber: 7 },
-        { id: '8', month: 'AGO', monthName: 'Agosto', status: 'pending', progress: 0, objectiveTitle: 'Processos', objectiveDescription: null, monthNumber: 8 },
-        { id: '9', month: 'SET', monthName: 'Setembro', status: 'pending', progress: 0, objectiveTitle: 'Equipe', objectiveDescription: null, monthNumber: 9 },
-        { id: '10', month: 'OUT', monthName: 'Outubro', status: 'pending', progress: 0, objectiveTitle: 'Marketing', objectiveDescription: null, monthNumber: 10 },
-        { id: '11', month: 'NOV', monthName: 'Novembro', status: 'pending', progress: 0, objectiveTitle: 'Expansão', objectiveDescription: null, monthNumber: 11 },
-        { id: '12', month: 'DEZ', monthName: 'Dezembro', status: 'pending', progress: 0, objectiveTitle: 'Fechamento', objectiveDescription: null, monthNumber: 12 },
+        { id: '1', month: 'FEV', monthName: 'Fevereiro', status: 'in_progress', progress: 0, objectiveTitle: 'Fundamentos', objectiveDescription: null, monthNumber: 1 },
+        { id: '2', month: 'MAR', monthName: 'Março', status: 'pending', progress: 0, objectiveTitle: 'MVP', objectiveDescription: null, monthNumber: 2 },
+        { id: '3', month: 'ABR', monthName: 'Abril', status: 'pending', progress: 0, objectiveTitle: 'Lançamento', objectiveDescription: 'Lançar produto para primeiros clientes', monthNumber: 3 },
+        { id: '4', month: 'MAI', monthName: 'Maio', status: 'pending', progress: 0, objectiveTitle: 'Escala', objectiveDescription: null, monthNumber: 4 },
+        { id: '5', month: 'JUN', monthName: 'Junho', status: 'pending', progress: 0, objectiveTitle: 'Otimização', objectiveDescription: null, monthNumber: 5 },
+        { id: '6', month: 'JUL', monthName: 'Julho', status: 'pending', progress: 0, objectiveTitle: 'Crescimento', objectiveDescription: null, monthNumber: 6 },
+        { id: '7', month: 'AGO', monthName: 'Agosto', status: 'pending', progress: 0, objectiveTitle: 'Consolidação', objectiveDescription: null, monthNumber: 7 },
+        { id: '8', month: 'SET', monthName: 'Setembro', status: 'pending', progress: 0, objectiveTitle: 'Processos', objectiveDescription: null, monthNumber: 8 },
+        { id: '9', month: 'OUT', monthName: 'Outubro', status: 'pending', progress: 0, objectiveTitle: 'Equipe', objectiveDescription: null, monthNumber: 9 },
+        { id: '10', month: 'NOV', monthName: 'Novembro', status: 'pending', progress: 0, objectiveTitle: 'Marketing', objectiveDescription: null, monthNumber: 10 },
+        { id: '11', month: 'DEZ', monthName: 'Dezembro', status: 'pending', progress: 0, objectiveTitle: 'Expansão', objectiveDescription: null, monthNumber: 11 },
+        { id: '12', month: 'JAN', monthName: 'Janeiro', status: 'pending', progress: 0, objectiveTitle: 'Fechamento', objectiveDescription: null, monthNumber: 12 },
     ];
 }
-
-import { View } from 'react-native';
 
 const styles = StyleSheet.create({
     modalOverlay: {
@@ -353,5 +393,34 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
         color: '#FFFFFF',
+    },
+    objectivesList: {
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    objectivesHeader: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#00C3FF',
+        marginBottom: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+    },
+    objectiveItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+        gap: 10,
+    },
+    objectiveBullet: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: '#00C3FF',
+    },
+    objectiveText: {
+        fontSize: 14,
+        color: '#E5E5E5',
+        flex: 1,
     },
 });

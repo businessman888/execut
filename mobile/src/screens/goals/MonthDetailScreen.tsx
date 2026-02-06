@@ -59,10 +59,24 @@ export function MonthDetailScreen() {
             return monthlyPlans.find((m) => m.id === monthId);
         }
         // Fallback: find by month name
+        // O plano começa em Fevereiro (mês 1 do plano = Fevereiro do calendário)
+        const PLAN_START_MONTH = 1; // Fevereiro = índice 1 no calendário (0-indexed)
         const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
             'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        const monthIndex = monthNames.indexOf(month) + 1;
-        return monthlyPlans.find((m) => m.monthNumber === monthIndex);
+
+        const calendarMonthIndex = monthNames.indexOf(month); // 0-indexed (Fevereiro = 1)
+
+        // Converter índice do calendário para índice do plano
+        // calendarMonthIndex = 1 (Fev) -> planMonthIndex = 1
+        // calendarMonthIndex = 0 (Jan) -> planMonthIndex = 12 (jan do próximo ano)
+        let planMonthIndex: number;
+        if (calendarMonthIndex >= PLAN_START_MONTH) {
+            planMonthIndex = calendarMonthIndex - PLAN_START_MONTH + 1;
+        } else {
+            planMonthIndex = 12 - PLAN_START_MONTH + calendarMonthIndex + 1;
+        }
+
+        return monthlyPlans.find((m) => m.monthNumber === planMonthIndex);
     }, [monthlyPlans, monthId, month]);
 
     // Get weekly plans for this month

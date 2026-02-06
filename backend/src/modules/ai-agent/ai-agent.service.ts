@@ -83,9 +83,9 @@ RETORNE APENAS JSON VÁLIDO com esta estrutura:
     {"year": 5, "phase": "LEGADO", "goal": "Meta do ano", "revenue_target": 200000}
   ],
   "year_01_roadmap": [
-    {"month": 1, "month_name": "Fevereiro", "objective_title": "Título", "objective_description": "Descrição", "status": "unlocked"},
-    {"month": 2, "month_name": "Março", "objective_title": "Título", "objective_description": "Descrição", "status": "locked"},
-    ... até month 12
+    {"month": 1, "month_name": "Fevereiro", "objective_title": "Título", "objective_description": "Descrição", "status": "unlocked", "key_objectives": ["Objetivo 1", "Objetivo 2", "Objetivo 3", "Objetivo 4"]},
+    {"month": 2, "month_name": "Março", "objective_title": "Título", "objective_description": "Descrição", "status": "locked", "key_objectives": ["Objetivo 1", "Objetivo 2", "Objetivo 3", "Objetivo 4"]},
+    ... até month 12 (cada mês DEVE ter 4 key_objectives específicos e acionáveis)
   ],
   "month_01_detail": {
     "focus": "Foco do mês",
@@ -111,6 +111,7 @@ REGRAS:
 - Categorias válidas: Estratégia, Marketing, Vendas, Produto, Operações
 - XP: 10-15 fácil, 20-30 médio, 35-50 difícil
 - Mês 01 = Fevereiro 2026
+- Cada mês DEVE ter exatamente 4 key_objectives que são marcos específicos e acionáveis
 - NÃO inclua markdown, apenas JSON puro`;
     }
 
@@ -346,18 +347,18 @@ Renda Atual: R$ ${quiz.currentIncome || 'Não informado'}/mês
                 { year: 5, phase: 'LEGADO', goal: 'Alcançar liberdade financeira total', revenue_target: targetRevenue },
             ],
             year_01_roadmap: [
-                { month: 1, month_name: 'Fevereiro', objective_title: 'Definição de Nicho', objective_description: 'Validar nicho e persona ideal', status: 'unlocked' },
-                { month: 2, month_name: 'Março', objective_title: 'MVP', objective_description: 'Desenvolver produto mínimo viável', status: 'locked' },
-                { month: 3, month_name: 'Abril', objective_title: 'Primeiras Vendas', objective_description: 'Conquistar 10 primeiros clientes', status: 'locked' },
-                { month: 4, month_name: 'Maio', objective_title: 'Validação', objective_description: 'Coletar feedback e iterar', status: 'locked' },
-                { month: 5, month_name: 'Junho', objective_title: 'Otimização', objective_description: 'Melhorar conversão e retenção', status: 'locked' },
-                { month: 6, month_name: 'Julho', objective_title: 'Escala Inicial', objective_description: 'Dobrar base de clientes', status: 'locked' },
-                { month: 7, month_name: 'Agosto', objective_title: 'Processos', objective_description: 'Documentar e automatizar', status: 'locked' },
-                { month: 8, month_name: 'Setembro', objective_title: 'Equipe', objective_description: 'Primeira contratação/terceirização', status: 'locked' },
-                { month: 9, month_name: 'Outubro', objective_title: 'Marketing', objective_description: 'Dobrar investimento em aquisição', status: 'locked' },
-                { month: 10, month_name: 'Novembro', objective_title: 'Produto V2', objective_description: 'Lançar versão melhorada', status: 'locked' },
-                { month: 11, month_name: 'Dezembro', objective_title: 'Consolidação', objective_description: 'Fechar ano com metas batidas', status: 'locked' },
-                { month: 12, month_name: 'Janeiro', objective_title: 'Planejamento Ano 2', objective_description: 'Definir estratégia do próximo ano', status: 'locked' },
+                { month: 1, month_name: 'Fevereiro', objective_title: 'Definição de Nicho', objective_description: 'Validar nicho e persona ideal', status: 'unlocked', key_objectives: ['Pesquisar mercado', 'Definir persona', 'Validar proposta de valor', 'Mapear concorrentes'] },
+                { month: 2, month_name: 'Março', objective_title: 'MVP', objective_description: 'Desenvolver produto mínimo viável', status: 'locked', key_objectives: ['Definir funcionalidades core', 'Criar protótipo', 'Testar com usuários', 'Coletar feedback'] },
+                { month: 3, month_name: 'Abril', objective_title: 'Primeiras Vendas', objective_description: 'Conquistar 10 primeiros clientes', status: 'locked', key_objectives: ['Criar oferta irresistível', 'Abordar leads', 'Fechar 10 vendas', 'Documentar processo'] },
+                { month: 4, month_name: 'Maio', objective_title: 'Validação', objective_description: 'Coletar feedback e iterar', status: 'locked', key_objectives: ['Entrevistar clientes', 'Identificar melhorias', 'Implementar ajustes', 'Medir satisfação'] },
+                { month: 5, month_name: 'Junho', objective_title: 'Otimização', objective_description: 'Melhorar conversão e retenção', status: 'locked', key_objectives: ['Analisar funil', 'Otimizar landing page', 'Criar sequência de emails', 'Aumentar conversão'] },
+                { month: 6, month_name: 'Julho', objective_title: 'Escala Inicial', objective_description: 'Dobrar base de clientes', status: 'locked', key_objectives: ['Dobrar investimento em ads', 'Criar programa de indicação', 'Automatizar atendimento', 'Escalar aquisição'] },
+                { month: 7, month_name: 'Agosto', objective_title: 'Processos', objective_description: 'Documentar e automatizar', status: 'locked', key_objectives: ['Mapear processos', 'Criar SOPs', 'Implementar automações', 'Treinar equipe'] },
+                { month: 8, month_name: 'Setembro', objective_title: 'Equipe', objective_description: 'Primeira contratação/terceirização', status: 'locked', key_objectives: ['Definir cargos', 'Recrutar candidatos', 'Treinar contratados', 'Delegar tarefas'] },
+                { month: 9, month_name: 'Outubro', objective_title: 'Marketing', objective_description: 'Dobrar investimento em aquisição', status: 'locked', key_objectives: ['Testar novos canais', 'Criar conteúdo', 'Investir em branding', 'Escalar o que funciona'] },
+                { month: 10, month_name: 'Novembro', objective_title: 'Produto V2', objective_description: 'Lançar versão melhorada', status: 'locked', key_objectives: ['Coletar requisitos', 'Desenvolver V2', 'Beta testing', 'Lançamento oficial'] },
+                { month: 11, month_name: 'Dezembro', objective_title: 'Consolidação', objective_description: 'Fechar ano com metas batidas', status: 'locked', key_objectives: ['Review de métricas', 'Bônus de fim de ano', 'Campanhas sazonais', 'Celebrar conquistas'] },
+                { month: 12, month_name: 'Janeiro', objective_title: 'Planejamento Ano 2', objective_description: 'Definir estratégia do próximo ano', status: 'locked', key_objectives: ['Análise ano 1', 'Definir metas ano 2', 'Planejar investimentos', 'Alinhar equipe'] },
             ],
             month_01_detail: this.getFallbackMonthDetail(),
         };

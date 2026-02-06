@@ -83,6 +83,12 @@ export class MonthlyRoadmapDto {
 
     @ApiProperty({ enum: ['unlocked', 'locked'], example: 'locked' })
     status: 'unlocked' | 'locked';
+
+    @ApiProperty({
+        example: ['Definir proposta de valor', 'Validar com 10 clientes', 'Criar MVP básico', 'Coletar feedback inicial'],
+        description: '4 principais objetivos do mês'
+    })
+    key_objectives: string[];
 }
 
 export class GeneratedPlanDto {

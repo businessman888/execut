@@ -154,6 +154,7 @@ export const useGoalsStore = create<GoalsState>()(
                     progress: 0,
                     unlockedAt: month.status === 'unlocked' ? new Date().toISOString() : null,
                     createdAt: new Date().toISOString(),
+                    keyObjectives: month.key_objectives || [],
                 }));
 
                 const weeklyPlans: WeeklyPlan[] = plan.month_01_detail.weeks.map((week) => ({
