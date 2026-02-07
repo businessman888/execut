@@ -98,7 +98,10 @@ export function YearDetailScreen() {
     // Agrupar meses em pares
     const monthPairs: MonthData[][] = [];
     for (let i = 0; i < months.length; i += 2) {
-        monthPairs.push([months[i], months[i + 1]]);
+        const pair = [months[i], months[i + 1]].filter(Boolean) as MonthData[];
+        if (pair.length > 0) {
+            monthPairs.push(pair);
+        }
     }
 
     const handleMonthPress = (month: MonthData) => {

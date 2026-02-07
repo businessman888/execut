@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { BellIcon } from '../../components/icons/NavIcons';
-import { MindsetHeader, MentalEdgeCard, HabitItem, BrainIcon, PuzzleIcon } from '../../components/mindset';
+import { MentalEdgeCard, HabitItem, BrainIcon, PuzzleIcon } from '../../components/mindset';
 import { LogicIcon, MemoryIcon, FrameworksIcon, PracticeIcon } from '../../components/mindset/MindsetIcons';
 import { ProfileStackParamList } from '../../navigation/MainNavigator';
 
@@ -19,16 +19,6 @@ export function ProfileScreen() {
         { id: '3', title: 'Beber 2L de água', completed: false, image: require('../../assets/images/habit/water.webp') },
         { id: '4', title: 'Ler 15 páginas de livro', completed: false, image: require('../../assets/images/habit/read.webp') },
     ]);
-
-    // Mock data
-    const mockHeader = {
-        avatar: 'https://randomuser.me/api/portraits/men/85.jpg',
-        status: 'Status',
-        level: 5,
-        title: 'Founder',
-        currentXP: 1250,
-        maxXP: 2000,
-    };
 
     const mockMentalCards = [
         {
@@ -81,34 +71,11 @@ export function ProfileScreen() {
             >
                 <VStack px={4} space={5}>
                     {/* Header with Bell */}
-                    <HStack justifyContent="flex-end" pt={2}>
-                        <Pressable
-                            onPress={() => console.log('Notifications pressed')}
-                            p={2}
-                            borderRadius="full"
-                            _pressed={{ opacity: 0.7 }}
-                        >
-                            <BellIcon size={24} color="#33CFFF" />
-                        </Pressable>
-                    </HStack>
-
-                    {/* Mindset Header */}
-                    <MindsetHeader
-                        avatar={mockHeader.avatar}
-                        status={mockHeader.status}
-                        level={mockHeader.level}
-                        title={mockHeader.title}
-                        currentXP={mockHeader.currentXP}
-                        maxXP={mockHeader.maxXP}
-                        onAvatarPress={() => navigation.navigate('UserProfile')}
-                    />
-
-                    {/* Mental Edge Section */}
-                    <VStack space={3}>
-                        <HStack justifyContent="space-between" alignItems="center">
-                            <Text color="text.primary" fontSize="lg" fontWeight="semibold">
-                                Mental Edge
-                            </Text>
+                    <HStack justifyContent="space-between" alignItems="center" pt={2}>
+                        <Text color="text.primary" fontSize="lg" fontWeight="semibold">
+                            Mental Edge
+                        </Text>
+                        <HStack space={3} alignItems="center">
                             <Box
                                 borderWidth={1}
                                 borderColor="border.default"
@@ -120,23 +87,30 @@ export function ProfileScreen() {
                                     Foco da semana
                                 </Text>
                             </Box>
+                            <Pressable
+                                onPress={() => console.log('Notifications pressed')}
+                                p={2}
+                                borderRadius="full"
+                                _pressed={{ opacity: 0.7 }}
+                            >
+                                <BellIcon size={24} color="#33CFFF" />
+                            </Pressable>
                         </HStack>
+                    </HStack>
 
-                        {/* Mental Edge Cards */}
-                        <VStack space={3}>
-                            {mockMentalCards.map((card) => (
-                                <MentalEdgeCard
-                                    key={card.id}
-                                    title={card.title}
-                                    subtitle={card.subtitle}
-                                    status={card.status}
-                                    image={card.image}
-                                    icon={card.icon}
-                                    unlockPoints={card.unlockPoints}
-                                    onPress={() => console.log(`Card ${card.id} pressed`)}
-                                />
-                            ))}
-                        </VStack>
+                    {/* Mental Edge Cards */}
+                    <VStack space={3}>
+                        {mockMentalCards.map((card) => (
+                            <MentalEdgeCard
+                                key={card.id}
+                                title={card.title}
+                                subtitle={card.subtitle}
+                                status={card.status}
+                                icon={card.icon}
+                                unlockPoints={card.unlockPoints}
+                                onPress={() => console.log(`Card ${card.id} pressed`)}
+                            />
+                        ))}
                     </VStack>
 
                     {/* Body Optimization Section */}

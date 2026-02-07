@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, VStack, HStack, Text, ScrollView, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -63,17 +63,44 @@ export function UserProfileScreen() {
         progress: progressPercent,
     };
 
-    // Histórico vazio para novos usuários
-    const realHistoryEntries = hasCompletedTasks
-        ? [
-            {
+    // Estado para histórico de posts
+    type StoryStatus = 'executado' | 'planejado' | 'reflexão';
+    interface StoryEntry {
+        id: string;
+        time: string;
+        content: string;
+        status: StoryStatus;
+    }
+
+    const [historyEntries, setHistoryEntries] = useState<StoryEntry[]>(() => {
+        // Inicializa com entradas baseadas no progresso
+        if (hasCompletedTasks) {
+            return [{
                 id: '1',
-                time: 'Agora',
+                time: 'Início',
                 content: `Você completou ${completedTasks} de ${totalTasks} tarefas do seu plano.`,
                 status: 'executado' as const,
-            },
-        ]
-        : [];
+            }];
+        }
+        return [];
+    });
+
+    // Função para formatar horário atual
+    const formatCurrentTime = () => {
+        const now = new Date();
+        return now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    };
+
+    // Função para adicionar novo post
+    const handleAddPost = (text: string) => {
+        const newEntry: StoryEntry = {
+            id: Date.now().toString(),
+            time: formatCurrentTime(),
+            content: text,
+            status: 'executado', // Posts manuais são marcados como executados
+        };
+        setHistoryEntries(prev => [newEntry, ...prev]);
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#0D0D0D' }}>
@@ -128,6 +155,20 @@ export function UserProfileScreen() {
                         level={realProfile.level}
                         isTopPercent={realProfile.isTopPercent}
                         topPercent={realProfile.topPercent}
+                        onAvatarChange={(uri) => {
+                            // Atualiza o avatar no store local
+                            const currentProfile = useAuthStore.getState().profile;
+                            useAuthStore.getState().setProfile({
+                                ...currentProfile,
+                                id: currentProfile?.id || '',
+                                fullName: currentProfile?.fullName || '',
+                                currentLevel: currentProfile?.currentLevel ?? 0,
+                                totalXp: currentProfile?.totalXp ?? 0,
+                                streak: currentProfile?.streak ?? 0,
+                                isPublic: currentProfile?.isPublic ?? false,
+                                avatarUrl: uri,
+                            });
+                        }}
                     />
 
                     {/* Achievements */}
@@ -145,8 +186,8 @@ export function UserProfileScreen() {
 
                     {/* My History */}
                     <MyHistory
-                        entries={realHistoryEntries}
-                        onPost={(text) => console.log('Posted:', text)}
+                        entries={historyEntries}
+                        onPost={handleAddPost}
                     />
                 </VStack>
             </ScrollView>
