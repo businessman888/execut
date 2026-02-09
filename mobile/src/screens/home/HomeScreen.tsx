@@ -42,7 +42,7 @@ export function HomeScreen() {
     const navigation = useNavigation<HomeScreenNavigationProp>();
 
     // Dados do store
-    const { tasks: currentDayTasks, toggleTask, isLoading } = useCurrentDayTasks();
+    const { tasks: currentDayTasks, toggleTask, setCurrentDayTasks, isLoading } = useCurrentDayTasks();
     const { totalTasks, completedTasks, progressPercent, currentMonth } = usePlanProgress();
 
     // Buscar tarefas do dia ao montar
@@ -56,8 +56,9 @@ export function HomeScreen() {
         try {
             if (!user?.id) return;
             const tasks = await apiClient.getCurrentDayTasks(user.id);
-            // Tasks serão salvos no store pelo hook
-            console.log('Current day tasks fetched:', tasks);
+            // Salvar tarefas no store
+            setCurrentDayTasks(tasks);
+            console.log('Current day tasks fetched and saved:', tasks);
         } catch (error) {
             console.error('Error fetching current day tasks:', error);
         }
@@ -96,17 +97,15 @@ export function HomeScreen() {
         timeRemaining: '02:15:00',
     };
 
-    // Combinar tarefas do store com mock
-    const displayTasks = currentDayTasks.length > 0
-        ? currentDayTasks.map((task) => ({
-            id: task.id,
-            title: task.title,
-            category: task.category || 'Geral',
-            icon: getCategoryIcon(task.category),
-            completed: task.completed,
-            xpReward: task.xpReward,
-        }))
-        : getMockTasks();
+    // Usar APENAS tarefas do store
+    const displayTasks = currentDayTasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        category: task.category || 'Geral',
+        icon: getCategoryIcon(task.category),
+        completed: task.completed,
+        xpReward: task.xpReward,
+    }));
 
     const handleTaskPress = async (taskId: string) => {
         // Toggle local
@@ -170,7 +169,6 @@ export function HomeScreen() {
                             title={mockMissionData.title}
                             subtitle={mockMissionData.subtitle}
                             progress={mockMissionData.progress}
-                            timeRemaining={mockMissionData.timeRemaining}
                             onPress={() => console.log('Mission pressed')}
                             onMenuPress={() => console.log('Menu pressed')}
                         />

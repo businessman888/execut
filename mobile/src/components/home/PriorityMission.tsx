@@ -9,7 +9,6 @@ interface PriorityMissionProps {
     title: string;
     subtitle: string;
     progress: number;
-    timeRemaining: string;
     onPress?: () => void;
     onMenuPress?: () => void;
 }
@@ -19,7 +18,6 @@ export const PriorityMission: React.FC<PriorityMissionProps> = ({
     title,
     subtitle,
     progress,
-    timeRemaining,
     onPress,
     onMenuPress,
 }) => {
@@ -89,26 +87,6 @@ export const PriorityMission: React.FC<PriorityMissionProps> = ({
                         </View>
                     </Box>
                 </VStack>
-
-                {/* Timer */}
-                <HStack alignItems="center" space={2}>
-                    <Box
-                        bg="surface.secondary"
-                        borderRadius="xl"
-                        px={4}
-                        py={2}
-                    >
-                        <HStack space={2} alignItems="center">
-                            <TimerIcon size={18} color="#33CFFF" />
-                            <Text color="text.primary" fontSize="lg" fontWeight="bold">
-                                {timeRemaining}
-                            </Text>
-                        </HStack>
-                    </Box>
-                    <Text color="text.secondary" fontSize="sm">
-                        Restantes!
-                    </Text>
-                </HStack>
             </Box>
         </Pressable>
     );

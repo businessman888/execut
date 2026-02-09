@@ -372,6 +372,7 @@ export function useCurrentDayTasks() {
     return useGoalsStore((state) => ({
         tasks: state.currentDayTasks,
         toggleTask: state.toggleTask,
+        setCurrentDayTasks: state.setCurrentDayTasks,
         isLoading: state.isLoading,
     }));
 }
