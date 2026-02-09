@@ -781,6 +781,17 @@ export function OnboardingQuizScreen() {
                 setGeneratedPlanLocal(response.plan);
                 setGeneratedPlanId(response.planId);
 
+                // Atualizar o nome do usuário no store local para refletir no perfil imediatamente
+                if (answers['name']) {
+                    const { setUser } = useAuthStore.getState();
+                    if (user) {
+                        setUser({
+                            ...user,
+                            fullName: answers['name'],
+                        });
+                    }
+                }
+
                 // Agora sim avançar para a etapa do planSummary
                 setCurrentStepIndex((prev) => prev + 1);
             } catch (error) {
