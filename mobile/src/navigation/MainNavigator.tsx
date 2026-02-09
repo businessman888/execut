@@ -13,6 +13,8 @@ import { ProgressScreen } from '../screens/progress/ProgressScreen';
 import { HallOfFameScreen } from '../screens/hall-of-fame/HallOfFameScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { UserProfileScreen } from '../screens/profile/UserProfileScreen';
+import { MindsetIntroScreen } from '../screens/mindset/MindsetIntroScreen';
+import { MindsetArticleScreen } from '../screens/mindset/MindsetArticleScreen';
 
 // Nav Icons
 import {
@@ -55,6 +57,8 @@ export type HomeStackParamList = {
 export type ProfileStackParamList = {
     ProfileMain: undefined;
     UserProfile: undefined;
+    MindsetIntro: { category: 'practices' | 'frameworks' };
+    MindsetArticle: { category: 'practices' | 'frameworks' };
 };
 
 export type MainTabParamList = {
@@ -98,6 +102,8 @@ function ProfileStackNavigator() {
         <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
             <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
             <ProfileStack.Screen name="UserProfile" component={UserProfileScreen} />
+            <ProfileStack.Screen name="MindsetIntro" component={MindsetIntroScreen} />
+            <ProfileStack.Screen name="MindsetArticle" component={MindsetArticleScreen} />
         </ProfileStack.Navigator>
     );
 }

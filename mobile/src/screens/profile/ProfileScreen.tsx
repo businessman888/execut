@@ -108,7 +108,15 @@ export function ProfileScreen() {
                                 status={card.status}
                                 icon={card.icon}
                                 unlockPoints={card.unlockPoints}
-                                onPress={() => console.log(`Card ${card.id} pressed`)}
+                                onPress={() => {
+                                    if (card.title === 'Praticas de Mindset') {
+                                        navigation.navigate('MindsetIntro', { category: 'practices' });
+                                    } else if (card.title === 'Frameworks Mentais') {
+                                        navigation.navigate('MindsetIntro', { category: 'frameworks' });
+                                    } else {
+                                        console.log(`Card ${card.id} pressed`);
+                                    }
+                                }}
                             />
                         ))}
                     </VStack>
