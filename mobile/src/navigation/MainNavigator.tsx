@@ -13,6 +13,8 @@ import { ProgressScreen } from '../screens/progress/ProgressScreen';
 import { HallOfFameScreen } from '../screens/hall-of-fame/HallOfFameScreen';
 import { ProfileScreen } from '../screens/profile/ProfileScreen';
 import { UserProfileScreen } from '../screens/profile/UserProfileScreen';
+import { SettingsScreen } from '../screens/profile/SettingsScreen';
+import { NotificationsScreen } from '../screens/notifications/NotificationsScreen';
 import { MindsetIntroScreen } from '../screens/mindset/MindsetIntroScreen';
 import { MindsetArticleScreen } from '../screens/mindset/MindsetArticleScreen';
 
@@ -47,16 +49,31 @@ export type GoalsStackParamList = {
         weekId?: string;
         monthId?: string;
     };
+    Notifications: undefined;
 };
 
 export type HomeStackParamList = {
     HomeMain: undefined;
     UserProfile: undefined;
+    Settings: undefined;
+    Notifications: undefined;
+};
+
+export type ProgressStackParamList = {
+    ProgressMain: undefined;
+    Notifications: undefined;
+};
+
+export type HallOfFameStackParamList = {
+    HallOfFameMain: undefined;
+    Notifications: undefined;
 };
 
 export type ProfileStackParamList = {
     ProfileMain: undefined;
     UserProfile: undefined;
+    Settings: undefined;
+    Notifications: undefined;
     MindsetIntro: { category: 'practices' | 'frameworks' };
     MindsetArticle: { category: 'practices' | 'frameworks' };
 };
@@ -72,6 +89,8 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const GoalsStack = createNativeStackNavigator<GoalsStackParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+const ProgressStack = createNativeStackNavigator<ProgressStackParamList>();
+const HallOfFameStack = createNativeStackNavigator<HallOfFameStackParamList>();
 const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
 // Goals Stack Navigator
@@ -82,6 +101,7 @@ function GoalsStackNavigator() {
             <GoalsStack.Screen name="YearDetail" component={YearDetailScreen} />
             <GoalsStack.Screen name="MonthDetail" component={MonthDetailScreen} />
             <GoalsStack.Screen name="WeekDetail" component={WeekDetailScreen} />
+            <GoalsStack.Screen name="Notifications" component={NotificationsScreen} />
         </GoalsStack.Navigator>
     );
 }
@@ -92,7 +112,29 @@ function HomeStackNavigator() {
         <HomeStack.Navigator screenOptions={{ headerShown: false }}>
             <HomeStack.Screen name="HomeMain" component={HomeScreen} />
             <HomeStack.Screen name="UserProfile" component={UserProfileScreen} />
+            <HomeStack.Screen name="Settings" component={SettingsScreen} />
+            <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
         </HomeStack.Navigator>
+    );
+}
+
+// Progress Stack Navigator
+function ProgressStackNavigator() {
+    return (
+        <ProgressStack.Navigator screenOptions={{ headerShown: false }}>
+            <ProgressStack.Screen name="ProgressMain" component={ProgressScreen} />
+            <ProgressStack.Screen name="Notifications" component={NotificationsScreen} />
+        </ProgressStack.Navigator>
+    );
+}
+
+// Hall of Fame Stack Navigator
+function HallOfFameStackNavigator() {
+    return (
+        <HallOfFameStack.Navigator screenOptions={{ headerShown: false }}>
+            <HallOfFameStack.Screen name="HallOfFameMain" component={HallOfFameScreen} />
+            <HallOfFameStack.Screen name="Notifications" component={NotificationsScreen} />
+        </HallOfFameStack.Navigator>
     );
 }
 
@@ -102,6 +144,8 @@ function ProfileStackNavigator() {
         <ProfileStack.Navigator screenOptions={{ headerShown: false }}>
             <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} />
             <ProfileStack.Screen name="UserProfile" component={UserProfileScreen} />
+            <ProfileStack.Screen name="Settings" component={SettingsScreen} />
+            <ProfileStack.Screen name="Notifications" component={NotificationsScreen} />
             <ProfileStack.Screen name="MindsetIntro" component={MindsetIntroScreen} />
             <ProfileStack.Screen name="MindsetArticle" component={MindsetArticleScreen} />
         </ProfileStack.Navigator>
@@ -153,8 +197,8 @@ export function MainNavigator() {
         >
             <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: '' }} />
             <Tab.Screen name="Goals" component={GoalsStackNavigator} options={{ title: '' }} />
-            <Tab.Screen name="Progress" component={ProgressScreen} options={{ title: '' }} />
-            <Tab.Screen name="HallOfFame" component={HallOfFameScreen} options={{ title: '' }} />
+            <Tab.Screen name="Progress" component={ProgressStackNavigator} options={{ title: '' }} />
+            <Tab.Screen name="HallOfFame" component={HallOfFameStackNavigator} options={{ title: '' }} />
             <Tab.Screen name="Profile" component={ProfileStackNavigator} options={{ title: '' }} />
         </Tab.Navigator>
     );

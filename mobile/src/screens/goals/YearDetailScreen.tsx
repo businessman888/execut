@@ -154,7 +154,7 @@ export function YearDetailScreen() {
             <PlanningHeader
                 title={`Ano ${String(yearNumber).padStart(2, '0')} - ${phase}`}
                 onBackPress={() => navigation.goBack()}
-                onNotificationPress={() => console.log('Notifications pressed')}
+                onNotificationPress={() => (navigation as any).navigate('Notifications')}
             />
 
             <ScrollView

@@ -8,6 +8,7 @@ import { ProfileCard, AchievementsRow, MainObjectiveCard, MyHistory } from '../.
 import Svg, { Path } from 'react-native-svg';
 import { useAuthStore } from '../../store/authStore';
 import { usePlanProgress, useFiveYearPlan } from '../../store/goalsStore';
+import { useGamificationStore } from '../../store/gamificationStore';
 
 // Settings gear icon
 const GearIcon = ({ size = 24, color = '#F9FAFB' }: { size?: number; color?: string }) => (
@@ -34,27 +35,26 @@ export function UserProfileScreen() {
     const { user, profile } = useAuthStore();
     const { progressPercent, currentMonth, totalTasks, completedTasks } = usePlanProgress();
     const { isPlanGenerated } = useFiveYearPlan();
+    const { currentLevel, achievements, userAchievements } = useGamificationStore();
 
     // Dados reais do perfil (com fallbacks para novos usuários)
     const realProfile = {
         avatar: profile?.avatarUrl,
         name: profile?.fullName || user?.fullName || 'Usuário',
         role: isPlanGenerated ? 'Membro ativo' : 'Novo membro',
-        level: profile?.currentLevel ?? 0,
+        level: currentLevel,
         isTopPercent: false,
         topPercent: 0,
     };
 
-    // Conquistas baseadas no progresso real
-    const hasCompletedTasks = completedTasks > 0;
-    const hasStreak = (profile?.streak ?? 0) > 0;
-    const hasPlan = isPlanGenerated;
-
-    const realAchievements = [
-        { id: '1', title: 'Launch', icon: 'rocket' as const, isUnlocked: hasPlan },
-        { id: '2', title: 'Revenue', icon: 'coin' as const, isUnlocked: hasCompletedTasks },
-        { id: '3', title: 'Streak', icon: 'lightning' as const, isUnlocked: hasStreak },
-    ];
+    // Build achievements from gamification store
+    const unlockedIds = new Set(userAchievements.map((ua) => ua.achievementId));
+    const realAchievements = achievements.map((a) => ({
+        id: a.id,
+        title: a.title,
+        iconSlug: a.iconSlug,
+        isUnlocked: unlockedIds.has(a.id),
+    }));
 
     // Objetivo principal baseado no plano real
     const realObjective = {
@@ -74,7 +74,7 @@ export function UserProfileScreen() {
 
     const [historyEntries, setHistoryEntries] = useState<StoryEntry[]>(() => {
         // Inicializa com entradas baseadas no progresso
-        if (hasCompletedTasks) {
+        if (completedTasks > 0) {
             return [{
                 id: '1',
                 time: 'Início',
@@ -131,7 +131,7 @@ export function UserProfileScreen() {
 
                 {/* Settings Button */}
                 <Pressable
-                    onPress={() => console.log('Settings pressed')}
+                    onPress={() => (navigation as any).navigate('Settings')}
                     p={2}
                     borderRadius="full"
                     _pressed={{ opacity: 0.7 }}

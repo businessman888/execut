@@ -6,6 +6,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { useAuthStore } from './src/store/authStore';
+import { GamificationProvider } from './src/components/gamification/GamificationProvider';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -24,10 +25,10 @@ function AppContent() {
     }, [initialize]);
 
     return (
-        <>
+        <GamificationProvider>
             <StatusBar style="light" />
             <RootNavigator />
-        </>
+        </GamificationProvider>
     );
 }
 

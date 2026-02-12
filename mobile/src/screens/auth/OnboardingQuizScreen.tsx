@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis, BarrierAnalysis, SocialProof, FreedomPath, PlanSummary, Testimonials } from '../../components/quiz';
+import { QuizHeader, QuizProgressIndicator, QuizContainer, QuizInput, AgePicker, QuizRadioGroup, HoursSlider, FeatureShowcase, BalanceSlider, EnergyAnalysis, BarrierAnalysis, SocialProof, FreedomPath, PlanSummary, Testimonials, MoneySlider, CurrencyKeypad, IncomeSlider } from '../../components/quiz';
 import { apiClient } from '../../services/api/client';
 import { useAuthStore } from '../../store/authStore';
 import { useGoalsStore } from '../../store/goalsStore';
@@ -148,14 +148,7 @@ const QUIZ_STEPS = [
             { text: 'HOJE', color: 'accent' as const },
             { text: 'para investir?', color: 'primary' as const },
         ],
-        type: 'radioGroup',
-        options: [
-            { value: 'zero', label: 'Zero ou endividado', description: 'Sem capital disponível', icon: 'wallet' as const },
-            { value: '100_500', label: 'Entre R$ 100 e R$ 500', description: 'Capital limitado', icon: 'wallet' as const },
-            { value: '500_2000', label: 'Entre R$ 500 e R$ 2.000', description: 'Algum capital', icon: 'wallet' as const },
-            { value: '2000_5000', label: 'Entre R$ 2.000 e R$ 5.000', description: 'Capital razoável', icon: 'wallet' as const },
-            { value: 'more_5000', label: 'Mais de R$ 5.000', description: 'Capital disponível', icon: 'cash' as const },
-        ],
+        type: 'moneySlider',
     },
     {
         id: 'naturalSkills',
@@ -590,14 +583,7 @@ const QUIZ_STEPS = [
             { text: 'líquido', color: 'accent' as const },
             { text: 'você quer ter?', color: 'primary' as const },
         ],
-        type: 'radioGroup',
-        options: [
-            { value: '100k_500k', label: 'R$ 100 mil a R$ 500 mil', description: 'Patrimônio inicial', icon: 'cash' as const },
-            { value: '500k_1m', label: 'R$ 500 mil a R$ 1 milhão', description: 'Patrimônio sólido', icon: 'cash' as const },
-            { value: '1m_3m', label: 'R$ 1 milhão a R$ 3 milhões', description: 'Alta escala', icon: 'cash' as const },
-            { value: '3m_10m', label: 'R$ 3 milhões a R$ 10 milhões', description: 'Muito alta escala', icon: 'rocket' as const },
-            { value: 'more_10m', label: 'Mais de R$ 10 milhões', description: 'Escala extrema', icon: 'rocket' as const },
-        ],
+        type: 'currencyKeypad',
     },
     {
         id: 'incomeTarget',
@@ -607,14 +593,7 @@ const QUIZ_STEPS = [
             { text: 'quer ter', color: 'accent' as const },
             { text: 'daqui a 5 anos?', color: 'primary' as const },
         ],
-        type: 'radioGroup',
-        options: [
-            { value: '10k_20k', label: 'R$ 10 mil a R$ 20 mil/mês', description: 'Renda confortável', icon: 'cash' as const },
-            { value: '20k_50k', label: 'R$ 20 mil a R$ 50 mil/mês', description: 'Renda alta', icon: 'cash' as const },
-            { value: '50k_100k', label: 'R$ 50 mil a R$ 100 mil/mês', description: 'Renda muito alta', icon: 'cash' as const },
-            { value: '100k_300k', label: 'R$ 100 mil a R$ 300 mil/mês', description: 'Renda excepcional', icon: 'rocket' as const },
-            { value: 'more_300k', label: 'Mais de R$ 300 mil/mês', description: 'Top tier', icon: 'rocket' as const },
-        ],
+        type: 'incomeSlider',
     },
     {
         id: 'killerHabit',
@@ -794,11 +773,12 @@ export function OnboardingQuizScreen() {
 
                 // Agora sim avançar para a etapa do planSummary
                 setCurrentStepIndex((prev) => prev + 1);
-            } catch (error) {
+            } catch (error: any) {
                 console.error('Error generating plan:', error);
+                const errorMsg = error?.message || 'Erro desconhecido';
                 Alert.alert(
                     'Erro ao gerar plano',
-                    'Ocorreu um erro ao gerar seu plano. Por favor, tente novamente.',
+                    `Ocorreu um erro: ${errorMsg}\n\nPor favor, tente novamente.`,
                     [{ text: 'OK' }]
                 );
             } finally {
@@ -865,6 +845,11 @@ export function OnboardingQuizScreen() {
     }
 
     function mapFinancialGoal(netWorthTarget: string): number {
+        // Handle raw number string from CurrencyKeypad
+        const parsed = parseInt(netWorthTarget, 10);
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+
+        // Legacy category mapping
         switch (netWorthTarget) {
             case '100k_500k': return 500000;
             case '500k_1m': return 1000000;
@@ -888,7 +873,7 @@ export function OnboardingQuizScreen() {
 
     const isCurrentAnswerValid = () => {
         // Age picker, hours slider, feature showcase, energy analysis, balance slider, barrier analysis, social proof, freedom path, plan summary and testimonials have default values, so they're always valid
-        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider' || step.type === 'energyAnalysis' || step.type === 'barrierAnalysis' || step.type === 'socialProof' || step.type === 'freedomPath' || step.type === 'planSummary' || step.type === 'testimonials') return true;
+        if (step.type === 'age' || step.type === 'hoursSlider' || step.type === 'featureShowcase' || step.type === 'balanceSlider' || step.type === 'energyAnalysis' || step.type === 'barrierAnalysis' || step.type === 'socialProof' || step.type === 'freedomPath' || step.type === 'planSummary' || step.type === 'testimonials' || step.type === 'moneySlider' || step.type === 'currencyKeypad' || step.type === 'incomeSlider') return true;
 
         const answer = answers[step.id];
         if (!answer) return false;
@@ -1021,6 +1006,27 @@ export function OnboardingQuizScreen() {
                 return (
                     <BalanceSlider
                         value={answers[step.id] || 50}
+                        onChange={handleAnswer}
+                    />
+                );
+            case 'moneySlider':
+                return (
+                    <MoneySlider
+                        value={answers[step.id] || 0}
+                        onChange={handleAnswer}
+                    />
+                );
+            case 'currencyKeypad':
+                return (
+                    <CurrencyKeypad
+                        value={answers[step.id] || ''}
+                        onChange={handleAnswer}
+                    />
+                );
+            case 'incomeSlider':
+                return (
+                    <IncomeSlider
+                        value={answers[step.id] || 0}
                         onChange={handleAnswer}
                     />
                 );

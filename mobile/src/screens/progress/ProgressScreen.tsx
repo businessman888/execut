@@ -95,7 +95,7 @@ export function ProgressScreen() {
 
                 {/* Bell Button */}
                 <Pressable
-                    onPress={() => console.log('Notifications pressed')}
+                    onPress={() => (navigation as any).navigate('Notifications')}
                     p={2}
                     borderRadius="full"
                     _pressed={{ opacity: 0.7 }}

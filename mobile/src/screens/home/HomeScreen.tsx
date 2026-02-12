@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/authStore';
 import { useCurrentDayTasks, usePlanProgress } from '../../store/goalsStore';
 import { UserHeader, EnergyCore, PriorityMission, TaskCard, AIInsight } from '../../components/home';
+import { useGamificationStore } from '../../store/gamificationStore';
 import {
     ReviewSocialAdsIcon,
     FollowUp5LeadsIcon,
@@ -44,6 +45,8 @@ export function HomeScreen() {
     // Dados do store
     const { tasks: currentDayTasks, toggleTask, setCurrentDayTasks, isLoading } = useCurrentDayTasks();
     const { totalTasks, completedTasks, progressPercent, currentMonth } = usePlanProgress();
+    const { currentLevel } = useGamificationStore();
+    const onTaskComplete = useGamificationStore((s) => s.onTaskComplete);
 
     // Buscar tarefas do dia ao montar
     useEffect(() => {
@@ -75,7 +78,7 @@ export function HomeScreen() {
     const realUserData = {
         name: userName,
         status: profile?.fullName ? 'Membro ativo' : 'Novo membro',
-        level: profile?.currentLevel ?? 0,
+        level: currentLevel,
         streak: profile?.streak ?? 0,
         avatarUrl: profile?.avatarUrl,
     };
@@ -108,8 +111,16 @@ export function HomeScreen() {
     }));
 
     const handleTaskPress = async (taskId: string) => {
+        const task = currentDayTasks.find((t) => t.id === taskId);
+        const wasCompleted = task?.completed ?? false;
+
         // Toggle local
         toggleTask(taskId);
+
+        // If task was just completed (unchecked → checked), award XP
+        if (!wasCompleted && user?.id) {
+            onTaskComplete(user.id);
+        }
 
         // Sync com backend
         try {

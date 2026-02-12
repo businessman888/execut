@@ -14,6 +14,8 @@ interface Profile {
     fullName: string;
     username?: string;
     avatarUrl?: string;
+    bio?: string;
+    age?: number;
     currentLevel: number;
     totalXp: number;
     streak: number;

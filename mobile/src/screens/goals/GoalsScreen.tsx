@@ -83,7 +83,7 @@ export function GoalsScreen() {
                 <PlanningHeader
                     title="Planejamento"
                     onBackPress={() => navigation.goBack()}
-                    onNotificationPress={() => console.log('Notifications pressed')}
+                    onNotificationPress={() => (navigation as any).navigate('Notifications')}
                 />
                 <Box flex={1} alignItems="center" justifyContent="center" px={6}>
                     <Ionicons name="rocket-outline" size={80} color="#00C3FF" />
@@ -138,7 +138,7 @@ export function GoalsScreen() {
             <PlanningHeader
                 title="Planejamento"
                 onBackPress={() => navigation.goBack()}
-                onNotificationPress={() => console.log('Notifications pressed')}
+                onNotificationPress={() => (navigation as any).navigate('Notifications')}
             />
 
             <ScrollView

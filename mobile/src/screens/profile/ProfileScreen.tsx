@@ -88,7 +88,7 @@ export function ProfileScreen() {
                                 </Text>
                             </Box>
                             <Pressable
-                                onPress={() => console.log('Notifications pressed')}
+                                onPress={() => navigation.navigate('Notifications')}
                                 p={2}
                                 borderRadius="full"
                                 _pressed={{ opacity: 0.7 }}

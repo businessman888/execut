@@ -12,6 +12,9 @@ export { SocialProof } from './SocialProof';
 export { FreedomPath } from './FreedomPath';
 export { PlanSummary } from './PlanSummary';
 export { Testimonials } from './Testimonials';
+export { MoneySlider } from './MoneySlider';
+export { CurrencyKeypad } from './CurrencyKeypad';
+export { IncomeSlider } from './IncomeSlider';
 
 
 

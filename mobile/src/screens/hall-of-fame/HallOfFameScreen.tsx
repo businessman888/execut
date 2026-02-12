@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, VStack, HStack, Text, ScrollView, Pressable } from '../../components/ui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { useNavigation } from '@react-navigation/native';
 import { BellIcon } from '../../components/icons/NavIcons';
 import { TopPodium, LeaderboardRow, CurrentUserCard } from '../../components/hall-of-fame';
 import Svg, { Path } from 'react-native-svg';
@@ -34,6 +35,7 @@ const ArrowDownIcon = ({ color = '#33CFFF', size = 16 }: { color?: string; size?
 
 export function HallOfFameScreen() {
     const [showMore, setShowMore] = useState(false);
+    const navigation = useNavigation();
     const { user, profile } = useAuthStore();
 
     // Dados do usuário atual (real)
@@ -105,7 +107,7 @@ export function HallOfFameScreen() {
 
                 {/* Bell Button */}
                 <Pressable
-                    onPress={() => console.log('Notifications pressed')}
+                    onPress={() => (navigation as any).navigate('Notifications')}
                     p={2}
                     borderRadius="full"
                     _pressed={{ opacity: 0.7 }}
